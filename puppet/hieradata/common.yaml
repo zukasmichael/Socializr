@@ -1,0 +1,117 @@
+---
+vagrantfile-local:
+    vm:
+        box: squeeze64
+        box_url: 'http://puppet-vagrant-boxes.puppetlabs.com/debian-607-x64-vbox4210.box'
+        hostname: null
+        network:
+            private_network: 192.168.56.110
+            forwarded_port:
+                a0GzSRD7hE5L:
+                    host: ''
+                    guest: ''
+        provider:
+            virtualbox:
+                modifyvm:
+                    name: socializr-devbox
+                    natdnshostresolver1: on
+                    memory: '512'
+                setextradata:
+                    VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root: 1
+        provision:
+            puppet:
+                manifests_path: puppet/manifests
+                options:
+                    - --verbose
+                    - '--hiera_config /vagrant/hiera.yaml'
+                    - '--parser future'
+        synced_folder:
+            WdihlW3eDmQM:
+                id: webroot
+                source: ./
+                target: /vagrant
+                nfs: 'false'
+        usable_port_range: 2200..2250
+    ssh:
+        host: null
+        port: null
+        private_key_path: null
+        username: vagrant
+        guest_port: null
+        keep_alive: true
+        forward_agent: false
+        forward_x11: false
+        shell: 'bash -l'
+    vagrant:
+        host: ':detect'
+server:
+    packages:
+        - build-essential
+        - vim
+        - curl
+        - git-core
+        - ssh
+        - openssl
+        - libssl-dev
+    dot_files:
+        -
+            bash_aliases: null
+apache:
+    modules:
+        - php
+        - rewrite
+        - ssl
+    vhosts:
+        jKDLAudgVxUu:
+            servername: socializr.dev
+            serveraliases:
+                - www.socializr.dev
+            docroot: /vagrant/web
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+            override:
+                - All
+    user: www-data
+    group: www-data
+    default_vhost: true
+    mpm_module: prefork
+php:
+    version: '54'
+    composer: '1'
+    modules:
+        php:
+            - cli
+            - curl
+            - intl
+            - mcrypt
+        pear: {  }
+        pecl:
+            - pecl_http
+            - ZendOpcache
+    ini:
+        display_errors: On
+        error_reporting: '-1'
+    timezone: Europe/Amsterdam
+xdebug:
+    install: '1'
+    settings:
+        xdebug.default_enable: '1'
+        xdebug.remote_autostart: '0'
+        xdebug.remote_connect_back: '1'
+        xdebug.remote_enable: '1'
+        xdebug.remote_handler: dbgp
+        xdebug.remote_port: '9000'
+mysql:
+    root_password: root
+    phpmyadmin: 0
+    databases:
+        YzvaaZcYWzn6:
+            grant:
+                - ALL
+            name: socializr
+            host: localhost
+            user: developer
+            password: developer
+            sql_file: ''
+
