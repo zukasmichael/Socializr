@@ -6,10 +6,8 @@ Social web app for clubs
 Getting dev up and running
 --------------------------
 
-* Install Git
-* Install Virtualbox
-* Install Vagrant
-
+* Install [Virtualbox 4.2](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2)
+* Install [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5)
 
 ```bash
 #Start the devbox from repo root
