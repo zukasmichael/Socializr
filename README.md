@@ -9,6 +9,7 @@ Getting dev up and running
 * Install [Virtualbox 4.2](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2)
 * Install [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5)
 * Make sure virtualization is enabled in your BIOS configuration
+* For the first install the Debian box has to connect to the package repo, this connection needs authorization connection on a different port then :80. Make sure internet connections over other ports are available.
 
 Open a (git) bash terminal and go to the local socializr git folder and run:
 
