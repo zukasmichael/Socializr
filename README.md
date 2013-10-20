@@ -12,6 +12,7 @@ Getting dev up and running
 ```bash
 #Start the devbox from repo root
 $ vagrant up
+#wait for 15+ minutes...
 ```
 
 Features which need to be included
