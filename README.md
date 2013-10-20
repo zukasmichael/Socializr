@@ -3,8 +3,8 @@ Socializr
 
 Social web app for clubs
 
-Getting dev up and running
---------------------------
+Getting dev-box up and running
+------------------------------
 
 * Install [Virtualbox 4.2](https://www.virtualbox.org/wiki/Download_Old_Builds_4_2)
 * Install [Vagrant 1.3.5](http://downloads.vagrantup.com/tags/v1.3.5)
@@ -51,6 +51,17 @@ Created directory /.puphpet-stuff
 Running initial-setup apt-get update#
 
 .........
+```
+
+Installing the application with composer
+----------------------------------------
+
+```bash
+#Log in on the dev-box and run composer
+$ vagrant ssh
+$ cd /vagrant
+$ php composer.phar install
+#Composer creates ./vendor folder with application packages
 ```
 
 Features which need to be included
