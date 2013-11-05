@@ -53,8 +53,8 @@ Running initial-setup apt-get update#
 .........
 ```
 
-Installing the application with composer
-----------------------------------------
+Installing the application libs with composer
+---------------------------------------------
 
 ```bash
 #Log in on the dev-box and run composer
@@ -63,6 +63,12 @@ $ cd /vagrant
 $ php composer.phar install
 #Composer creates ./vendor folder with application packages
 ```
+
+Application set-up
+------------------
+
+* ```./web``` is the app root folder and is exposed to the webserver
+* App libraries are installed via composer in ```./vendor```
 
 Features which need to be included
 ----------------------------------
