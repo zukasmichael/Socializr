@@ -290,6 +290,7 @@ define mysql_db (
     host     => $host,
     grant    => $grant,
     sql      => $sql_file,
+##	require  => Class['mysql::server'],
   }
 }
 

@@ -60,7 +60,6 @@ apache:
     modules:
         - php
         - rewrite
-        - ssl
     vhosts:
         jKDLAudgVxUu:
             servername: socializr.dev
@@ -88,7 +87,6 @@ php:
         pear: {  }
         pecl:
             - pecl_http
-            - ZendOpcache
     ini:
         display_errors: On
         error_reporting: '-1'

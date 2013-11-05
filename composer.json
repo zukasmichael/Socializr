@@ -1,5 +1,5 @@
 {
-	"minimum-stability": "dev",
+    "minimum-stability": "dev",
     "name": "ISDTCLIENT",
     "description": "Windesheim portfolio ISDTCLIENT",
     "license": "MIT",
@@ -9,8 +9,8 @@
         }
     ],
     "require": {
-		"silex/silex": "~1.1",
+        "silex/silex": "~1.1",
         "twig/twig": ">=1.8.0,<2.0-dev",
-		"symfony/twig-bridge": "~2.3"
+        "symfony/twig-bridge": "~2.3"
     }
 }
