@@ -128,3 +128,9 @@ Features which need to be included
 * Login via OpenID provider (Google/Facebook/Twitter)
 * The social network is available via a RESTful API
 
+
+Scum Tool
+---------
+[YouTrack scrum project](http://dotyou.myjetbrains.com/youtrack/issues?q=project%3A+Socializr)
+
+
