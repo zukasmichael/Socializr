@@ -294,3 +294,39 @@ define mysql_db (
   }
 }
 
+
+## Begin Mongodb manifest
+
+if $mongo_values == undef {
+  $mongo_values = hiera('mongodb', false)
+}
+
+file { '/data':
+  ensure => 'directory',
+  owner  => 'root',
+  group  => 'root',
+  mode   => 777,
+}
+
+exec { 'remove_mongodb_lock':
+  cwd => '/data',
+  command => 'touch /vagrant/dont_remove_mongo_lock && chown mongodb:root ./db/* && rm /data/db/mongod.lock && sudo -u mongodb mongod --repair --dbpath /data/db && chown mongodb:root ./db/*',
+  onlyif => '[ -f /data/db/mongod.lock ] && [ ! -f /vagrant/dont_remove_mongo_lock ]',
+  require => File['/data']
+}
+
+class { 'mongodb':
+  require => Exec['remove_mongodb_lock'],
+  init => 'sysv',
+  enable_10gen => $mongo_values['enable_10gen'],
+  dbpath => '/data/db',
+  journal => true,
+  nojournal => false,
+  smallfiles => true,
+  service_enable => true
+}
+
+file { '/vagrant/dont_remove_mongo_lock':
+  ensure => absent,
+  require => Class['mongodb']
+}
