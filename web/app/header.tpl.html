@@ -1,3 +1,7 @@
 <div class="navbar" ng-controller="HeaderCtrl">
-
+    <ul>
+        <li ng-repeat="post in posts">
+            {{post.title}}
+        </li>
+    </ul>
 </div>
