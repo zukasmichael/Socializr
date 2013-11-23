@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.boot_timeout = 300
 
-  config.vm.synced_folder "./", "/vagrant", id: "webroot", :nfs => false, :mount_options => ["dmode=775","fmode=775"]
+  config.vm.synced_folder "./", "/vagrant", id: "webroot", owner: "vagrant", group: "www-data", :nfs => false, :mount_options => ["dmode=775","fmode=775"]
 
   config.vm.usable_port_range = (2200..2250)
   config.vm.provider :virtualbox do |virtualbox|

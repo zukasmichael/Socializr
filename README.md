@@ -69,6 +69,7 @@ Application set-up
 
 * ```./web``` is the app root folder and is exposed to the webserver
 * App libraries are installed via composer in ```./vendor```
+* Add the following to your hosts file: ```192.168.56.110  socializr.dev api.socializr.dev```
 
 Features which need to be included
 ----------------------------------
