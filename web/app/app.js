@@ -15,8 +15,8 @@ angular.module('app').controller('AppCtrl', ['$scope', function($scope){}]);
 
 angular.module('app').controller('HeaderCtrl', ['$scope','$location', '$route', function($scope, $location, $route){
     $scope.location = $location;
-    $scope.posts = [
-        {"title":"asdf", "description":"describe"},
-        {"title":"second one", "description":"second describe"},
+    $scope.pages = [
+        {"title":"home"},
+        {"title":"group"}
     ];
 }]);
