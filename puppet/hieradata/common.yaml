@@ -65,7 +65,7 @@ apache:
             servername: socializr.dev
             serveraliases:
                 - www.socializr.dev
-            docroot: /vagrant/front
+            docroot: /vagrant/web
             port: '80'
             setenv:
                 - 'APP_ENV dev'
@@ -75,7 +75,7 @@ apache:
             servername: api.socializr.dev
             serveraliases:
                 - www.api.socializr.dev
-            docroot: /vagrant/web
+            docroot: /vagrant/api
             port: '80'
             setenv:
                 - 'APP_ENV dev'
