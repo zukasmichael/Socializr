@@ -10,7 +10,11 @@
     ],
     "require": {
         "silex/silex": "~1.1",
-        "twig/twig": ">=1.8.0,<2.0-dev",
-        "symfony/twig-bridge": "~2.3"
+        "symfony/form": "~2.3",
+        "symfony/security": "~2.3",
+        "gigablah/silex-oauth": "~0.1"
+    },
+    "autoload": {
+        "psr-0": { "Models": "app/" }
     }
 }

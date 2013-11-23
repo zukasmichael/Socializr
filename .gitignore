@@ -6,3 +6,6 @@ vendor/*
 */logs/*
 */cache/*
 .idea/
+
+#Composer
+composer.lock
