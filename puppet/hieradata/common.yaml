@@ -71,6 +71,16 @@ apache:
                 - 'APP_ENV dev'
             override:
                 - All
+        9M7chQ0DcUuQ:
+            servername: api.socializr.dev
+            serveraliases:
+                - www.api.socializr.dev
+            docroot: /vagrant/api
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+            override:
+                - All
     user: www-data
     group: www-data
     default_vhost: true
