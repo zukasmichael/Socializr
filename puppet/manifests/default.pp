@@ -310,7 +310,7 @@ file { '/data':
 
 exec { 'remove_mongodb_lock':
   cwd => '/data',
-  command => 'touch /vagrant/dont_remove_mongo_lock && chown mongodb:root ./db/* && rm /data/db/mongod.lock && sudo -u mongodb mongod --repair --dbpath /data/db && chown mongodb:root ./db/*',
+  command => 'touch /vagrant/dont_remove_mongo_lock && chown mongodb:root /data/db/* && rm /data/db/mongod.lock && rm /data/db/journal/* && sudo -u mongodb mongod --repair --dbpath /data/db && chown mongodb:root /data/db/*',
   onlyif => '[ -f /data/db/mongod.lock ] && [ ! -f /vagrant/dont_remove_mongo_lock ]',
   require => File['/data']
 }
