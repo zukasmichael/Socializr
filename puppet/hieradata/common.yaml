@@ -61,10 +61,18 @@ apache:
         - php
         - rewrite
     vhosts:
-        jKDLAudgVxUu:
-            servername: socializr.dev
+        -   servername: socializr.dev
             serveraliases:
                 - www.socializr.dev
+            docroot: /vagrant/front
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+            override:
+                - All
+		-   servername: api.socializr.dev
+            serveraliases:
+                - www.api.socializr.dev
             docroot: /vagrant/web
             port: '80'
             setenv:
