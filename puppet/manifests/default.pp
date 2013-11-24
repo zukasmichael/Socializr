@@ -326,7 +326,8 @@ class { 'mongodb':
   service_enable => true
 }
 
-file { '/vagrant/dont_remove_mongo_lock':
-  ensure => absent,
+exec { 'remove_mongo_lock_lock':
+  command => 'chown mongodb:root /data/db/* && rm /vagrant/dont_remove_mongo_lock',
+  onlyif => 'test -f /vagrant/dont_remove_mongo_lock',
   require => Class['mongodb']
 }
