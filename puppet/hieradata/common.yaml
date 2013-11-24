@@ -97,9 +97,11 @@ php:
         pear: {  }
         pecl:
             - pecl_http
+            - mongo
     ini:
         display_errors: On
         error_reporting: '-1'
+        extension: 'mongo.so'
     timezone: Europe/Amsterdam
 xdebug:
     install: '1'
@@ -122,4 +124,6 @@ mysql:
             user: developer
             password: developer
             sql_file: ''
+mongodb:
+    enable_10gen: true
 
