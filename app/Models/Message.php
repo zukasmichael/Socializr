@@ -1,4 +1,5 @@
 <?php
+namespace Socializr\Models;
 /**
  * Created by PhpStorm.
  * User: Sander Groen
