@@ -6,12 +6,4 @@
     # force ssl
     RewriteCond     %{SERVER_PORT} ^80$
     RewriteRule     ^(.*)$ https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
-
-    # test mongodb
-    RewriteCond %{REQUEST_URI} ^/mongotest
-    RewriteRule ^ mongotest.php [L]
-
-    # redirect all to silex app
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
 </IfModule>

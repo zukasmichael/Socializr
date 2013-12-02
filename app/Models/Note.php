@@ -1,11 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Sander en Dorien
- * Date: 19-11-13
- * Time: 21:44
- */
+
+namespace Models;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+
 /** @ODM\Document */
-class Note extends Message {
+class Note extends Message
+{
 
 }
