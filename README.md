@@ -69,69 +69,66 @@ Application set-up
 
 * ```./web``` is the app root folder and is exposed to the webserver
 * App libraries are installed via composer in ```./vendor```
-* Add the following to your hosts file: ```192.168.56.110  socializr.dev api.socializr.dev```
+* Add the following to your hosts file: ```192.168.56.110  socializr.dev api.socializr.dev mongo.socializr.dev```
+* At [mongo.socializr.dev](http://mongo.socializr.dev) you can manage your mongodb data via an php admin interface
 
 Features which need to be included
 ----------------------------------
 
 #### Registration and personal information ####
-* Registration with e-mail verification
-* Editing your personal data
-* Account disabling
+- [ ] Registration with e-mail verification
+- [x] Editing and updating your personal data
+- [ ] Account disabling
 
 #### Login ####
-* Login to your account
-* Remember login for computer
+- [x] Login to your account
+- [ ] Remember login for computer
 
 #### Groups and group management ####
-* Every member can start a group
-* Every group has one or more administrators
-* Admins can send invites for a group
-* Admins kan remove users from a group
+- [ ] Every member can start a group
+- [ ] Every group has one or more administrators
+- [ ] Admins can send invites for a group
+- [ ] Admins kan remove users from a group
 
 #### Group types ####
-* There can be 3 types of groups:
-    * Open, accessible to any user
-    * Closed, accessible on invite
-    * Secret, accessible on invite
-* Once a group is create the type can't be changed
+- There can be 3 types of groups:
+    - [ ] Open, accessible to any user
+    - [ ] Closed, accessible on invite
+    - [ ] Secret, accessible on invite
+- [ ] Once a group is create the type can't be changed
 
 #### Personal dashboard ####
-* Groups you are part of
-* News messages
-* Update from posts
-* Seach the network
+- [ ] Groups you are part of
+- [ ] News messages
+- [ ] Update from posts
+- [ ] Seach the network
 
 #### Group pages (public or private acc. to type) ####
-* Image gallery
-* Movie gallery
-* Rich text blocks
-* Wall for posts
-* Admin message board
+- [ ] Image gallery
+- [ ] Movie gallery
+- [ ] Rich text blocks
+- [ ] Wall for posts
+- [ ] Admin message board
 
 #### Emails ####
-* Verification mails (registration/password change/email change)
-* Verification (becoming member of a group)
-* Invites for groups
-* Weekly summary of news and updates
-* Settings for update mails can be managed
+- [ ] Verification mails (registration/password change/email change)
+- [ ] Verification (becoming member of a group)
+- [ ] Invites for groups
+- [ ] Weekly summary of news and updates
+- [ ] Settings for update mails can be managed
 
 #### Search ####
-* Searching for members and groups can be accessed by anyone
-* Searching through names and/or descriptions of groups is optional
-* Closed and secret groups can only be found by its members
+- [ ] Searching for members and groups can be accessed by anyone
+- [ ] Searching through names and/or descriptions of groups is optional
+- [ ] Closed and secret groups can only be found by its members
 
 #### WebServices ####
-* Messages with a twitter hash can be fetched from Twitter
-* Facebook/Google+ integration optional
+- [ ] Messages with a twitter hash can be fetched from Twitter
+- [x] Facebook/Google+ integration optional
 
 #### Bonus: ####
-* Login via OpenID provider (Google/Facebook/Twitter)
-* The social network is available via a RESTful API
+- [x] Login via OpenID provider (Google/Facebook/Twitter)
+- [x] The social network is available via a RESTful API
 
-
-Scum Tool
----------
-[YouTrack scrum project](http://dotyou.myjetbrains.com/youtrack/issues?q=project%3A+Socializr)
 
 

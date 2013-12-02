@@ -127,6 +127,44 @@ if count($apache_values['modules']) > 0 {
   apache_mod { $apache_values['modules']:; }
 }
 
+#create ssl
+file { '/etc/apache2/ssl':
+    ensure => "directory",
+    owner  => "www-data",
+    group  => "root",
+    mode   => 750,
+    require => Class['apache']
+}
+
+exec { "create_ssl_key":
+  require => File['/etc/apache2/ssl'],
+  cwd => '/etc/apache2/ssl',
+  command => "openssl genrsa -out api.socializr.dev.key 2048",
+  creates => "/etc/apache2/ssl/api.socializr.dev.key"
+}
+
+exec { "create_ssl_cert":
+  require => Exec['create_ssl_key'],
+  cwd => '/etc/apache2/ssl',
+  command => "openssl req -new -x509 -key api.socializr.dev.key -out api.socializr.dev.cert -days 3650 -subj /CN=api.socializr.dev",
+  creates => "/etc/apache2/ssl/api.socializr.dev.cert",
+  notify => Exec["force-reload-apache2"]
+}
+
+# Notify this when apache needs a reload. This is only needed when
+# sites are added or removed, since a full restart then would be
+# a waste of time. When the module-config changes, a force-reload is
+# needed.
+exec { "reload-apache2":
+  command => "/etc/init.d/apache2 reload",
+  refreshonly => true,
+}
+
+exec { "force-reload-apache2":
+  command => "/etc/init.d/apache2 force-reload",
+  refreshonly => true,
+}
+
 ## Begin PHP manifest
 
 if $php_values == undef {

@@ -1,0 +1,22 @@
+GET: /messages ???
+GET: /messages/flagged (get messages, flagged as inapropriate)
+GET: /messages/flagged?reviewed=false (get messages, flagged as inapropriate and not yet reviewed)
+
+
+
+GET: /user/{id}/messages (get most recent, relevant messages for user)[use for profile and email digest]
+GET: /user/{id}/groups (get user groups, ordered by recently posted in)
+
+
+
+GET: /group/{id}/messages (get most recent messages for group)
+GET: /group/{id}/messages?sticky=true (get most recent messages for group with sticky first)
+GET: /group/{id}/messages/sticky (get only sticky messages by priority)
+
+GET: /group/{id}/media
+GET: /group/{id}/users
+GET: /group/{id}/admins
+GET: /group/{id}/invite?user_id={id}
+
+
+

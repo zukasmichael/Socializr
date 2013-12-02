@@ -1,16 +1,13 @@
 <?php
+
 namespace Models;
+
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-/**
- * Created by PhpStorm.
- * User: Sander en Dorien
- * Date: 19-11-13
- * Time: 21:34
- */
 
 /** @ODM\Document */
-class Group {
-    /** @ODM\Id */
+class Group
+{
+    /** @ODM\Id(strategy="AUTO") */
     private $id;
     /** @ODM\String */
     public $name;
