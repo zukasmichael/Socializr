@@ -1,7 +1,7 @@
 angular.module('apiResource', []).factory('apiResource', ['API_CONFIG', '$http', '$q', function(API_CONFIG, $http, $q){
         function ApiResourceFactory(collectionName) {
 
-            var url = API_CONFIG.baseUrl + API_CONFIG.dbName + '/collections/' + collectionName;
+            var url = 'http://api.socializr.dev/' + API_CONFIG.dbName + '/collections/' + collectionName;
             var defaultParams = {};
 
             var thenFactoryMethod = function (httpPromise, successcb, errorcb, isArray) {

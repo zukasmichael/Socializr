@@ -1,1 +1,13 @@
 <h1>Group</h1>
+<table class="table table-bordered table-condensed table-striped table-hover">
+    <thead>
+    <tr>
+        <th class="span3">Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="group in groups">
+        <td>{{group.name}}</td>
+    </tr>
+    </tbody>
+</table>

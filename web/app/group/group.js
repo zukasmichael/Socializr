@@ -6,4 +6,5 @@ angular.module('group', [], ['$routeProvider', function($routeProvider){
 }]);
 
 angular.module('group').controller('GroupCtrl', ['$scope', function($scope){
+	$scope.groups = [{name:'Group1'}, {name:'Group2'}];
 }]);

@@ -13,7 +13,7 @@ class Group {
     /** @ODM\Id */
     private $id;
     /** @ODM\String */
-    private $name;
+    public $name;
     private $pinboard;
     private $members;
     /**

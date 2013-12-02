@@ -10,9 +10,16 @@ $app->get('/', function () use ($app) {
 ->bind('homepage');
 
 $app->get('/group', function() use ($app) {
-    $groups = $app['doctrine.odm.mongodb.dm']
-        ->getRepository('Models\Group')
-        ->findAll();
+//    $groups = $app['doctrine.odm.mongodb.dm']
+//        ->getRepository('Models\Group')
+//        ->findAll();
+    $group1 = new Models\Group();
+    $group1->setName('Group1');
+    $group2 = new Models\Group();
+    $group2->setName('Group2');
+    $groups = array(
+       $group1, $group2
+    );
     return new JsonResponse($groups);
 });
 
