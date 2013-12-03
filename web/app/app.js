@@ -22,7 +22,7 @@ angular.module('group', ['ngResource'], ['$routeProvider', function($routeProvid
         });
     }])
     .factory('Groups', function($resource){
-        var Groups = $resource('https://api.socializr.dev/groups:id', {
+        var Groups = $resource('https://api.socializr.com/groups:id', {
             id:'@_id.$oid'
         });
         Groups.prototype.getFullName = function() {

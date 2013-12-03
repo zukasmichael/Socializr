@@ -167,7 +167,7 @@ $app->get('/group/{id}/boards', function ($id) use ($app, $getPinboard) {
 /**
  * Get groups
  */
-$app->get('/groups', function () use ($app, $getGroup) {
+$app->get('/group', function () use ($app, $getGroup) {
     return $app->json($getGroup());
 });
 
@@ -196,6 +196,6 @@ $app->get('/message/{id}', function ($id) use ($app, $getMessage) {
 /**
  * Get all messages
  */
-$app->get('/messages', function () use ($app, $getMessage) {
+$app->get('/message', function () use ($app, $getMessage) {
     return $app->json($getMessage());
 })->assert('id', '[0-9]+');

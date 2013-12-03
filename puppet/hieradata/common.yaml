@@ -62,9 +62,9 @@ apache:
         - rewrite
     vhosts:
         jKDLAudgVxUu:
-            servername: socializr.dev
+            servername: socializr.com
             serveraliases:
-                - www.socializr.dev
+                - www.socializr.com
             docroot: /vagrant/web
             port: '80'
             setenv:
@@ -72,9 +72,9 @@ apache:
             override:
                 - All
         hEDLAudgVxUu:
-            servername: socializr.dev
+            servername: socializr.com
             serveraliases:
-                - www.socializr.dev
+                - www.socializr.com
             docroot: /vagrant/web
             port: '443'
             setenv:
@@ -82,10 +82,10 @@ apache:
             override:
                 - All
             ssl: true
-            ssl_key: /etc/apache2/ssl/api.socializr.dev.key
-            ssl_cert: /etc/apache2/ssl/api.socializr.dev.cert
+            ssl_key: /etc/apache2/ssl/api.socializr.com.key
+            ssl_cert: /etc/apache2/ssl/api.socializr.com.cert
         9M7chQ0DcUuQ:
-            servername: api.socializr.dev
+            servername: api.socializr.com
             docroot: /vagrant/api
             port: '443'
             setenv:
@@ -93,12 +93,10 @@ apache:
             override:
                 - All
             ssl: true
-            ssl_key: /etc/apache2/ssl/api.socializr.dev.key
-            ssl_cert: /etc/apache2/ssl/api.socializr.dev.cert
+            ssl_key: /etc/apache2/ssl/api.socializr.com.key
+            ssl_cert: /etc/apache2/ssl/api.socializr.com.cert
         4S7chQ0DcUuQ:
-            servername: api.socializr.dev
-            serveraliases:
-                - www.api.socializr.dev
+            servername: api.socializr.com
             docroot: /vagrant/api
             port: '80'
             setenv:
@@ -106,7 +104,7 @@ apache:
             override:
                 - All
         MONGOudgVxUu:
-            servername: mongo.socializr.dev
+            servername: mongo.socializr.com
             docroot: /vagrant/mongo
             port: '80'
             override:
