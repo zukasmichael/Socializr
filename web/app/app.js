@@ -6,34 +6,31 @@ angular.module('app').config(['$routeProvider', '$locationProvider', function ($
 }]);
 
 angular.module('app').controller('AppCtrl', ['$scope', function($scope){
-}]);
 
+}]);
+angular.module('app').constant('API_CONFIG', {
+    baseUrl: 'https://api.socializr.dev'
+});
 angular.module('app').controller('HeaderCtrl', ['$scope','$location', '$route', function($scope, $location, $route){
     $scope.location = $location;
     $scope.pages = [
         {"title":"group"}
     ];
 }]);
-
-angular.module('group', ['ngResource'], ['$routeProvider', function($routeProvider){
+angular.module('group', ['resources.groups'], ['$routeProvider', function($routeProvider){
         $routeProvider.when('/group', {
             templateUrl:'app/group/group.tpl.html',
-            controller:'GroupCtrl'
+            controller:'GroupCtrl',
+            resolve:{
+                groups:['Groups', function (Groups) {
+                    //TODO: fetch only for the current user
+                    return Groups.all();
+                }]
+            }
         });
-    }])
-    .factory('Groups', function($resource){
-        var Groups = $resource('https://api.socializr.dev/groups:id', {
-            id:'@_id.$oid'
-        });
-        Groups.prototype.getFullName = function() {
-            return this.name;
-        };
-        return Groups;
-    })
-    .controller('GroupCtrl', function ($scope, Groups) {
-        $scope.groups = Groups.query({}, function(groups){
-            console.log($scope.groups.length);
-        });
+    }]);
+angular.module('group').controller('GroupCtrl', function ($scope, groups) {
+        $scope.groups = groups;
 
         $scope.filteredGroups = $scope.groups;
 

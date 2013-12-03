@@ -1,7 +1,7 @@
 angular.module('apiResource', []).factory('apiResource', ['API_CONFIG', '$http', '$q', function(API_CONFIG, $http, $q){
         function ApiResourceFactory(collectionName) {
 
-            var url = 'http://api.socializr.dev/' + API_CONFIG.dbName + '/collections/' + collectionName;
+            var url = API_CONFIG.baseUrl + '/' + collectionName;
             var defaultParams = {};
 
             var thenFactoryMethod = function (httpPromise, successcb, errorcb, isArray) {
@@ -95,4 +95,9 @@ angular.module('apiResource', []).factory('apiResource', ['API_CONFIG', '$http',
             return Resource;
         }
         return ApiResourceFactory;
-    }]);
+}]);
+angular.module('resources.groups', ['apiResource']);
+angular.module('resources.groups').factory('Groups', ['apiResource', function (apiResource) {
+    var Groups = apiResource('group');
+    return Groups;
+}]);
