@@ -4,7 +4,7 @@
 angular.module('resources.groups', ['ngResource']);
 angular.module('resources.groups').factory('Groups', ['apiResource', function (apiResource) {
 
-    var Groups = apiResource('groups');
+    var Groups = $apiResource('groups');
 
     return Groups;
 }]);
