@@ -25,7 +25,8 @@
         "symfony/security": "~2.3",
         "gigablah/silex-oauth": "~0.1",
         "monolog/monolog": "~1.0",
-        "macedigital/silex-jms-serializer": "1.0.0.*@dev"
+        "macedigital/silex-jms-serializer": "1.0.0.*@dev",
+        "jdesrosiers/silex-cors-provider": "~0.1"
     },
     "require-dev": {
         "symfony/yaml": "~2.0"

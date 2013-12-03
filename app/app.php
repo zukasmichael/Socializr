@@ -8,6 +8,7 @@ use Silex\Provider\MonologServiceProvider;
 use Neutron\Silex\Provider\MongoDBODMServiceProvider;
 use Macedigital\Silex\Provider\SerializerProvider;
 use \LoginProvider\UserProviderListener;
+use JDesrosiers\Silex\Provider\CorsServiceProvider;
 
 $app->register(new HttpCacheServiceProvider());
 $app->register(new SessionServiceProvider());
@@ -107,3 +108,9 @@ $app['oauth.user_info_listener'] = $app->share(function ($app) {
 $app['oauth.user_provider_listener'] = $app->share(function ($app) {
     return new \LoginProvider\UserProviderListener($app['doctrine.odm.mongodb.dm']);
 });
+
+$app->register(new CorsServiceProvider(), array(
+    "cors.allowOrigin" => "https://socializr.dev",
+));
+
+$app->after($app["cors"]);

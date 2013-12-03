@@ -1,11 +1,7 @@
 <?php
-
-namespace Models;
-
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+namespace Socializr\Models;
 
 /** @ODM\Document */
-class Note extends Message
-{
+class Note extends Message {
 
 }
