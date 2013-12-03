@@ -171,6 +171,16 @@ $app->get('/group', function () use ($app, $getGroup) {
     return $app->json($getGroup());
 });
 
+$app->post('/group', function (Request $request) use ($app){
+    try{
+        $group = $app['serializer']->deserialize($request->getContent(), 'Socializr\Models\Group', 'json');
+        return new Response('', 201);
+    } catch(\Exception $e){
+        return new Response('', 500);
+    }
+
+});
+
 /**
  * Get pinboard by id
  */
