@@ -216,6 +216,6 @@ $app->get('/message/{id}', function ($id) use ($app, $getMessage) {
 /**
  * Get all messages
  */
-$app->get('/messages', function () use ($app, $getMessage) {
+$app->get('/message', function () use ($app, $getMessage) {
     return $app->json($getMessage());
 })->assert('id', '[0-9]+');

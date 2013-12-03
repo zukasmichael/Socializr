@@ -139,15 +139,15 @@ file { '/etc/apache2/ssl':
 exec { "create_ssl_key":
   require => File['/etc/apache2/ssl'],
   cwd => '/etc/apache2/ssl',
-  command => "openssl genrsa -out api.socializr.dev.key 2048",
-  creates => "/etc/apache2/ssl/api.socializr.dev.key"
+  command => "openssl genrsa -out api.socializr.io.key 2048",
+  creates => "/etc/apache2/ssl/api.socializr.io.key"
 }
 
 exec { "create_ssl_cert":
   require => Exec['create_ssl_key'],
   cwd => '/etc/apache2/ssl',
-  command => "openssl req -new -x509 -key api.socializr.dev.key -out api.socializr.dev.cert -days 3650 -subj /CN=api.socializr.dev",
-  creates => "/etc/apache2/ssl/api.socializr.dev.cert",
+  command => "openssl req -new -x509 -key api.socializr.io.key -out api.socializr.io.cert -days 3650 -subj /CN=api.socializr.io",
+  creates => "/etc/apache2/ssl/api.socializr.io.cert",
   notify => Exec["force-reload-apache2"]
 }
 
