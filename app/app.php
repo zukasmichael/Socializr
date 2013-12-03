@@ -60,22 +60,13 @@ $app->register(new Gigablah\Silex\OAuth\OAuthServiceProvider(), array(
             'secret' => $app['login.providers']['twitter']['API_SECRET'],
             'scope' => array(),
             'user_endpoint' => 'https://api.twitter.com/1.1/account/verify_credentials.json'
-        )/*,
-        UserProviderListener::SERVICE_GOOGLE => array(
-            'key' => GOOGLE_API_KEY,
-            'secret' => GOOGLE_API_SECRET,
-            'scope' => array(
-                'https://www.googleapis.com/auth/userinfo.email',
-                'https://www.googleapis.com/auth/userinfo.profile'
-            ),
-            'user_endpoint' => 'https://www.googleapis.com/oauth2/v1/userinfo'
         ),
         UserProviderListener::SERVICE_GITHUB => array(
-            'key' => GITHUB_API_KEY,
-            'secret' => GITHUB_API_SECRET,
+            'key' => $app['login.providers'][UserProviderListener::SERVICE_GITHUB]['API_KEY'],
+            'secret' => $app['login.providers'][UserProviderListener::SERVICE_GITHUB]['API_SECRET'],
             'scope' => array('user:email'),
             'user_endpoint' => 'https://api.github.com/user'
-        )*/
+        )
     )
 ));
 

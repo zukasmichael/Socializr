@@ -83,7 +83,7 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
         //If user not found, find user by email
         $appUser = $this->dm->getRepository('Models\\User')->findOneBy(['email' => $user->getEmail()]);
         if ($appUser) {
-            $appUser = $this->addProviderForUser($user, $token);
+            $appUser = $this->addProviderForUser($appUser, $token);
             $sessionUser->setUser($appUser);
             return $sessionUser;
         }
