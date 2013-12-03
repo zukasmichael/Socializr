@@ -167,16 +167,26 @@ $app->get('/group/{id}/boards', function ($id) use ($app, $getPinboard) {
 /**
  * Get groups
  */
-$app->get('/group', function () use ($app, $getGroup) {
-    return $app->json($getGroup());
+$app->get('/group', function () use ($app) {
+    $groups = $app['doctrine.odm.mongodb.dm']
+                ->getRepository('Models\\Group')
+            ->findAll();
+    $groups = array_values($groups->toArray());
+    return new Response($app['serializer']->serialize($groups, 'json'), 200, array(
+        "Content-Type" => $app['request']->getMimeType('json')
+    ));
 });
-
+/**
+ * Add group
+ */
 $app->post('/group', function (Request $request) use ($app){
     try{
-        $group = $app['serializer']->deserialize($request->getContent(), 'Socializr\Models\Group', 'json');
+        $group = $app['serializer']->deserialize($request->getContent(), 'Models\Group', 'json');
+        $app['doctrine.odm.mongodb.dm']->persist($group);
+        $app['doctrine.odm.mongodb.dm']->flush();
         return new Response('', 201);
     } catch(\Exception $e){
-        return new Response('', 500);
+        return new Response($e->getMessage(), 500);
     }
 
 });

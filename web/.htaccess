@@ -1,9 +1,17 @@
 <IfModule mod_rewrite.c>
     Options -MultiViews
-
+    Options +FollowSymLinks
+    IndexIgnore */*
     RewriteEngine On
 
     # force ssl
     RewriteCond     %{SERVER_PORT} ^80$
     RewriteRule     ^(.*)$ https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
+
+    # if a directory or a file exists, use it directly
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !index
+    # otherwise forward it to index.html
+    RewriteRule (.*) index.html [L]
 </IfModule>
