@@ -5,12 +5,8 @@ namespace Models;
 use Gigablah\Silex\OAuth\Security\User\StubUser;
 use LoginProvider\UserProviderListener;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use JMS\Serializer\Annotation\Accessor;
-use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\ExclusionPolicy;
-use JMS\Serializer\Annotation\Exclude;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\Exception\RuntimeException;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
  * @ODM\Document(
@@ -20,7 +16,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  *         @ODM\Index(keys={"email"="desc"}, options={"unique"=true})
  *     }
  * )
- * @ExclusionPolicy("none")
+ * @JMS\ExclusionPolicy("none")
  *
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
@@ -28,30 +24,30 @@ class User
 {
     /**
      * @ODM\Id(strategy="AUTO")
-     * @Accessor(getter="getId",setter="setId")
-     * @Type("string")
+     * @JMS\Accessor(getter="getId",setter="setId")
+     * @JMS\Type("string")
      */
     private $id;
 
     /**
      * @ODM\String
-     * @Accessor(getter="getUserName",setter="setUserName")
-     * @Type("string")
+     * @JMS\Accessor(getter="getUserName",setter="setUserName")
+     * @JMS\Type("string")
      */
     private $userName;
 
     /**
      * @ODM\String
-     * @Accessor(getter="getEmail",setter="setEmail")
-     * @Type("string")
+     * @JMS\Accessor(getter="getEmail",setter="setEmail")
+     * @JMS\Type("string")
      */
     private $email;
 
     /**
      * @ODM\Hash
      * @var array
-     * @Type("array<string, string>")
-     * @Exclude
+     * @JMS\Type("array<string, string>")
+     * @JMS\Exclude
      */
     private $loginProviderId = array(
         UserProviderListener::SERVICE_FACEBOOK => null,

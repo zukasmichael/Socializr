@@ -9,7 +9,7 @@ angular.module('app').controller('AppCtrl', ['$scope', function($scope){
 
 }]);
 angular.module('app').constant('API_CONFIG', {
-    baseUrl: 'https://api.socializr.dev'
+    baseUrl: 'https://api.socializr.io'
 });
 angular.module('app').controller('HeaderCtrl', ['$scope','$location', '$route', function($scope, $location, $route){
     $scope.location = $location;

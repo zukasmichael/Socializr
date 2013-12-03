@@ -62,12 +62,21 @@ $app->register(new Gigablah\Silex\OAuth\OAuthServiceProvider(), array(
             'scope' => array(),
             'user_endpoint' => 'https://api.twitter.com/1.1/account/verify_credentials.json'
         ),
+        UserProviderListener::SERVICE_GOOGLE => array(
+            'key' => $app['login.providers'][UserProviderListener::SERVICE_GOOGLE]['API_KEY'],
+            'secret' => $app['login.providers'][UserProviderListener::SERVICE_GOOGLE]['API_SECRET'],
+            'scope' => array(
+                'https://www.googleapis.com/auth/userinfo.email',
+                'https://www.googleapis.com/auth/userinfo.profile'
+            ),
+            'user_endpoint' => 'https://www.googleapis.com/oauth2/v1/userinfo'
+        )/*,
         UserProviderListener::SERVICE_GITHUB => array(
             'key' => $app['login.providers'][UserProviderListener::SERVICE_GITHUB]['API_KEY'],
             'secret' => $app['login.providers'][UserProviderListener::SERVICE_GITHUB]['API_SECRET'],
             'scope' => array('user:email'),
             'user_endpoint' => 'https://api.github.com/user'
-        )
+        )*/
     )
 ));
 
@@ -110,7 +119,7 @@ $app['oauth.user_provider_listener'] = $app->share(function ($app) {
 });
 
 $app->register(new CorsServiceProvider(), array(
-    "cors.allowOrigin" => "https://socializr.dev",
+    "cors.allowOrigin" => "https://socializr.io",
 ));
 
 $app->after($app["cors"]);
