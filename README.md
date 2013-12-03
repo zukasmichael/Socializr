@@ -69,8 +69,8 @@ Application set-up
 
 * ```./web``` is the app root folder and is exposed to the webserver
 * App libraries are installed via composer in ```./vendor```
-* Add the following to your hosts file: ```192.168.56.110 socializr.com api.socializr.com mongo.socializr.com```
-* At [mongo.socializr.com](http://mongo.socializr.com) you can manage your mongodb data via an php admin interface
+* Add the following to your hosts file: ```192.168.56.110 socializr.io api.socializr.io mongo.socializr.io```
+* At [mongo.socializr.io](http://mongo.socializr.io) you can manage your mongodb data via an php admin interface
 
 Features which need to be included
 ----------------------------------

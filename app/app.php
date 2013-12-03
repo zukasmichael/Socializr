@@ -119,7 +119,7 @@ $app['oauth.user_provider_listener'] = $app->share(function ($app) {
 });
 
 $app->register(new CorsServiceProvider(), array(
-    "cors.allowOrigin" => "https://socializr.com",
+    "cors.allowOrigin" => "https://socializr.io",
 ));
 
 $app->after($app["cors"]);
