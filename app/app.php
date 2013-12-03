@@ -70,13 +70,13 @@ $app->register(new Gigablah\Silex\OAuth\OAuthServiceProvider(), array(
                 'https://www.googleapis.com/auth/userinfo.profile'
             ),
             'user_endpoint' => 'https://www.googleapis.com/oauth2/v1/userinfo'
-        ),
+        )/*,
         UserProviderListener::SERVICE_GITHUB => array(
             'key' => $app['login.providers'][UserProviderListener::SERVICE_GITHUB]['API_KEY'],
             'secret' => $app['login.providers'][UserProviderListener::SERVICE_GITHUB]['API_SECRET'],
             'scope' => array('user:email'),
             'user_endpoint' => 'https://api.github.com/user'
-        )
+        )*/
     )
 ));
 
