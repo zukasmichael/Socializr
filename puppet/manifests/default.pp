@@ -127,6 +127,44 @@ if count($apache_values['modules']) > 0 {
   apache_mod { $apache_values['modules']:; }
 }
 
+#create ssl
+file { '/etc/apache2/ssl':
+    ensure => "directory",
+    owner  => "www-data",
+    group  => "root",
+    mode   => 750,
+    require => Class['apache']
+}
+
+exec { "create_ssl_key":
+  require => File['/etc/apache2/ssl'],
+  cwd => '/etc/apache2/ssl',
+  command => "openssl genrsa -out api.socializr.io.key 2048",
+  creates => "/etc/apache2/ssl/api.socializr.io.key"
+}
+
+exec { "create_ssl_cert":
+  require => Exec['create_ssl_key'],
+  cwd => '/etc/apache2/ssl',
+  command => "openssl req -new -x509 -key api.socializr.io.key -out api.socializr.io.cert -days 3650 -subj /CN=api.socializr.io",
+  creates => "/etc/apache2/ssl/api.socializr.io.cert",
+  notify => Exec["force-reload-apache2"]
+}
+
+# Notify this when apache needs a reload. This is only needed when
+# sites are added or removed, since a full restart then would be
+# a waste of time. When the module-config changes, a force-reload is
+# needed.
+exec { "reload-apache2":
+  command => "/etc/init.d/apache2 reload",
+  refreshonly => true,
+}
+
+exec { "force-reload-apache2":
+  command => "/etc/init.d/apache2 force-reload",
+  refreshonly => true,
+}
+
 ## Begin PHP manifest
 
 if $php_values == undef {
@@ -310,7 +348,7 @@ file { '/data':
 
 exec { 'remove_mongodb_lock':
   cwd => '/data',
-  command => 'touch /vagrant/dont_remove_mongo_lock && chown mongodb:root ./db/* && rm /data/db/mongod.lock && sudo -u mongodb mongod --repair --dbpath /data/db && chown mongodb:root ./db/*',
+  command => 'touch /vagrant/dont_remove_mongo_lock && chown mongodb:root /data/db/* && rm /data/db/mongod.lock && rm /data/db/journal/* && sudo -u mongodb mongod --repair --dbpath /data/db && chown mongodb:root /data/db/*',
   onlyif => '[ -f /data/db/mongod.lock ] && [ ! -f /vagrant/dont_remove_mongo_lock ]',
   require => File['/data']
 }
@@ -326,7 +364,8 @@ class { 'mongodb':
   service_enable => true
 }
 
-file { '/vagrant/dont_remove_mongo_lock':
-  ensure => absent,
+exec { 'remove_mongo_lock_lock':
+  command => 'chown mongodb:root /data/db/* && rm /vagrant/dont_remove_mongo_lock',
+  onlyif => 'test -f /vagrant/dont_remove_mongo_lock',
   require => Class['mongodb']
 }

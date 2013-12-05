@@ -1,13 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Sander en Dorien
- * Date: 19-11-13
- * Time: 21:37
- */
+
+namespace Models;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /** @ODM\Document */
-class Pinboard {
+class Pinboard
+{
     /** @ODM\Id */
     private $id;
 

@@ -9,3 +9,7 @@ vendor/*
 
 #Composer
 composer.lock
+
+
+#App
+resources/config/login_providers.php

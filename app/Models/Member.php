@@ -1,16 +1,16 @@
 <?php
+namespace Socializr\Models;
 /**
  * Created by PhpStorm.
  * User: Sander en Dorien
  * Date: 19-11-13
- * Time: 21:34
+ * Time: 21:31
  */
-
 /** @ODM\Document */
-class Group {
+class Member {
     /** @ODM\Id */
     private $id;
-    private $name;
-    private $pinboard;
-    private $members;
+    private $firstName;
+    private $lastName;
+    private $email;
 } 
