@@ -17,6 +17,8 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\FormServiceProvider()); // for CSRF token
 
+ini_set('session.cookie_domain', '.socializr.io');
+
 /**
  * MongoDb
  */
@@ -90,13 +92,22 @@ $securityOptions = array(
                 'callback_path' => '/auth/{service}/callback',
                 'check_path' => '/auth/{service}/check',
                 'failure_path' => '/loginfailed',
-                'with_csrf' => true
+                'with_csrf' => true,
+                //'remember_me' => true
             ),
             'logout' => array(
                 'logout_path' => '/logout',
                 'with_csrf' => true
             ),
-            'users' => new \Auth\Provider\OAuthInMemoryUserProvider()
+            'users' => new \Auth\Provider\OAuthInMemoryUserProvider(),
+            /*'remember_me' => array(
+                'key' => 'socializr_api_secret_key',
+                'lifetime' => 31536000,
+                //'always_remember_me' => true,
+                'remember_me_parameter' => 'remember_me',
+                'path' => '/',
+                'domain' => '', // Defaults to the current domain from $_SERVER
+            )*/
         )
     ),
     'security.access_rules' => array(
