@@ -114,7 +114,7 @@ $securityOptions = array(
     ),
     'security.access_rules' => array(
         array('^/auth', 'ROLE_USER'),
-        array('^/(?!login).+', 'ROLE_USER')//Disable this line to allow access for all users
+        array('^/logout', 'ROLE_USER')
     ),
     'security.role_hierarchy' => array(
         'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ANONYMOUS'),

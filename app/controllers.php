@@ -2,6 +2,9 @@
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use AppException\AccessDenied;
+use AppException\ResourceNotFound;
 
 /**
  * Check login before every requests
@@ -13,6 +16,21 @@ $app->before(function () use ($app) {
     if ($token && !$app['security.trust_resolver']->isAnonymous($token)) {
         $app['user'] = $token->getUser();
     }
+});
+
+// Handle access denied errors
+$app->error(function (\AppException\AccessDenied $e) {
+    $message = $e->getMessage() ?: 'Access to this resource is forbidden.';
+    return new JsonResponse(array('Message' => $message), 403);
+});
+// Handle Resource not found errors
+$app->error(function (\AppException\ResourceNotFound $e) {
+    $message = $e->getMessage() ?: 'The requested resource was not found.';
+    return new JsonResponse(array('Message' => $message), 404);
+});
+// Handle other exception as 500 errors
+$app->error(function (\Exception $e, $code) {
+    return new JsonResponse(array('Message' => $e->getMessage()), $code);
 });
 
 /**
@@ -35,17 +53,34 @@ $app->get('/loginfailed', 'account.controller:loginFailedAction')->bind('loginfa
 $app->match('/logout', function () {})->bind('logout');
 
 
+/**
+ * Get user by id
+ */
+$app->get('/user/{id}', function ($id) use ($app) {
+    if ($id == 'current') {
+        $user = $app['user'];
+        $user->setLogoutUrl(
+            $app['url_generator']->generate('logout', array(
+                '_csrf_token' => $app['form.csrf_provider']->generateCsrfToken('logout')
+            ))
+        );
+    } else {
+        $user = $app['doctrine.odm.mongodb.dm']
+            ->createQueryBuilder('Models\\User')
+            ->field('id')
+            ->equals($id)
+            ->getQuery()
+            ->getSingleResult();
+    }
 
+    if (!$user) {
+        throw new ResourceNotFound();
+    }
 
-
-
-// Handle access denied errors
-/*$app->error(function (\AppException\AccessDenied $e) {
-    $message = $e->getMessage() ?: 'Access denied!';
-    return new Response($message, 403);
-});*/
-
-
+    return new Response($app['serializer']->serialize($user, 'json'), 200, array(
+        "Content-Type" => $app['request']->getMimeType('json')
+    ));
+});
 
 
 //

@@ -28,18 +28,19 @@
         "macedigital/silex-jms-serializer": "1.0.0.*@dev",
         "jdesrosiers/silex-cors-provider": "~0.1"
     },
-    "require-dev": {
-        "symfony/yaml": "~2.0"
-    },
-    "suggest": {
-        "symfony/yaml": "Enables the YAML metadata mapping driver"
-    },
-    "autoload": {
-        "psr-0": {
-            "Doctrine\\ODM\\MongoDB": "lib/",
-            "Models": "app/",
-            "Auth": "app/",
-            "Controllers": "app/"
+            "require-dev": {
+                "symfony/yaml": "~2.0"
+            },
+            "suggest": {
+                "symfony/yaml": "Enables the YAML metadata mapping driver"
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\ODM\\MongoDB": "lib/",
+                    "Models": "app/",
+                    "Auth": "app/",
+                    "Controllers": "app/",
+                    "AppException": "app/"
         }
     }
 }
