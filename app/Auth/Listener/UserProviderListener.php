@@ -54,7 +54,6 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
 
         if ($oauthUser = $userProvider->loadUserByOAuthCredentials($token)) {
             $user = $this->loadUser($oauthUser, $token);
-            //var_dump($user);die;
             $token->setUser($user);
         }
     }

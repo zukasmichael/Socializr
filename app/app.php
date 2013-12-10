@@ -112,7 +112,7 @@ $securityOptions = array(
     ),
     'security.access_rules' => array(
         array('^/auth', 'ROLE_USER'),
-        //array('^/(?!login).+', 'ROLE_USER')//Disable this line to allow access for all users
+        array('^/(?!login).+', 'ROLE_USER')//Disable this line to allow access for all users
     ),
     'security.role_hierarchy' => array(
         'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ANONYMOUS'),
@@ -121,6 +121,9 @@ $securityOptions = array(
 );
 $app->register(new Silex\Provider\SecurityServiceProvider(), $securityOptions);
 
+$app['security.exception_listener.default'] = $app->share(function ($app) {
+    return new \Auth\Listener\ExceptionListener($app, 'default');
+});
 
 $app['oauth.user_info_listener'] = $app->share(function ($app) {
     return new \Auth\Listener\UserInfoListener($app['oauth'], $app['oauth.services']);
