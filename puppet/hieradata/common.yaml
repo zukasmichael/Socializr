@@ -109,6 +109,12 @@ apache:
             port: '80'
             override:
                 - All
+        WEBGRINDVxUu:
+            servername: webgrind.socializr.io
+            docroot: /vagrant/webgrind
+            port: '80'
+            override:
+                - All
     user: www-data
     group: www-data
     default_vhost: true
@@ -126,10 +132,21 @@ php:
         pecl:
             - pecl_http
             - mongo
+            - zendopcache-7.0.2
     ini:
         display_errors: On
         error_reporting: '-1'
         extension: 'mongo.so'
+        xdebug.profiler_output_dir: '"/vagrant/xdebug"'
+        xdebug.profiler_enable_trigger: 1
+        xdebug.profiler_output_name: 'xdebug.out.%H%R-%t'
+        zend_extension: '/usr/lib/php5/20100525/opcache.so'
+        opcache.memory_consumption: 128
+        opcache.interned_strings_buffer: 8
+        opcache.max_accelerated_files: 4000
+        opcache.revalidate_freq: 60
+        opcache.fast_shutdown: 1
+        opcache.enable_cli: 1
     timezone: Europe/Amsterdam
 xdebug:
     install: '1'
