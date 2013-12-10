@@ -17,6 +17,10 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\FormServiceProvider()); // for CSRF token
 
+ini_set('session.cookie_domain', '.socializr.io');
+session_name('socializr_sess');
+session_set_cookie_params(0, '/', '.socializr.io');
+
 /**
  * MongoDb
  */

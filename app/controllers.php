@@ -19,7 +19,7 @@ $app->before(function () use ($app) {
  * Register the custom controllers
  */
 $app['account.controller'] = $app->share(function() use ($app) {
-    return new Controllers\Account($app['form.csrf_provider'], $app['url_generator'], $app['oauth.services'], $app['user']);
+    return new Controllers\Account($app);
 });
 
 /**
@@ -146,12 +146,17 @@ $getGroup = function($id = null) use ($getPinboard) {
  * Get group by id
  */
 $app->get('/group/{id}', function ($id) use ($app, $getGroup) {
-    $group = $getGroup($id);
-    if (!$group) {
-        $app->abort(404, "A group with id $id does not exist.");
-    }
-    return $app->json($group);
-})->assert('id', '[0-9]+');
+    $group = $app['doctrine.odm.mongodb.dm']
+        ->createQueryBuilder('Models\\Group')
+        ->field('id')
+        ->equals($id)
+        ->getQuery()
+        ->getSingleResult();
+
+    return new Response($app['serializer']->serialize($group, 'json'), 200, array(
+        "Content-Type" => $app['request']->getMimeType('json')
+    ));
+});
 
 /**
  * Get pinboards for group
@@ -167,16 +172,26 @@ $app->get('/group/{id}/boards', function ($id) use ($app, $getPinboard) {
 /**
  * Get groups
  */
-$app->get('/group', function () use ($app, $getGroup) {
-    return $app->json($getGroup());
+$app->get('/group', function () use ($app) {
+    $groups = $app['doctrine.odm.mongodb.dm']
+                ->getRepository('Models\\Group')
+            ->findAll();
+    $groups = array_values($groups->toArray());
+    return new Response($app['serializer']->serialize($groups, 'json'), 200, array(
+        "Content-Type" => $app['request']->getMimeType('json')
+    ));
 });
-
+/**
+ * Add group
+ */
 $app->post('/group', function (Request $request) use ($app){
     try{
-        $group = $app['serializer']->deserialize($request->getContent(), 'Socializr\Models\Group', 'json');
+        $group = $app['serializer']->deserialize($request->getContent(), 'Models\Group', 'json');
+        $app['doctrine.odm.mongodb.dm']->persist($group);
+        $app['doctrine.odm.mongodb.dm']->flush();
         return new Response('', 201);
     } catch(\Exception $e){
-        return new Response('', 500);
+        return new Response($e->getMessage(), 500);
     }
 
 });

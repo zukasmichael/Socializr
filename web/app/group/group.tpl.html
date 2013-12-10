@@ -6,10 +6,13 @@
     <th ng-click="sort('name')">Name
         <i ng-class="{'icon-chevron-up': isSortUp('name'), 'icon-chevron-down': isSortDown('name')}"></i>
     </th>
+    <th ng-click="sort('description')">Omschrijving
+        <i ng-class="{'icon-chevron-up': isSortUp('description'), 'icon-chevron-down': isSortDown('description')}"></i>
+    </th>
     </thead>
     <tbody>
     <tr ng-repeat="group in filteredGroups = (groups | filter:criteria | orderBy:sortField:reverse) | pagination:pageNo:pageSize">
-        <td>{{group.name}}</td>
+        <td>{{group.name}}</td><td>{{group.description}}</td>
     </tr>
     </tbody>
     <tfoot>
