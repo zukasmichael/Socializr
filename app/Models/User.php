@@ -65,6 +65,13 @@ class User implements AdvancedUserInterface
     );
 
     /**
+     * @var string
+     * @ODM\NotSaved
+     * @JMS\Type("string")
+     */
+    protected $logoutUrl;
+
+    /**
      * @var boolean
      * @ODM\Boolean
      * @JMS\Type("boolean")
@@ -197,6 +204,24 @@ class User implements AdvancedUserInterface
     public function setPassword($password)
     {
         $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogoutUrl()
+    {
+        return $this->logoutUrl;
+    }
+
+    /**
+     * @param $logoutUrl
+     * @return $this
+     */
+    public function setLogoutUrl($logoutUrl)
+    {
+        $this->logoutUrl = $logoutUrl;
         return $this;
     }
 
