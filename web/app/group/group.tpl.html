@@ -1,27 +1,10 @@
-<div class="well">
-    <label>Search for: <input type="text" ng-model="criteria"></label>
-</div>
-<table class="table table-bordered table-striped">
+<table>
     <thead>
-    <th ng-click="sort('name')">Name
-        <i ng-class="{'icon-chevron-up': isSortUp('name'), 'icon-chevron-down': isSortDown('name')}"></i>
-    </th>
+    <th>Name</th>
     </thead>
     <tbody>
-    <tr ng-repeat="group in filteredGroups = (groups | filter:criteria | orderBy:sortField:reverse) | pagination:pageNo:pageSize">
-        <td>{{group.name}}</td>
+    <tr ng-repeat="group in groups">
+        <td><a href="#/groups/{{group.id}}" class="thumb">{{group.name}}</a></td>
     </tr>
     </tbody>
-    <tfoot>
-    <tr>
-        <td colspan="5">Total: {{filteredGroups.length}}</td>
-    </tr>
-    </tfoot>
 </table>
-<div class="pagination">
-    <ul>
-        <li><a ng-click="activePage(page-1)">Prev</a></li>
-        <li ng-repeat="page in pages"><a ng-click="setActivePage(page)">{{page+1}}</a></li>
-        <li><a ng-click="activePage(page+1)">Next</a></li>
-    </ul>
-</div>

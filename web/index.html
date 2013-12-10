@@ -1,17 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="app">
+<html lang="en" ng-app="socializrApp">
 <head>
-    <link rel="stylesheet" type="text/css" href="assets/style.css">
-    <link rel="stylesheet" type="text/css" href="assets/table.css">
     <script src="vendor/angular/angular.js"></script>
     <script src="vendor/angular/angular-route.js"></script>
-    <script type="text/javascript" src="/vendor/angular-ui/bootstrap.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular-resource.js"></script>
-    <script type="text/javascript" src="/app/app.js"></script>
     <script type="text/javascript" src="/common/resources/api-resource.js"></script>
+    <script type="text/javascript" src="/app/app.js"></script>
 </head>
-<body ng-controller="AppCtrl">
-<div ng-include="'app/header.tpl.html'"></div>
-<div ng-view class="container-fluid"></div>
+<body>
+    <div ng-view></div>
 </body>
 </html>

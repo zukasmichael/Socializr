@@ -146,12 +146,17 @@ $getGroup = function($id = null) use ($getPinboard) {
  * Get group by id
  */
 $app->get('/group/{id}', function ($id) use ($app, $getGroup) {
-    $group = $getGroup($id);
-    if (!$group) {
-        $app->abort(404, "A group with id $id does not exist.");
-    }
-    return $app->json($group);
-})->assert('id', '[0-9]+');
+    $group = $app['doctrine.odm.mongodb.dm']
+        ->createQueryBuilder('Models\\Group')
+        ->field('id')
+        ->equals($id)
+        ->getQuery()
+        ->getSingleResult();
+
+    return new Response($app['serializer']->serialize($group, 'json'), 200, array(
+        "Content-Type" => $app['request']->getMimeType('json')
+    ));
+});
 
 /**
  * Get pinboards for group
