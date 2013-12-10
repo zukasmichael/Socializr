@@ -27,21 +27,21 @@ class User implements AdvancedUserInterface
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getUserName",setter="setUserName")
      * @JMS\Type("string")
      */
-    private $userName;
+    protected $userName;
 
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getEmail",setter="setEmail")
      * @JMS\Type("string")
      */
-    private $email;
+    protected $email;
 
     /**
      * @ODM\Collection
@@ -49,7 +49,7 @@ class User implements AdvancedUserInterface
      * @JMS\Accessor(getter="getRoles",setter="setRoles")
      * @JMS\Type("array<string>")
      */
-    private $roles = array();
+    protected $roles = array();
 
     /**
      * @ODM\Hash
@@ -57,7 +57,7 @@ class User implements AdvancedUserInterface
      * @JMS\Type("array<string, string>")
      * @JMS\Exclude
      */
-    private $loginProviderId = array(
+    protected $loginProviderId = array(
         UserProviderListener::SERVICE_FACEBOOK => null,
         UserProviderListener::SERVICE_TWITTER => null,
         UserProviderListener::SERVICE_GOOGLE => null,
@@ -69,64 +69,35 @@ class User implements AdvancedUserInterface
      * @ODM\Boolean
      * @JMS\Type("boolean")
      */
-    private $enabled = true;
+    protected $enabled = true;
 
     /**
      * @var boolean
      * @ODM\NotSaved
      * @JMS\Exclude
      */
-    private $password;
+    protected $password;
 
     /**
      * @var boolean
      * @ODM\NotSaved
      * @JMS\Exclude
      */
-    private $accountNonExpired;
+    protected $accountNonExpired = true;
 
     /**
      * @var boolean
      * @ODM\NotSaved
      * @JMS\Exclude
      */
-    private $credentialsNonExpired;
+    protected $credentialsNonExpired = true;
 
     /**
      * @var boolean
      * @ODM\NotSaved
      * @JMS\Exclude
      */
-    private $accountNonLocked;
-
-    /**
-     * Constructor
-     *
-     * @param $username
-     * @param $password
-     * @param $email
-     * @param array $roles
-     * @param bool $enabled
-     * @param bool $userNonExpired
-     * @param bool $credentialsNonExpired
-     * @param bool $userNonLocked
-     * @throws \InvalidArgumentException
-     */
-    public function __construct($username, $password, $email, array $roles = array(), $enabled = true, $userNonExpired = true, $credentialsNonExpired = true, $userNonLocked = true)
-    {
-        if (empty($username)) {
-            throw new \InvalidArgumentException('The username cannot be empty.');
-        }
-
-        $this->userName = $username;
-        $this->password = $password;
-        $this->email = $email;
-        $this->enabled = $enabled;
-        $this->accountNonExpired = $userNonExpired;
-        $this->credentialsNonExpired = $credentialsNonExpired;
-        $this->accountNonLocked = $userNonLocked;
-        $this->roles = $roles;
-    }
+    protected $accountNonLocked = true;
 
     /**
      * @return string
@@ -212,6 +183,24 @@ class User implements AdvancedUserInterface
     }
 
     /**
+     * @return bool|string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param $password
+     * @return $this
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
      * @param string|null $service
      * @return string
      * @throws \RuntimeException
@@ -231,6 +220,7 @@ class User implements AdvancedUserInterface
      * @param string $service
      * @param string $id
      * @throws \RuntimeException
+     * @return $this
      */
     public function setProviderId($service, $id)
     {
@@ -238,14 +228,7 @@ class User implements AdvancedUserInterface
             throw new RuntimeException("No login provider service $service configured.");
         }
         $this->loginProviderId[$service] = $id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPassword()
-    {
-        return $this->password;
+        return $this;
     }
 
     /**

@@ -112,8 +112,12 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
      */
     protected function registerUser(OauthUser $oauthUser, OAuthToken $token)
     {
-        $appUser = new User($oauthUser->getUsername(), $oauthUser->getPassword(), $oauthUser->getEmail(), $oauthUser->getRoles(), true, true, true, true);
-        $appUser->setProviderId($token->getService(), $token->getUid());
+        $appUser = new User();
+        $appUser->setProviderId($token->getService(), $token->getUid())
+            ->setUserName($oauthUser->getUsername())
+            ->setPassword($oauthUser->getPassword())
+            ->setEmail($oauthUser->getEmail())
+            ->setRoles($oauthUser->getRoles());
 
         $this->dm->persist($appUser);
         $this->dm->flush();
