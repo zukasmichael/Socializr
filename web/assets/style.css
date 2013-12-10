@@ -1,3 +1,7 @@
 .nav li{
     display: inline;
 }
+label{
+    width:120px;
+    float: left;
+}

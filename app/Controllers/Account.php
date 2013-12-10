@@ -10,6 +10,10 @@ use Symfony\Component\Form\Extension\Csrf\CsrfProvider\SessionCsrfProvider;
 class Account
 {
     /**
+     * @var \Silex\Application
+     */
+    protected $app;
+    /**
      * @var \Symfony\Component\Form\Extension\Csrf\CsrfProvider\SessionCsrfProvider
      */
     protected $csrfProvider;
@@ -37,12 +41,13 @@ class Account
      * @param array $oauthServices
      * @param User $user
      */
-    public function __construct(SessionCsrfProvider $csrfProvider, UrlGenerator $urlGenerator, array $oauthServices, User $user = null)
+    public function __construct(\Silex\Application $app)
     {
-        $this->csrfProvider = $csrfProvider;
-        $this->urlGenerator = $urlGenerator;
-        $this->oauthServices = $oauthServices;
-        $this->user = $user;
+        $this->app = $app;
+        $this->csrfProvider = $app['form.csrf_provider'];
+        $this->urlGenerator = $app['url_generator'];
+        $this->oauthServices = $app['oauth.services'];
+        $this->user = $app['user'];
     }
 
     /**
@@ -57,10 +62,12 @@ class Account
 
         if ($this->user !== null)
         {
-            $jsonResponse->text = sprintf('Hello %s! Your email is %s.', $this->user->getUsername(), $this->user->getEmail());
-            $jsonResponse->logoutUrl = $this->urlGenerator->generate('logout', [
-                '_csrf_token' => $this->csrfProvider->generateCsrfToken('logout')
-            ]);
+            header("Location: https://socializr.io/#/user/profile");
+            exit;
+//            $jsonResponse->text = sprintf('Hello %s! Your email is %s.', $this->user->getUsername(), $this->user->getEmail());
+//            $jsonResponse->logoutUrl = $this->urlGenerator->generate('logout', [
+//                '_csrf_token' => $this->csrfProvider->generateCsrfToken('logout')
+//            ]);
         }
         else
         {
