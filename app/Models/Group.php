@@ -30,7 +30,6 @@ class Group
      * @JMS\Type("string")
      */
     private $name;
-
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getDescription",setter="setDescription")
@@ -43,10 +42,21 @@ class Group
      */
     private $pinboards;
     /**
+     * @ODM\Int
+     * @JMS\Exclude
+     */
+    private $visibility;
+    /**
      * @ODM\ReferenceMany(targetDocument="\Models\Member")
      * @JMS\Exclude
      */
     private $members;
+    /**
+     * @ODM\ReferenceMany(targetDocument="\Models\Member")
+     * @JMS\Accessor(getter="getAdmins",setter="setAdmins")
+     * @JMS\Type("array")
+     */
+    private $admins;
     /**
      * @param mixed $id
      * @return \Models\Group
@@ -99,6 +109,23 @@ class Group
         return $this->description;
     }
     /**
+     * @param integer $visibility
+     * @return \Models\Group
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
+    /**
      * @param \Models\Member $members
      * @return \Models\Group
      */
@@ -115,7 +142,32 @@ class Group
     {
         return $this->members;
     }
+    /**
+     * @param \Models\Member $members
+     * @return \Models\Group
+     */
+    public function setAdmins($admins)
+    {
+        $this->admins = $admins;
+        return $this;
+    }
 
+    /**
+     * @return \Models\Member
+     */
+    public function getAdmins()
+    {
+        return $this->admins;
+    }
+    /**
+     * @param \Models\Pinboard $pinboard
+     * @return \Models\Group
+     */
+    public function addAdmin(\Models\Member $admin)
+    {
+        $this->admins[] = $admin;
+        return $this;
+    }
     /**
      * @param array $pinboards
      * @return \Models\Group

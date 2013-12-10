@@ -19,7 +19,7 @@ $app->before(function () use ($app) {
  * Register the custom controllers
  */
 $app['account.controller'] = $app->share(function() use ($app) {
-    return new Controllers\Account($app['form.csrf_provider'], $app['url_generator'], $app['oauth.services'], $app['user']);
+    return new Controllers\Account($app);
 });
 
 /**

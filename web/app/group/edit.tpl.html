@@ -1,1 +1,9 @@
-<h1>{{group.name}}</h1>
+<form >
+    <label>Groepnaam</label><input ng-model="group.name"><br />
+    <label>Zichtbaarheid</label><select ng-model="group.type">
+        <option ng-repeat="option in options" value="{{option.value}}" ng-selected="option.value == myChoice">{{option.name}}</option>
+    </select><br />
+    <label>Omschrijving</label><textarea ng-model="group.description"></textarea><br />
+    <button ng-click="addGroup()">Groep toevoegen</button>
+</form>
+<pre ng-bind="group | json"></pre>
