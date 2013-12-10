@@ -1,6 +1,6 @@
 <?php
 
-use LoginProvider\UserProviderListener;
+use \Auth\Listener\UserProviderListener;
 
 // disable the debug mode
 $app['debug'] = false;

@@ -60,8 +60,7 @@ Installing the application libs with composer
 #Log in on the dev-box and run composer
 $ vagrant ssh
 $ cd /vagrant
-$ php composer.phar install
-#Composer creates ./vendor folder with application packages
+$ composer update
 ```
 
 Application set-up
@@ -69,8 +68,9 @@ Application set-up
 
 * ```./web``` is the app root folder and is exposed to the webserver
 * App libraries are installed via composer in ```./vendor```
-* Add the following to your hosts file: ```192.168.56.110 socializr.io api.socializr.io mongo.socializr.io```
+* Add the following to your hosts file: ```192.168.56.110 socializr.io api.socializr.io mongo.socializr.io webgrind.socializr.io```
 * At [mongo.socializr.io](http://mongo.socializr.io) you can manage your mongodb data via an php admin interface
+* For better performance,
 
 Features which need to be included
 ----------------------------------

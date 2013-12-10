@@ -369,3 +369,11 @@ exec { 'remove_mongo_lock_lock':
   onlyif => 'test -f /vagrant/dont_remove_mongo_lock',
   require => Class['mongodb']
 }
+
+#create performing dir for composer vendor files
+file { '/socializrVendor':
+    ensure => "directory",
+    owner  => "vagrant",
+    group  => "www-data",
+    mode   => 777
+}

@@ -7,7 +7,7 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Neutron\Silex\Provider\MongoDBODMServiceProvider;
 use Macedigital\Silex\Provider\SerializerProvider;
-use \LoginProvider\UserProviderListener;
+use \Auth\Listener\UserProviderListener;
 use JDesrosiers\Silex\Provider\CorsServiceProvider;
 
 $app->register(new HttpCacheServiceProvider());
@@ -94,18 +94,27 @@ $securityOptions = array(
                 'callback_path' => '/auth/{service}/callback',
                 'check_path' => '/auth/{service}/check',
                 'failure_path' => '/loginfailed',
-                'with_csrf' => true
+                'with_csrf' => true,
+                //'remember_me' => true
             ),
             'logout' => array(
                 'logout_path' => '/logout',
                 'with_csrf' => true
             ),
-            'users' => new Gigablah\Silex\OAuth\Security\User\Provider\OAuthInMemoryUserProvider()
+            'users' => new \Auth\Provider\OAuthInMemoryUserProvider(),
+            /*'remember_me' => array(
+                'key' => 'socializr_api_secret_key',
+                'lifetime' => 31536000,
+                //'always_remember_me' => true,
+                'remember_me_parameter' => 'remember_me',
+                'path' => '/',
+                'domain' => '', // Defaults to the current domain from $_SERVER
+            )*/
         )
     ),
     'security.access_rules' => array(
         array('^/auth', 'ROLE_USER'),
-        //array('^/(?!login).+', 'ROLE_USER')//Disable this line to allow access for all users
+        array('^/(?!login).+', 'ROLE_USER')//Disable this line to allow access for all users
     ),
     'security.role_hierarchy' => array(
         'ROLE_ADMIN' => array('ROLE_USER', 'ROLE_ANONYMOUS'),
@@ -114,12 +123,15 @@ $securityOptions = array(
 );
 $app->register(new Silex\Provider\SecurityServiceProvider(), $securityOptions);
 
+$app['security.exception_listener.default'] = $app->share(function ($app) {
+    return new \Auth\Listener\ExceptionListener($app, 'default');
+});
 
 $app['oauth.user_info_listener'] = $app->share(function ($app) {
-    return new \LoginProvider\UserInfoListener($app['oauth'], $app['oauth.services']);
+    return new \Auth\Listener\UserInfoListener($app['oauth'], $app['oauth.services']);
 });
 $app['oauth.user_provider_listener'] = $app->share(function ($app) {
-    return new \LoginProvider\UserProviderListener($app['doctrine.odm.mongodb.dm']);
+    return new \Auth\Listener\UserProviderListener($app['doctrine.odm.mongodb.dm']);
 });
 
 $app->register(new CorsServiceProvider(), array(

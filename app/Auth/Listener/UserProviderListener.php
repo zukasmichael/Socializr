@@ -1,13 +1,13 @@
 <?php
 
-namespace LoginProvider;
+namespace Auth\Listener;
 
 use Gigablah\Silex\OAuth\Event\GetUserForTokenEvent;
 use Gigablah\Silex\OAuth\Security\User\Provider\OAuthUserProviderInterface;
-use Gigablah\Silex\OAuth\Security\User\StubUser;
 use Gigablah\Silex\OAuth\Security\Authentication\Token\OAuthToken;
 use \Doctrine\ODM\MongoDB\DocumentManager;
-use \LoginProvider\SessionUser;
+use Models\User;
+use Auth\OauthUser;
 
 /**
  * To intercept the UserProviderListener functionality provided by the plugin
@@ -52,23 +52,21 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
 
         $token = $event->getToken();
 
-        if ($user = $userProvider->loadUserByOAuthCredentials($token)) {
-            $sessionUser = $this->loadUser($user, $token);
-            $token->setUser($sessionUser);
+        if ($oauthUser = $userProvider->loadUserByOAuthCredentials($token)) {
+            $user = $this->loadUser($oauthUser, $token);
+            $token->setUser($user);
         }
     }
 
     /**
      * Load a user
      *
-     * @param StubUser $user
+     * @param OauthUser $oauthUser
      * @param OAuthToken $token
-     * @return \LoginProvider\SessionUser
+     * @return User|object
      */
-    protected function loadUser(StubUser $user, OAuthToken $token)
+    protected function loadUser(OauthUser $oauthUser, OAuthToken $token)
     {
-        $sessionUser = new SessionUser($user);
-
         //Find user by provider id
         $appUser = $this->dm->createQueryBuilder('Models\\User')
             ->field('loginProviderId.'.$token->getService())
@@ -76,22 +74,18 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
             ->getQuery()
             ->getSingleResult();
         if ($appUser) {
-            $sessionUser->setUser($appUser);
-            return $sessionUser;
+            return $appUser;
         }
 
         //If user not found, find user by email
-        $appUser = $this->dm->getRepository('Models\\User')->findOneBy(['email' => $user->getEmail()]);
+        $appUser = $this->dm->getRepository('Models\\User')->findOneBy(['email' => $oauthUser->getEmail()]);
         if ($appUser) {
             $appUser = $this->addProviderForUser($appUser, $token);
-            $sessionUser->setUser($appUser);
-            return $sessionUser;
+            return $appUser;
         }
 
         //If user not found, register user
-        $appUser = $this->registerUser($user, $token);
-        $sessionUser->setUser($appUser);
-        return $sessionUser;
+        return $this->registerUser($oauthUser, $token);
     }
 
     /**
@@ -101,7 +95,7 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
      * @param OAuthToken $token
      * @return \Models\User
      */
-    protected function addProviderForUser(\Models\User $appUser, OAuthToken $token)
+    protected function addProviderForUser(User $appUser, OAuthToken $token)
     {
         $appUser->setProviderId($token->getService(), $token->getUid());
         $this->dm->persist($appUser);
@@ -112,15 +106,18 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
     /**
      * Register a user
      *
-     * @param StubUser $user
+     * @param OauthUser $oauthUser
      * @param OAuthToken $token
-     * @return \Models\User
+     * @return User
      */
-    protected function registerUser(StubUser $user, OAuthToken $token)
+    protected function registerUser(OauthUser $oauthUser, OAuthToken $token)
     {
-        $appUser = new \Models\User();
-        $appUser->loadFromOauthUser($user);
-        $appUser->setProviderId($token->getService(), $token->getUid());
+        $appUser = new User();
+        $appUser->setProviderId($token->getService(), $token->getUid())
+            ->setUserName($oauthUser->getUsername())
+            ->setPassword($oauthUser->getPassword())
+            ->setEmail($oauthUser->getEmail())
+            ->setRoles($oauthUser->getRoles());
 
         $this->dm->persist($appUser);
         $this->dm->flush();
