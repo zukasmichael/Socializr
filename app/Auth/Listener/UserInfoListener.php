@@ -1,6 +1,6 @@
 <?php
 
-namespace LoginProvider;
+namespace Auth\Listener;
 
 use Gigablah\Silex\OAuth\OAuthServiceRegistry;
 

@@ -38,7 +38,7 @@
         "psr-0": {
             "Doctrine\\ODM\\MongoDB": "lib/",
             "Models": "app/",
-            "LoginProvider": "app/",
+            "Auth": "app/",
             "Controllers": "app/"
         }
     }

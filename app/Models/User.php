@@ -2,8 +2,8 @@
 
 namespace Models;
 
-use Gigablah\Silex\OAuth\Security\User\StubUser;
-use LoginProvider\UserProviderListener;
+use Auth\Listener\UserProviderListener;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Security\Core\Exception\RuntimeException;
@@ -20,28 +20,36 @@ use Symfony\Component\Security\Core\Exception\RuntimeException;
  *
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
-class User
+class User implements AdvancedUserInterface
 {
     /**
      * @ODM\Id(strategy="AUTO")
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getUserName",setter="setUserName")
      * @JMS\Type("string")
      */
-    private $userName;
+    protected $userName;
 
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getEmail",setter="setEmail")
      * @JMS\Type("string")
      */
-    private $email;
+    protected $email;
+
+    /**
+     * @ODM\Collection
+     * @var array
+     * @JMS\Accessor(getter="getRoles",setter="setRoles")
+     * @JMS\Type("array<string>")
+     */
+    protected $roles = array();
 
     /**
      * @ODM\Hash
@@ -49,12 +57,47 @@ class User
      * @JMS\Type("array<string, string>")
      * @JMS\Exclude
      */
-    private $loginProviderId = array(
+    protected $loginProviderId = array(
         UserProviderListener::SERVICE_FACEBOOK => null,
         UserProviderListener::SERVICE_TWITTER => null,
         UserProviderListener::SERVICE_GOOGLE => null,
         UserProviderListener::SERVICE_GITHUB => null
     );
+
+    /**
+     * @var boolean
+     * @ODM\Boolean
+     * @JMS\Type("boolean")
+     */
+    protected $enabled = true;
+
+    /**
+     * @var boolean
+     * @ODM\NotSaved
+     * @JMS\Exclude
+     */
+    protected $password;
+
+    /**
+     * @var boolean
+     * @ODM\NotSaved
+     * @JMS\Exclude
+     */
+    protected $accountNonExpired = true;
+
+    /**
+     * @var boolean
+     * @ODM\NotSaved
+     * @JMS\Exclude
+     */
+    protected $credentialsNonExpired = true;
+
+    /**
+     * @var boolean
+     * @ODM\NotSaved
+     * @JMS\Exclude
+     */
+    protected $accountNonLocked = true;
 
     /**
      * @return string
@@ -111,6 +154,53 @@ class User
     }
 
     /**
+     * Get the roles
+     * @return array
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param $roles
+     * @return $this
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    /**
+     * @param $role
+     * @return $this
+     */
+    public function addRole($role)
+    {
+        $this->roles[] = $role;
+        return $this;
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param $password
+     * @return $this
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
      * @param string|null $service
      * @return string
      * @throws \RuntimeException
@@ -130,6 +220,7 @@ class User
      * @param string $service
      * @param string $id
      * @throws \RuntimeException
+     * @return $this
      */
     public function setProviderId($service, $id)
     {
@@ -137,15 +228,53 @@ class User
             throw new RuntimeException("No login provider service $service configured.");
         }
         $this->loginProviderId[$service] = $id;
+        return $this;
     }
 
     /**
-     * Load user from StubUser
-     * @param StubUser $stubUser
+     * {@inheritdoc}
      */
-    public function loadFromOauthUser(StubUser $stubUser)
+    public function getSalt()
     {
-        $this->setUserName($stubUser->getUsername());
-        $this->setEmail($stubUser->getEmail());
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isAccountNonExpired()
+    {
+        return $this->accountNonExpired;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isAccountNonLocked()
+    {
+        return $this->accountNonLocked;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isCredentialsNonExpired()
+    {
+        return $this->credentialsNonExpired;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function eraseCredentials()
+    {
     }
 }

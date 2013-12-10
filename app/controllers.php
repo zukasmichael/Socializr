@@ -26,13 +26,24 @@ $app['account.controller'] = $app->share(function() use ($app) {
  * Login service providers for home url
  */
 $app->get('/', function () use ($app) { return $app->redirect('/login'); });
-$app->get('/login', 'account.controller:loginAction');
-$app->get('/loginfailed', 'account.controller:loginFailedAction');
+$app->get('/login', 'account.controller:loginAction')->bind('login');
+$app->get('/loginfailed', 'account.controller:loginFailedAction')->bind('loginfailed');
 
 /**
  * Logout service providers
  */
 $app->match('/logout', function () {})->bind('logout');
+
+
+
+
+
+
+// Handle access denied errors
+/*$app->error(function (\AppException\AccessDenied $e) {
+    $message = $e->getMessage() ?: 'Access denied!';
+    return new Response($message, 403);
+});*/
 
 
 
