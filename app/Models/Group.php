@@ -42,8 +42,9 @@ class Group
      */
     private $pinboards;
     /**
-     * @ODM\Int
-     * @JMS\Exclude
+     * @ODM\String
+     * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
+     * @JMS\Type("string")
      */
     private $visibility;
     /**
@@ -109,7 +110,7 @@ class Group
         return $this->description;
     }
     /**
-     * @param integer $visibility
+     * @param string $visibility
      * @return \Models\Group
      */
     public function setVisibility($visibility)
@@ -119,7 +120,7 @@ class Group
     }
 
     /**
-     * @return integer
+     * @return string
      */
     public function getVisibility()
     {

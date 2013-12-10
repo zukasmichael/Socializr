@@ -196,15 +196,18 @@ $app->get('/group', function () use ($app) {
  * Add group
  */
 $app->post('/group', function (Request $request) use ($app){
-    try{
-        $group = $app['serializer']->deserialize($request->getContent(), 'Models\Group', 'json');
-        $app['doctrine.odm.mongodb.dm']->persist($group);
-        $app['doctrine.odm.mongodb.dm']->flush();
-        return new Response('', 201);
-    } catch(\Exception $e){
-        return new Response($e->getMessage(), 500);
+    if($app['user'] != null){
+        try{
+            $group = $app['serializer']->deserialize($request->getContent(), 'Models\Group', 'json');
+            $app['doctrine.odm.mongodb.dm']->persist($group);
+            $app['doctrine.odm.mongodb.dm']->flush();
+            return new Response('', 201);
+        } catch(\Exception $e){
+            return new Response($e->getMessage(), 500);
+        }
+    } else {
+        return new Response("No Access", 403);
     }
-
 });
 
 /**

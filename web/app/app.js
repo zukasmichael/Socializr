@@ -9,6 +9,10 @@ var socializrControllers = angular.module('socializrControllers', ['resources.gr
     .config(['$routeProvider', '$httpProvider',  function($routeProvider, $httpProvider) {
         $httpProvider.defaults.withCredentials = true;
         $routeProvider.
+            when('/home', {
+                templateUrl: 'app/home/home.tpl.html',
+                controller: 'HomeCtrl'
+            }).
             when('/groups', {
                 templateUrl: 'app/group/group.tpl.html',
                 controller: 'GroupListCtrl',
@@ -35,7 +39,7 @@ var socializrControllers = angular.module('socializrControllers', ['resources.gr
                 controller: 'UserLoginCtrl'
             }).
             otherwise({
-                redirectTo: '/groups'
+                redirectTo: '/home'
             });
     }])
     .filter('pagination', function(){
@@ -47,12 +51,16 @@ var socializrControllers = angular.module('socializrControllers', ['resources.gr
 socializrControllers.controller('AppCtrl', ['$scope', function($scope){
 
 }]);
+socializrControllers.controller('HomeCtrl', ['$scope', function($scope){
+
+}]);
 socializrControllers.controller('HeaderCtrl', ['$scope','$location', '$route', function($scope, $location, $route){
     $scope.location = $location;
     $scope.pages = [
         {"uri": "groups", "title":"Groepen"},
         {"uri": "group/new", "title":"Nieuwe Groep"},
-        {"uri": "user/profile", "title":"Profiel"}
+        {"uri": "user/profile", "title":"Profiel"},
+        {"uri": "user/login", "title":"Inloggen"}
     ];
 }]);
 socializrControllers.controller('GroupListCtrl', ['$scope', 'groups',
@@ -111,11 +119,12 @@ socializrControllers.controller('GroupNewCtrl', ['$scope', '$http',
             { name: 'geheim', value: 3}];
 
         $scope.addGroup = function () {
-            $http.post("https://api.socializr.io/group/", $scope.group)
+            $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+            $http.post("https://api.socializr.io/group", $scope.group)
             .success(function (data, status, headers, config) {
                 $scope.group = data;
             }).error(function (data, status, headers, config) {
-                //throw new Error('Something went wrong...');
+                console.log(status);
             });
         };
     }]

@@ -1,9 +1,9 @@
-<form >
+<form ng-submit="addGroup()">
     <label>Groepnaam</label><input ng-model="group.name"><br />
-    <label>Zichtbaarheid</label><select ng-model="group.type">
+    <label>Zichtbaarheid</label><select ng-model="group.visibility">
         <option ng-repeat="option in options" value="{{option.value}}" ng-selected="option.value == myChoice">{{option.name}}</option>
     </select><br />
     <label>Omschrijving</label><textarea ng-model="group.description"></textarea><br />
-    <button class="btn btn-default" ng-click="addGroup()">Groep toevoegen</button>
+    <button class="btn btn-default">Groep toevoegen</button>
 </form>
 <pre ng-bind="group | json"></pre>
