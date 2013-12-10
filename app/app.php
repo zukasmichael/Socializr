@@ -7,7 +7,7 @@ use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Neutron\Silex\Provider\MongoDBODMServiceProvider;
 use Macedigital\Silex\Provider\SerializerProvider;
-use \LoginProvider\UserProviderListener;
+use \Auth\Listener\UserProviderListener;
 use JDesrosiers\Silex\Provider\CorsServiceProvider;
 
 $app->register(new HttpCacheServiceProvider());
@@ -96,7 +96,7 @@ $securityOptions = array(
                 'logout_path' => '/logout',
                 'with_csrf' => true
             ),
-            'users' => new Gigablah\Silex\OAuth\Security\User\Provider\OAuthInMemoryUserProvider()
+            'users' => new \Auth\Provider\OAuthInMemoryUserProvider()
         )
     ),
     'security.access_rules' => array(
@@ -112,10 +112,10 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), $securityOptions);
 
 
 $app['oauth.user_info_listener'] = $app->share(function ($app) {
-    return new \LoginProvider\UserInfoListener($app['oauth'], $app['oauth.services']);
+    return new \Auth\Listener\UserInfoListener($app['oauth'], $app['oauth.services']);
 });
 $app['oauth.user_provider_listener'] = $app->share(function ($app) {
-    return new \LoginProvider\UserProviderListener($app['doctrine.odm.mongodb.dm']);
+    return new \Auth\Listener\UserProviderListener($app['doctrine.odm.mongodb.dm']);
 });
 
 $app->register(new CorsServiceProvider(), array(

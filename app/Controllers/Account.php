@@ -3,7 +3,7 @@
 namespace Controllers;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Gigablah\Silex\OAuth\Security\User\StubUser as User;
+use Models\User as User;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\SessionCsrfProvider;
 
@@ -25,7 +25,7 @@ class Account
     protected $oauthServices;
 
     /**
-     * @var \Gigablah\Silex\OAuth\Security\User\StubUser
+     * @var \Models\User
      */
     protected $user;
 
