@@ -53,7 +53,7 @@ class Group
      */
     private $members;
     /**
-     * @ODM\ReferenceMany(targetDocument="\Models\Member")
+     * @ODM\ReferenceMany(targetDocument="\Models\User")
      * @JMS\Accessor(getter="getAdmins",setter="setAdmins")
      * @JMS\Type("array")
      */
@@ -144,7 +144,7 @@ class Group
         return $this->members;
     }
     /**
-     * @param \Models\Member $members
+     * @param \Models\User $admins
      * @return \Models\Group
      */
     public function setAdmins($admins)
@@ -154,17 +154,17 @@ class Group
     }
 
     /**
-     * @return \Models\Member
+     * @return \Models\User
      */
     public function getAdmins()
     {
         return $this->admins;
     }
     /**
-     * @param \Models\Pinboard $pinboard
+     * @param \Models\User $admin
      * @return \Models\Group
      */
-    public function addAdmin(\Models\Member $admin)
+    public function addAdmin(\Models\User $admin)
     {
         $this->admins[] = $admin;
         return $this;

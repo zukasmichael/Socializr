@@ -9,10 +9,12 @@
     <th ng-click="sort('description')">Omschrijving
         <i ng-class="{'icon-chevron-up': isSortUp('description'), 'icon-chevron-down': isSortDown('description')}"></i>
     </th>
+    <th></th>
     </thead>
     <tbody>
     <tr ng-repeat="group in filteredGroups = (groups | filter:criteria | orderBy:sortField:reverse) | pagination:pageNo:pageSize">
         <td>{{group.name}}</td><td>{{group.description}}</td>
+        <td><button class="btn btn-default" ng-click="view(group)">Bekijken</button></td>
     </tr>
     </tbody>
     <tfoot>

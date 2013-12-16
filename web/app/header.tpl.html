@@ -1,11 +1,17 @@
-<div class="navbar navbar-fixed-top" ng-controller="HeaderCtrl">
+<div class="navbar navbar-fixed-top ng-scope" ng-controller="HeaderCtrl">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="#groups">Socializr</a>
             <ul class="nav">
-                <li ng-repeat="page in pages">
-                    <a href="/#/{{page.uri}}">{{page.title}}</a>
+                <li ng-class="{ active: isActive('/')}" data-access-level="accessLevels.public" active-nav><a href="/">Socializr</a></li>
+                <li class="dropdown"><a class="dropdown-toggle" href="/groups">Groepen</a>
+                    <ul class="dropdown-menu">
+                        <li data-access-level="accessLevels.public" active-nav><a tabindex="-1" href="/groups">Zoeken</a></li>
+                        <li data-access-level='{{ accessLevels.user }}' active-nav><a tabindex="-1" href="/groups/new">Nieuwe Groep</a></li>
+                    </ul>
                 </li>
+                <li ng-class="{ active: isActive('/user/profile/')}" data-access-level='accessLevels.user' active-nav><a href="/users/profile/">Profiel</a></li>
+                <li ng-class="{ active: isActive('/user/login/')}" data-access-level="accessLevels.anon" active-nav><a href="/users/login/">Inloggen</a></li>
+                <li ng-class="{ active: isActive('/user/logout/')}" data-access-level="accessLevels.user" active-nav><a href="https://api.socializr.io{{user.logout_url}}">Uitloggen</a></li>
             </ul>
         </div>
     </div>
