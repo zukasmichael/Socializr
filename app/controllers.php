@@ -248,6 +248,21 @@ $app->get('/message/{id}', function ($id) use ($app, $getMessage) {
 /**
  * Get all messages
  */
-$app->get('/message', function () use ($app, $getMessage) {
-    return $app->json($getMessage());
+$app->get('/message/{groupId}', function ($groupId) use ($app) {
+    return null;
 })->assert('id', '[0-9]+');
+
+$app->post('/message', function (Request $request) use ($app){
+    if($app['user'] != null){
+        try{
+            $message = $app['serializer']->deserialize($request->getContent(), 'Models\Message', 'json');
+            $app['doctrine.odm.mongodb.dm']->persist($message);
+            $app['doctrine.odm.mongodb.dm']->flush();
+            return new Response('', 201);
+        } catch(\Exception $e){
+            return new Response($e->getMessage(), 500);
+        }
+    } else {
+        return new Response("No Access", 403);
+    }
+});

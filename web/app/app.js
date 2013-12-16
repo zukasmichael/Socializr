@@ -159,6 +159,17 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId).success(function (data) {
             $scope.group = data;
         });
+        $scope.message;
+
+        $scope.addMessage = function(){
+            $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+            $scope.message.group = $scope.group;
+            $http.post("https://api.socializr.io/message", $scope.message)
+            .success(function (data, status, headers, config) {
+            }).error(function (data, status, headers, config) {
+                    console.log(status);
+            });
+        };
     }]
 );
 angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 'Auth',

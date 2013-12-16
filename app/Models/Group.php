@@ -59,6 +59,12 @@ class Group
      */
     private $admins;
     /**
+     * @ODM\ReferenceMany(targetDocument="\Models\Message")
+     * @JMS\Accessor(getter="getMessages",setter="setMessages")
+     * @JMS\Type("array")
+     */
+    private $messages;
+    /**
      * @param mixed $id
      * @return \Models\Group
      */
@@ -144,7 +150,7 @@ class Group
         return $this->members;
     }
     /**
-     * @param \Models\User $admins
+     * @param array $admins
      * @return \Models\Group
      */
     public function setAdmins($admins)
@@ -154,12 +160,28 @@ class Group
     }
 
     /**
-     * @return \Models\User
+     * @return array
      */
     public function getAdmins()
     {
         return $this->admins;
     }
+    /**
+     * @param array $messages
+     * @return \Models\Group
+     */
+    public function setMessages($messages)
+    {
+        $this->messages = $messages;
+        return $this;
+    }
+    /**
+     * @return array
+     */
+    public function getMessages(){
+        return $this->messages;
+    }
+
     /**
      * @param \Models\User $admin
      * @return \Models\Group
