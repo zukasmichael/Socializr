@@ -101,3 +101,9 @@ angular.module('resources.groups').factory('Groups', ['apiResource', function (a
     var Groups = apiResource('group');
     return Groups;
 }]);
+angular.module('resources.messages', ['apiResource']);
+angular.module('resources.messages').factory('Messages', ['apiResource', function (apiResource) {
+    var Messages = apiResource('message');
+    return Messages;
+}]);
+

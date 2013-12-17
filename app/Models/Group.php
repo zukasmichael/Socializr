@@ -25,39 +25,54 @@ class Group
      * @JMS\Type("string")
      */
     private $id;
+
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getName",setter="setName")
      * @JMS\Type("string")
      */
     private $name;
+
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getDescription",setter="setDescription")
      * @JMS\Type("string")
      */
     private $description;
+
     /**
      * @ODM\ReferenceMany(targetDocument="\Models\Pinboard")
      * @JMS\Exclude
      */
     private $pinboards;
+
     /**
-     * @ODM\Int
-     * @JMS\Exclude
+     * @ODM\String
+     * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
+     * @JMS\Type("string")
      */
     private $visibility;
+
     /**
      * @ODM\ReferenceMany(targetDocument="\Models\Member")
      * @JMS\Exclude
      */
     private $members;
+
     /**
-     * @ODM\ReferenceMany(targetDocument="\Models\Member")
+     * @ODM\ReferenceMany(targetDocument="\Models\User")
      * @JMS\Accessor(getter="getAdmins",setter="setAdmins")
      * @JMS\Type("array")
      */
     private $admins;
+
+    /**
+     * @ODM\ReferenceMany(targetDocument="\Models\Message")
+     * @JMS\Accessor(getter="getMessages",setter="setMessages")
+     * @JMS\Type("array")
+     */
+    private $messages;
+
     /**
      * @param mixed $id
      * @return \Models\Group
@@ -75,6 +90,7 @@ class Group
     {
         return $this->id;
     }
+
     /**
      * @param string $name
      * @return \Models\Group
@@ -92,8 +108,9 @@ class Group
     {
         return $this->name;
     }
+
     /**
-     * @param string $name
+     * @param string $description
      * @return \Models\Group
      */
     public function setDescription($description)
@@ -109,8 +126,9 @@ class Group
     {
         return $this->description;
     }
+
     /**
-     * @param integer $visibility
+     * @param string $visibility
      * @return \Models\Group
      */
     public function setVisibility($visibility)
@@ -120,12 +138,13 @@ class Group
     }
 
     /**
-     * @return integer
+     * @return string
      */
     public function getVisibility()
     {
         return $this->visibility;
     }
+
     /**
      * @param \Models\Member $members
      * @return \Models\Group
@@ -145,8 +164,8 @@ class Group
     }
 
     /**
-     * @param $admins
-     * @return $this
+     * @param array $admins
+     * @return \Models\Group
      */
     public function setAdmins($admins)
     {
@@ -155,7 +174,7 @@ class Group
     }
 
     /**
-     * @return \Models\Member
+     * @return array
      */
     public function getAdmins()
     {
@@ -163,10 +182,26 @@ class Group
     }
 
     /**
-     * @param Member $admin
-     * @return $this
+     * @param array $messages
+     * @return \Models\Group
      */
-    public function addAdmin(\Models\Member $admin)
+    public function setMessages($messages)
+    {
+        $this->messages = $messages;
+        return $this;
+    }
+    /**
+     * @return array
+     */
+    public function getMessages(){
+        return $this->messages;
+    }
+
+    /**
+     * @param \Models\User $admin
+     * @return \Models\Group
+     */
+    public function addAdmin(User $admin)
     {
         $this->admins[] = $admin;
         return $this;
@@ -181,6 +216,7 @@ class Group
         $this->pinboards = $pinboards;
         return $this;
     }
+
     /**
      * @param \Models\Pinboard $pinboard
      * @return \Models\Group
@@ -190,6 +226,7 @@ class Group
         $this->pinboards[] = $pinboard;
         return $this;
     }
+
     /**
      * @return string
      */

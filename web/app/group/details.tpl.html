@@ -1,1 +1,8 @@
-<h1>{{group.name}}</h1>
+<h2>{{group.name}}</h2>
+
+<strong>Nieuw bericht posten</strong>
+<form ng-submit="addMessage()">
+    <label>Titel</label><input ng-model="message.title"><br />
+    <label>Content</label><textarea ng-model="message.contents"></textarea><br />
+    <button class="btn btn-default">Bericht versturen</button>
+</form>

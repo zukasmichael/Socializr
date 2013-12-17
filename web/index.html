@@ -2,24 +2,25 @@
 <html lang="en" ng-app="socializrApp">
 <head>
     <link rel="stylesheet" type="text/css" href="assets/style.css">
-    <link rel="stylesheet" type="text/css" href="assets/table.css">
-    <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="assets/social-buttons.css">
     <link rel="stylesheet" type="text/css" href="assets/font-awesome-4.0.3/css/font-awesome.css">
     <script src="vendor/angular/angular.js"></script>
-    <script src="vendor/angular-ui/bootstrap.js"></script>
-    <script src="vendor/angular/angular-route.js"></script>
-    <script src="vendor/angular/angular-cookie.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular-resource.js"></script>
-    <script type="text/javascript" src="/common/resources/api-resource.js"></script>
-    <script type="text/javascript" src="/app/app.js"></script>
+    <script src="vendor/angular/ui-bootstrap-0.7.0.min.js"></script>
+    <script src="vendor/angular/ui-bootstrap-tpls-0.7.0.min.js"></script>
+    <script src="vendor/angular/angular-route.min.js"></script>
+	<script src="vendor/angular/angular-resource.min.js"></script>
+    <script type="text/javascript" src="common/services/routingConfig.js"></script>
+    <script type="text/javascript" src="app/app.js"></script>
+    <script type="text/javascript" src="common/services/services.js"></script>
+    <script type="text/javascript" src="common/resources/api-resource.js"></script>
+    <script type="text/javascript" src="common/directives/directives.js"></script>
 </head>
 <body ng-controller="AppCtrl">
-<div ng-include="'app/header.tpl.html'">
-
+<div ng-include="'/app/header.tpl.html'">
 </div>
     <div class="container">
-        <div ng-view></div>
+        <div ng-view class="container-fluid"></div>
     </div>
 </body>
 </html>

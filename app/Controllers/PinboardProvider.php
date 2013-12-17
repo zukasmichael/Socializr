@@ -75,6 +75,9 @@ class PinboardProvider extends AbstractProvider
          * Add a message to a board
          */
         $controllers->post('/{boardId}/message', function (Request $request, $boardId) use ($app) {
+
+            $this->checkLoggedin();
+
             $board = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Pinboard')
                 ->field('id')
@@ -90,6 +93,7 @@ class PinboardProvider extends AbstractProvider
             $message->setBoardId($boardId);
             $app['doctrine.odm.mongodb.dm']->persist($message);
             $app['doctrine.odm.mongodb.dm']->flush();
+
             return new Response('', 201);
         })->assert('boardId', '[0-9a-z]+');
 

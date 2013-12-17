@@ -24,6 +24,16 @@ abstract class AbstractProvider implements ControllerProviderInterface
     }
 
     /**
+     * @throws \AppException\AccessDenied
+     */
+    protected function checkLoggedin()
+    {
+        if ($this->app['user'] != null) {
+            throw new AccessDenied();
+        }
+    }
+
+    /**
      * @param $responseData
      * @param int $statusCode
      * @return Response

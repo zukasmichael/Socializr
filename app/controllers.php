@@ -28,7 +28,7 @@ $app['account.controller'] = $app->share(function() use ($app) {
 /**
  * Login service providers for home url
  */
-$app->get('/', function () use ($app) { return $app->redirect('/login'); });
+$app->get('/', function () use ($app) { return $app->redirect('https://socializr.io'); });
 $app->get('/login', 'account.controller:loginAction')->bind('login');
 $app->get('/loginfailed', 'account.controller:loginFailedAction')->bind('loginfailed');
 $app->match('/logout', function () {})->bind('logout');
@@ -39,6 +39,7 @@ $app->match('/logout', function () {})->bind('logout');
  */
 $app->mount('/group', new \Controllers\GroupProvider());
 $app->mount('/pinboard', new \Controllers\PinboardProvider());
+$app->mount('/message', new \Controllers\MessageProvider());
 
 /**
  * Get user by id
@@ -69,21 +70,6 @@ $app->get('/user/{id}', function ($id) use ($app) {
     ));
 })->assert('id', '[0-9a-z]+');
 
-/**
- * Get message by id
- */
-$app->get('/message/{id}', function ($id) use ($app) {
-    $message = $app['doctrine.odm.mongodb.dm']
-        ->createQueryBuilder('Models\\Message')
-        ->field('id')
-        ->equals($id)
-        ->getQuery()
-        ->getSingleResult();
-
-    return new Response($app['serializer']->serialize($message, 'json'), 200, array(
-        "Content-Type" => $app['request']->getMimeType('json')
-    ));
-})->assert('id', '[0-9a-z]+');
 
 /**
  * Register error handlers
@@ -93,6 +79,7 @@ $app->error(function (\AppException\AccessDenied $e) {
     $message = $e->getMessage() ?: 'Access to this resource is forbidden.';
     return new JsonResponse(array('Message' => $message), 403);
 });
+
 // Handle Resource not found errors
 $app->error(function (\AppException\ResourceNotFound $e) {
     $message = $e->getMessage() ?: 'The requested resource was not found.';

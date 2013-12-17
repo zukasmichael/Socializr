@@ -7,7 +7,11 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ODM\Document(
- *     collection="messages"
+ *     collection="messages",
+ *     indexes={
+ *         @ODM\Index(keys={"title"="desc"}, options={"unique"=false}),
+ *         @ODM\Index(keys={"contents"="desc"}, options={"unique"=true})
+ *     }
  * )
  * @JMS\ExclusionPolicy("none")
  *
@@ -31,6 +35,13 @@ class Message
     private $boardId;
 
     /**
+     * @ODM\ReferenceOne(targetDocument="\Models\Pinboard")
+     * @JMS\Accessor(getter="getBoard",setter="setBoard")
+     * @JMS\Type("\Models\Pinboard")
+     */
+    private $board;
+
+    /**
      * @ODM\String
      * @JMS\Accessor(getter="getTitle",setter="setTitle")
      * @JMS\Type("string")
@@ -39,14 +50,17 @@ class Message
 
     /**
      * @ODM\String
-     * @JMS\Accessor(getter="getContent",setter="setContent")
+     * @JMS\Accessor(getter="getContents",setter="setContents")
      * @JMS\Type("string")
      */
-    private $content;
+    private $contents;
 
     /**
-     * @ODM\Field(type="timestamp")
-     * @JMS\Readonly
+     *  -? ODM\Field(type="timestamp")
+     *  -? JMS\Readonly
+     * @ODM\String
+     * @JMS\Accessor(getter="getCreateAt",setter="setCreateAt")
+     * @JMS\Type("string")
      * @TODO auto update in mongodb on creation?
      */
     private $createdAt;
@@ -88,13 +102,31 @@ class Message
     }
 
     /**
+     * @param \Models\Pinboard $board
+     * @return \Models\Message
+     */
+    public function setBoard(Pinboard $board)
+    {
+        $this->board = $board;
+        return $this;
+    }
+
+    /**
+     * @return \Models\Pinboard
+     */
+    public function getBoard()
+    {
+        return $this->board;
+    }
+
+    /**
      * @param string $title
      * @return \Models\Message
      */
     public function setTitle($title)
     {
         $this->title = $title;
-        return $title;
+        return $this;
     }
 
     /**
@@ -106,20 +138,38 @@ class Message
     }
 
     /**
-     * @param string $content
+     * @param string $contents
      * @return \Models\Message
      */
-    public function setContent($content)
+    public function setContents($contents)
     {
-        $this->content = $content;
+        $this->contents = $contents;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getContent()
+    public function getContents()
     {
-        return $this->content;
+        return $this->contents;
+    }
+
+    /**
+     * @param string $createdAt
+     * @return \Models\Message
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 } 

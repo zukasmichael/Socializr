@@ -39,16 +39,6 @@ class GroupProvider extends AbstractProvider
         });
 
         /**
-         * Add group
-         */
-        $controllers->post('/', function (Request $request) use ($app){
-            $group = $app['serializer']->deserialize($request->getContent(), 'Models\Group', 'json');
-            $app['doctrine.odm.mongodb.dm']->persist($group);
-            $app['doctrine.odm.mongodb.dm']->flush();
-            return new Response('', 201);
-        });
-
-        /**
          * Get group by id
          */
         $controllers->get('/{id}', function ($id) use ($app) {
@@ -81,9 +71,26 @@ class GroupProvider extends AbstractProvider
         })->assert('groupId', '[0-9a-z]+');
 
         /**
+         * Add group
+         */
+        $controllers->post('/', function (Request $request) use ($app) {
+
+            $this->checkLoggedin();
+
+            $group = $app['serializer']->deserialize($request->getContent(), 'Models\Group', 'json');
+            $app['doctrine.odm.mongodb.dm']->persist($group);
+            $app['doctrine.odm.mongodb.dm']->flush();
+
+            return new Response('', 201);
+        });
+
+        /**
          * Add a board to a group
          */
         $controllers->post('/{groupId}/board', function (Request $request, $groupId) use ($app) {
+
+            $this->checkLoggedin();
+
             $board = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Pinboard')
                 ->field('groupId')
@@ -99,6 +106,7 @@ class GroupProvider extends AbstractProvider
             $board->setGroupId($groupId);
             $app['doctrine.odm.mongodb.dm']->persist($board);
             $app['doctrine.odm.mongodb.dm']->flush();
+
             return new Response('', 201);
         })->assert('boardId', '[0-9a-z]+');
 
