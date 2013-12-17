@@ -186,7 +186,7 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
 
         $scope.addGroup = function () {
             $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-            $http.post("https://api.socializr.io/group", $scope.group)
+            $http.post("https://api.socializr.io/group/", $scope.group)
                 .success(function (data, status, headers, config) {
                     $scope.group = data;
                 }).error(function (data, status, headers, config) {
