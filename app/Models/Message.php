@@ -82,7 +82,7 @@ class Message
      * @ODM\Date
      * @JMS\Accessor(getter="getFormattedCreateAt",setter="setCreateAt")
      * @JMS\Type("string")
-     * @JMS\Exclude
+     * @JMS\Readonly
      */
     private $createdAt;
 
