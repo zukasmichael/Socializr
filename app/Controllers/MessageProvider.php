@@ -43,7 +43,7 @@ class MessageProvider extends AbstractProvider
          */
         $controllers->get('/{groupId}', function ($groupId) use ($app) {
             return null;
-        })->assert('id', '[0-9]+');
+        })->assert('groupId', '[0-9]+');
 
         /**
          * Post a message

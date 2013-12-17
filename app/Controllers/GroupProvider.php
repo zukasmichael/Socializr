@@ -105,7 +105,7 @@ class GroupProvider extends AbstractProvider
             $app['doctrine.odm.mongodb.dm']->flush();
 
             return new Response('', 201);
-        })->assert('boardId', '[0-9a-z]+');
+        })->assert('groupId', '[0-9a-z]+');
 
         return $controllers;
     }
