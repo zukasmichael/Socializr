@@ -38,13 +38,17 @@ class Pinboard
      */
     private $title;
 
+
     /**
-     * @ODM\ReferenceMany(targetDocument="\Models\Message")
+     * @ODM\ReferenceMany(
+     *     targetDocument="\Models\Message",
+     *     repositoryMethod="findByBoard"
+     * )
      * @JMS\Accessor(getter="getMessages",setter="setMessages")
      * @JMS\Type("array")
      * @JMS\Readonly
      */
-    private $messages;
+    private $messages = array();
 
     /**
      * @ODM\Field(type="timestamp")

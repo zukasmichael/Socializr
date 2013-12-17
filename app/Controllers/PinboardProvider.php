@@ -73,7 +73,7 @@ class PinboardProvider extends AbstractProvider
          */
         $controllers->post('/{boardId}/message', function (Request $request, $boardId) use ($app) {
 
-            $this->checkLoggedin();
+            $user = $this->checkLoggedin();
 
             $board = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Pinboard')
@@ -88,6 +88,10 @@ class PinboardProvider extends AbstractProvider
 
             $message = $app['serializer']->deserialize($request->getContent(), 'Models\\Message', 'json');
             $message->setBoardId($boardId);
+            $message->setGroupId($board->getGroupId());
+            $message->setPostUser($user);
+            $message->setCreatedAt(new \DateTime());
+
             $app['doctrine.odm.mongodb.dm']->persist($message);
             $app['doctrine.odm.mongodb.dm']->flush();
 
