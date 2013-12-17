@@ -40,8 +40,14 @@ angular.module('socializrApp').run(['$rootScope', '$location', '$http', 'Auth', 
     });
 
 }])
-angular.module('socializrApp').controller('AppCtrl', ['$scope', function ($scope) {
-
+angular.module('socializrApp').controller('AppCtrl', ['$scope', 'Auth', function ($scope, Auth) {
+    Auth.login(
+        function(user) {
+            $scope.user = user;
+        },
+        function(err) {
+            //$rootScope.error = "Failed to login";
+        });
 }]);
 angular.module('socializrApp')
 .controller('HeaderCtrl', ['$rootScope', '$scope', '$location', '$route', 'Auth', function ($rootScope, $scope, $location, $route, Auth) {
@@ -72,13 +78,7 @@ angular.module('home').config(['$routeProvider', function ($routeProvider) {
         });
 }]);
 angular.module('socializrApp').controller('HomeCtrl', ['$rootScope', '$scope', 'Auth', function ($rootScope, $scope, Auth) {
-    Auth.login(
-        function(user) {
-            $scope.user = user;
-        },
-        function(err) {
-            //$rootScope.error = "Failed to login";
-        });
+
 }]);
 
 angular.module('groups', ['resources.groups'])
@@ -154,8 +154,14 @@ angular.module('groups', ['resources.groups'])
             return inputArray.slice(start, start + pageSize);
         };
     });
-angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$http',
-    function ($rootScope, $scope, $routeParams, $http) {
+angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$http', 'Auth',
+    function ($rootScope, $scope, $routeParams, $http, Auth) {
+        $scope.user = Auth.user;
+
+        $scope.permissions = {
+            loggedin: ($scope.user.role === Auth.userRoles.user) || $scope.user.role === Auth.userRoles.admin
+        };
+
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId).success(function (data) {
             $scope.group = data;
         });
@@ -164,7 +170,7 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         $scope.addMessage = function(){
             $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
             $scope.message.group = $scope.group;
-            $http.post("https://api.socializr.io/message", $scope.message)
+            $http.post("https://api.socializr.io/group/" + $scope.group.id +'/message', $scope.message)
             .success(function (data, status, headers, config) {
             }).error(function (data, status, headers, config) {
                     console.log(status);
@@ -176,7 +182,6 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
     function ($rootScope, $scope, $location, $routeParams, $http, Auth) {
         $scope.group = {};
         $scope.user = Auth.user;
-
         $scope.options = [
             { name: 'open', value: 1},
             { name: 'besloten', value: 2},
@@ -213,13 +218,7 @@ angular.module('users')
     }])
     .controller('UserProfileCtrl', ['$scope', '$http', 'Auth',
         function ($scope, $http, Auth) {
-            Auth.login(
-                function(user) {
-                    $scope.user = user;
-                },
-                function(err) {
-                    //$rootScope.error = "Failed to login";
-                });
+
         }])
     .controller('UserLoginCtrl', ['$scope', '$http',
         function ($scope, $http) {

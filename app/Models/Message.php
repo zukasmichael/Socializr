@@ -4,6 +4,7 @@ namespace Models;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JMS\Serializer\Annotation as JMS;
+
 /**
  * @ODM\Document(
  *     collection="messages",
@@ -16,6 +17,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
+
 /** @ODM\Document */
 class Message
 {
@@ -32,11 +34,11 @@ class Message
      */
     private $title;
     /**
-     * @ODM\ReferenceOne(targetDocument="\Models\Group")
-     * @JMS\Accessor(getter="getGroup",setter="setGroup")
-     * @JMS\Type("\Models\Group")
+     * @ODM\String
+     * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
+     * @JMS\Type("string")
      */
-    private $group;
+    private $groupId;
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getContents",setter="setContents")
@@ -68,21 +70,25 @@ class Message
     {
         return $this->id;
     }
+
     /**
-     * @param \Models\Group $group
+     * @param string $id
+     * @return \Models\Message
      */
-    public function setGroup(\Models\Group $group)
+    public function setGroupId($id)
     {
-        $this->group = $group;
+        $this->groupId = $id;
+        return $this;
     }
 
     /**
-     * @return \Models\Group
+     * @return string
      */
-    public function getGroup()
+    public function getGroupId()
     {
-        return $this->group;
+        return $this->groupId;
     }
+
     /**
      * @param string $id
      * @return \Models\Message
@@ -118,6 +124,7 @@ class Message
     {
         return $this->contents;
     }
+
     /**
      * @param mixed $id
      * @return \Models\Message
