@@ -235,10 +235,7 @@ class Message
      */
     public function getFormattedCreateAt()
     {
-        if ($this->createdAt instanceof \MongoDate) {
-            return date('Y-M-d h:i:s', $this->createdAt->sec);
-        }
-        return $this->createdAt->format('Y-M-d h:i:s');
+        return $this->createdAt->format('c');
     }
 
 } 
