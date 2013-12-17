@@ -11,7 +11,8 @@ use JMS\Serializer\Annotation as JMS;
  *     indexes={
  *         @ODM\Index(keys={"title"="desc"}, options={"unique"=false}),
  *         @ODM\Index(keys={"contents"="desc"}, options={"unique"=true})
- *     }
+ *     },
+ *     repositoryClass="\Models\MessageRepository"
  * )
  * @JMS\ExclusionPolicy("none")
  *
@@ -23,6 +24,7 @@ class Message
      * @ODM\Id(strategy="AUTO")
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
+     * @JMS\Readonly
      */
     private $id;
 
@@ -44,6 +46,26 @@ class Message
 
     /**
      * @ODM\String
+     * @JMS\Accessor(getter="getPostUserId",setter="setPostUserId")
+     * @JMS\Type("string")
+     * @JMS\Exclude
+     */
+    private $postUserId;
+
+    /**
+     * @ODM\ReferenceOne(
+     *     targetDocument="\Models\User",
+     *     mappedBy="_id",
+     *     repositoryMethod="findOneByMessage"
+     * )
+     * @JMS\Accessor(getter="getPostUser",setter="setPostUser")
+     * @JMS\Type("Models\User")
+     * @JMS\Readonly
+     */
+    private $postUser;
+
+    /**
+     * @ODM\String
      * @JMS\Accessor(getter="getTitle",setter="setTitle")
      * @JMS\Type("string")
      */
@@ -57,12 +79,10 @@ class Message
     private $contents;
 
     /**
-     *  -? ODM\Field(type="timestamp")
-     *  -? JMS\Readonly
-     * @ODM\String
-     * @JMS\Accessor(getter="getCreateAt",setter="setCreateAt")
+     * @ODM\Date
+     * @JMS\Accessor(getter="getFormattedCreateAt",setter="setCreateAt")
      * @JMS\Type("string")
-     * @TODO auto update in mongodb on creation?
+     * @JMS\Readonly
      */
     private $createdAt;
 
@@ -117,6 +137,41 @@ class Message
     }
 
     /**
+     * @param \Models\User $user
+     * @return \Models\Message
+     */
+    public function setPostUser(\Models\User $user)
+    {
+        $this->postUserId = $user->getId();
+        $this->postUser = $user;
+        return $this;
+    }
+
+    /**
+     * @return \Models\User
+     */
+    public function getPostUser()
+    {
+        return $this->postUser;
+    }
+
+    /**
+     * @throws \Symfony\Component\Intl\Exception\NotImplementedException
+     */
+    public function setPostUserId()
+    {
+        throw new NotImplementedException('Set this id by setting the post user.');
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostUserId()
+    {
+        return $this->postUserId;
+    }
+
+    /**
      * @param string $title
      * @return \Models\Message
      */
@@ -162,10 +217,20 @@ class Message
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
         return $this->createdAt;
     }
+
+
+    /**
+     * @return string
+     */
+    public function getFormattedCreateAt()
+    {
+        return $this->createdAt->format('c');
+    }
+
 } 

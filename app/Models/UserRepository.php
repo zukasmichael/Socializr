@@ -19,6 +19,25 @@ class UserRepository extends \Doctrine\ODM\MongoDB\DocumentRepository
      */
     public function findByAdminIds(array $adminIds)
     {
+        $adminIds = (array)$adminIds;
         return $this->dm->createQueryBuilder('\Models\User')->field('_id')->in($adminIds)->getQuery()->execute();
+    }
+
+    /**
+     * @param Message $message
+     * @return \Doctrine\ODM\MongoDB\Cursor
+     */
+    public function findOneByMessage(\Models\Message $message)
+    {
+        return $this->findOneById($message->getPostUserId());
+    }
+
+    /**
+     * @param string $userId
+     * @return \Doctrine\ODM\MongoDB\Cursor
+     */
+    public function findOneById($userId)
+    {
+        return $this->findOneBy(array('_id' => $userId));
     }
 } 
