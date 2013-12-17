@@ -182,7 +182,7 @@ $app->get('/group/{id}', function ($id) use ($app) {
 });
 
 /**
- * Get pinboards for group
+ * Get boards for group
  */
 $app->get('/group/{id}/boards', function ($id) use ($app, $getPinboard) {
     $board = $getPinboard(null, $id);
