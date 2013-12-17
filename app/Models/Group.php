@@ -71,7 +71,7 @@ class Group
      * @JMS\Accessor(getter="getAdminIds",setter="setAdminIds")
      * @JMS\Exclude
      */
-    private $adminIds;
+    private $adminIds = array();
 
     /**
      * @ODM\ReferenceMany(
