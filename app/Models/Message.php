@@ -4,6 +4,7 @@ namespace Models;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JMS\Serializer\Annotation as JMS;
+
 /**
  * @ODM\Document(
  *     collection="messages",
@@ -16,7 +17,6 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
-/** @ODM\Document */
 class Message
 {
     /**
@@ -25,18 +25,30 @@ class Message
      * @JMS\Type("string")
      */
     private $id;
+
+    /**
+     * @ODM\String
+     * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
+     * @JMS\Type("string")
+     * @JMS\Readonly
+     */
+    private $groupId;
+
+    /**
+     * @ODM\String
+     * @JMS\Accessor(getter="getBoardId",setter="setBoardId")
+     * @JMS\Type("string")
+     * @JMS\Readonly
+     */
+    private $boardId;
+
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getTitle",setter="setTitle")
      * @JMS\Type("string")
      */
     private $title;
-    /**
-     * @ODM\ReferenceOne(targetDocument="\Models\Group")
-     * @JMS\Accessor(getter="getGroup",setter="setGroup")
-     * @JMS\Type("\Models\Group")
-     */
-    private $group;
+
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getContents",setter="setContents")
@@ -45,9 +57,12 @@ class Message
     private $contents;
 
     /**
+     *  -? ODM\Field(type="timestamp")
+     *  -? JMS\Readonly
      * @ODM\String
      * @JMS\Accessor(getter="getCreateAt",setter="setCreateAt")
      * @JMS\Type("string")
+     * @TODO auto update in mongodb on creation?
      */
     private $createdAt;
 
@@ -68,23 +83,45 @@ class Message
     {
         return $this->id;
     }
+
     /**
-     * @param \Models\Group $group
+     * @param mixed $id
+     * @return \Models\Message
      */
-    public function setGroup(\Models\Group $group)
+    public function setGroupId($id)
     {
-        $this->group = $group;
+        $this->groupId = $id;
+        return $this;
     }
 
     /**
-     * @return \Models\Group
+     * @return string
      */
-    public function getGroup()
+    public function getGroupId()
     {
-        return $this->group;
+        return $this->groupId;
     }
+
     /**
-     * @param string $id
+     * @param mixed $id
+     * @return \Models\Message
+     */
+    public function setBoardId($id)
+    {
+        $this->boardId = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBoardId()
+    {
+        return $this->boardId;
+    }
+
+    /**
+     * @param string $title
      * @return \Models\Message
      */
     public function setTitle($title)
@@ -102,7 +139,7 @@ class Message
     }
 
     /**
-     * @param mixed $id
+     * @param string $contents
      * @return \Models\Message
      */
     public function setContents($contents)
@@ -118,8 +155,9 @@ class Message
     {
         return $this->contents;
     }
+
     /**
-     * @param mixed $id
+     * @param string $createdAt
      * @return \Models\Message
      */
     public function setCreatedAt($createdAt)
