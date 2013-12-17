@@ -103,21 +103,25 @@ class Message
     {
         return $this->id;
     }
+
     /**
-     * @param \Models\Group $group
+     * @param mixed $id
+     * @return \Models\Message
      */
-    public function setGroup(\Models\Group $group)
+    public function setGroupId($id)
     {
-        $this->group = $group;
+        $this->groupId = $id;
+        return $this;
     }
 
     /**
-     * @return \Models\Group
+     * @return string
      */
-    public function getGroup()
+    public function getGroupId()
     {
-        return $this->group;
+        return $this->groupId;
     }
+
     /**
      * @param mixed $id
      * @return \Models\Message
@@ -206,6 +210,7 @@ class Message
     {
         return $this->contents;
     }
+
     /**
      * @param string $createdAt
      * @return \Models\Message
