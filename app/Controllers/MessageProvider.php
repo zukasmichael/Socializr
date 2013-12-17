@@ -22,10 +22,7 @@ class MessageProvider extends AbstractProvider
      */
     public function connect(Application $app)
     {
-        parent::connect($app);
-
-        // creates a new controller based on the default route
-        $controllers = $app['controllers_factory'];
+        $controllers = parent::connect($app);
 
         /**
          * Get message by id

@@ -16,11 +16,12 @@ abstract class AbstractProvider implements ControllerProviderInterface
 
     /**
      * @param Application $app
-     * @return \Silex\ControllerCollection|void
+     * @return \Silex\ControllerCollection
      */
     public function connect(Application $app)
     {
         $this->app = $app;
+        return $this->app['controllers_factory'];
     }
 
     /**
