@@ -43,7 +43,7 @@ $app['account.controller'] = $app->share(function() use ($app) {
 /**
  * Login service providers for home url
  */
-$app->get('/', function () use ($app) { return $app->redirect('/login'); });
+$app->get('/', function () use ($app) { return $app->redirect('https://socializr.io'); });
 $app->get('/login', 'account.controller:loginAction')->bind('login');
 $app->get('/loginfailed', 'account.controller:loginFailedAction')->bind('loginfailed');
 
@@ -166,32 +166,9 @@ $getPinboard = function($id = null, $groupId = null) use ($getMessage) {
 };
 
 /**
- * Group stub
- * @param null $id
- * @return mixed
- */
-$getGroup = function($id = null) use ($getPinboard) {
-    $groups[51]['id'] = 41;
-    $groups[51]['name'] = 'Zeven spaakse wielen';
-    $groups[51]['pinboards'][] = $getPinboard(41);
-    $groups[51]['pinboards'][] = $getPinboard(42);
-    $groups[51]['members'][] = [];
-
-    $groups[52]['id'] = 42;
-    $groups[52]['name'] = 'Zes spaakse wielen';
-    $groups[52]['pinboards'][] = $getPinboard(42);
-    $groups[51]['members'][] = [];
-
-    if ($id) {
-        return $groups[$id];
-    }
-    return array_values($groups);
-};
-
-/**
  * Get group by id
  */
-$app->get('/group/{id}', function ($id) use ($app, $getGroup) {
+$app->get('/group/{id}', function ($id) use ($app) {
     $group = $app['doctrine.odm.mongodb.dm']
         ->createQueryBuilder('Models\\Group')
         ->field('id')
@@ -231,15 +208,19 @@ $app->get('/group', function () use ($app) {
  * Add group
  */
 $app->post('/group', function (Request $request) use ($app){
-    try{
-        $group = $app['serializer']->deserialize($request->getContent(), 'Models\Group', 'json');
-        $app['doctrine.odm.mongodb.dm']->persist($group);
-        $app['doctrine.odm.mongodb.dm']->flush();
-        return new Response('', 201);
-    } catch(\Exception $e){
-        return new Response($e->getMessage(), 500);
-    }
+    if($app['user'] != null){
+        try{
+            $group = $app['serializer']->deserialize($request->getContent(), 'Models\Group', 'json');
 
+            $app['doctrine.odm.mongodb.dm']->persist($group);
+            $app['doctrine.odm.mongodb.dm']->flush();
+            return new Response('', 201);
+        } catch(\Exception $e){
+            return new Response($e->getMessage(), 500);
+        }
+    } else {
+        return new Response("No Access", 403);
+    }
 });
 
 /**
@@ -267,6 +248,21 @@ $app->get('/message/{id}', function ($id) use ($app, $getMessage) {
 /**
  * Get all messages
  */
-$app->get('/message', function () use ($app, $getMessage) {
-    return $app->json($getMessage());
+$app->get('/message/{groupId}', function ($groupId) use ($app) {
+    return null;
 })->assert('id', '[0-9]+');
+
+$app->post('/message', function (Request $request) use ($app){
+    if($app['user'] != null){
+        try{
+            $message = $app['serializer']->deserialize($request->getContent(), 'Models\Message', 'json');
+            $app['doctrine.odm.mongodb.dm']->persist($message);
+            $app['doctrine.odm.mongodb.dm']->flush();
+            return new Response('', 201);
+        } catch(\Exception $e){
+            return new Response($e->getMessage(), 500);
+        }
+    } else {
+        return new Response("No Access", 403);
+    }
+});

@@ -42,8 +42,9 @@ class Group
      */
     private $pinboards;
     /**
-     * @ODM\Int
-     * @JMS\Exclude
+     * @ODM\String
+     * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
+     * @JMS\Type("string")
      */
     private $visibility;
     /**
@@ -52,11 +53,17 @@ class Group
      */
     private $members;
     /**
-     * @ODM\ReferenceMany(targetDocument="\Models\Member")
+     * @ODM\ReferenceMany(targetDocument="\Models\User")
      * @JMS\Accessor(getter="getAdmins",setter="setAdmins")
      * @JMS\Type("array")
      */
     private $admins;
+    /**
+     * @ODM\ReferenceMany(targetDocument="\Models\Message")
+     * @JMS\Accessor(getter="getMessages",setter="setMessages")
+     * @JMS\Type("array")
+     */
+    private $messages;
     /**
      * @param mixed $id
      * @return \Models\Group
@@ -109,7 +116,7 @@ class Group
         return $this->description;
     }
     /**
-     * @param integer $visibility
+     * @param string $visibility
      * @return \Models\Group
      */
     public function setVisibility($visibility)
@@ -119,7 +126,7 @@ class Group
     }
 
     /**
-     * @return integer
+     * @return string
      */
     public function getVisibility()
     {
@@ -143,7 +150,7 @@ class Group
         return $this->members;
     }
     /**
-     * @param \Models\Member $members
+     * @param array $admins
      * @return \Models\Group
      */
     public function setAdmins($admins)
@@ -153,17 +160,33 @@ class Group
     }
 
     /**
-     * @return \Models\Member
+     * @return array
      */
     public function getAdmins()
     {
         return $this->admins;
     }
     /**
-     * @param \Models\Pinboard $pinboard
+     * @param array $messages
      * @return \Models\Group
      */
-    public function addAdmin(\Models\Member $admin)
+    public function setMessages($messages)
+    {
+        $this->messages = $messages;
+        return $this;
+    }
+    /**
+     * @return array
+     */
+    public function getMessages(){
+        return $this->messages;
+    }
+
+    /**
+     * @param \Models\User $admin
+     * @return \Models\Group
+     */
+    public function addAdmin(\Models\User $admin)
     {
         $this->admins[] = $admin;
         return $this;
