@@ -27,6 +27,7 @@ class User implements AdvancedUserInterface
      * @ODM\Id(strategy="AUTO")
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
+     * @JMS\Readonly
      */
     protected $id;
 
@@ -49,6 +50,7 @@ class User implements AdvancedUserInterface
      * @var array
      * @JMS\Accessor(getter="getRoles",setter="setRoles")
      * @JMS\Type("array<string>")
+     * @JMS\Readonly
      */
     protected $roles = array();
 

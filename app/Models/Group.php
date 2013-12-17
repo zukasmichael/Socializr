@@ -24,6 +24,7 @@ class Group
      * @ODM\Id(strategy="AUTO")
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
+     * @JMS\Readonly
      */
     private $id;
 
@@ -48,8 +49,8 @@ class Group
      *     repositoryMethod="findByGroup"
      * )
      * @JMS\Accessor(getter="getBoards",setter="setBoards")
-     * @JMS\Readonly
      * @JMS\Type("array")
+     * @JMS\Readonly
      */
     private $boards = array();
 
@@ -57,6 +58,7 @@ class Group
      * @ODM\String
      * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
      * @JMS\Type("string")
+     * Valid values: {open:'1', besloten:'2', geheim:'3'}
      */
     private $visibility;
 
@@ -80,8 +82,9 @@ class Group
      * )
      * @JMS\Accessor(getter="getAdmins",setter="setAdmins")
      * @JMS\Type("array")
+     * @JMS\Readonly
      */
-    private $admins;
+    private $admins = array();
 
     /**
      * @param mixed $id
@@ -177,7 +180,7 @@ class Group
      * @param array $admins
      * @return \Models\Group
      */
-    public function setAdmins($admins)
+    public function setAdmins(array $admins)
     {
         $this->adminIds = array();
         $this->admins = $admins;

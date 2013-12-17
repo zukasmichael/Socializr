@@ -28,7 +28,7 @@ class MessageRepository extends \Doctrine\ODM\MongoDB\DocumentRepository
      */
     public function findByBoard(\Models\Pinboard $board)
     {
-        return $this->findByGroupId($board->getId());
+        return $this->findByBoardId($board->getId());
     }
 
     /**
