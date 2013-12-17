@@ -38,26 +38,6 @@ class MessageProvider extends AbstractProvider
             return $this->getJsonResponseAndSerialize($message);
         })->assert('id', '[0-9a-z]+');
 
-        /**
-         * Get all messages by group id
-         */
-        $controllers->get('/{groupId}', function ($groupId) use ($app) {
-            return null;
-        })->assert('groupId', '[0-9]+');
-
-        /**
-         * Post a message
-         */
-        $controllers->post('/', function (Request $request) use ($app) {
-
-            $this->checkLoggedin();
-
-            $message = $app['serializer']->deserialize($request->getContent(), 'Models\Message', 'json');
-            $app['doctrine.odm.mongodb.dm']->persist($message);
-            $app['doctrine.odm.mongodb.dm']->flush();
-            return new Response('', 201);
-        });
-
         return $controllers;
     }
 }

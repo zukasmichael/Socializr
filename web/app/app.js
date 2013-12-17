@@ -242,17 +242,43 @@ angular.module('boards', []).config(['$routeProvider', function ($routeProvider)
         controller: 'BoardNewController',
         access: access.user
     });
+    $routeProvider.when('/boards/:boardId', {
+        templateUrl: '/app/boards/details.tpl.html',
+        controller: 'BoardDetailsController',
+        access: access.user
+    });
 }]);
-angular.module('boards').controller('BoardNewController', ['$scope', '$http', '$routeParams', 'Auth', function($scope, $http, $routeParams, Auth){
-    $scope.addBoard = function(){
-        $scope.board;
-        $scope.groupId = $routeParams.groupId;
-        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
+angular.module('boards').controller('BoardNewController', ['$scope', '$http', '$routeParams', 'Auth', function($scope, $http, $routeParams, Auth){
+    $scope.board;
+    $scope.groupId = $routeParams.groupId;
+    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+
+    $scope.addBoard = function(){
         $http.post("https://api.socializr.io/group/" + $scope.groupId +'/board', $scope.board)
             .success(function (data, status, headers, config) {
             }).error(function (data, status, headers, config) {
                 console.log(status);
             });
     };
+}]);
+
+angular.module('boards').controller('BoardDetailsController', ['$scope', '$http', '$routeParams', 'Auth', function($scope, $http, $routeParams, Auth){
+    $http.get("https://api.socializr.io/board/" + $routeParams.boardId).success(function (data) {
+        $scope.board = data;
+        $scope.md2Html = function() {
+            return $scope.html = $window.marked($scope.markdown);
+        };
+        $scope.content = '#hoi';
+        $scope.initFromUrl = function(url) {
+            return $http.get(url).success(function(data) {
+                $scope.markdown = data;
+                return $scope.md2Html();
+            });
+        };
+        return $scope.initFromText = function(text) {
+            $scope.markdown = text;
+            return $scope.md2Html();
+        };
+    });
 }]);
