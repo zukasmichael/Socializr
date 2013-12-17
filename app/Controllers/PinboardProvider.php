@@ -42,7 +42,7 @@ class PinboardProvider extends AbstractProvider
         $controllers->get('/{id}', function ($id) use ($app) {
             $board = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Pinboard')
-                ->field('id')
+                ->field('_id')
                 ->equals($id)
                 ->getQuery()
                 ->getSingleResult();
@@ -77,7 +77,7 @@ class PinboardProvider extends AbstractProvider
 
             $board = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Pinboard')
-                ->field('id')
+                ->field('_id')
                 ->equals($boardId)
                 ->getQuery()
                 ->getSingleResult();

@@ -30,7 +30,7 @@ class MessageProvider extends AbstractProvider
         $controllers->get('/{id}', function ($id) use ($app) {
             $message = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Message')
-                ->field('id')
+                ->field('_id')
                 ->equals($id)
                 ->getQuery()
                 ->getSingleResult();

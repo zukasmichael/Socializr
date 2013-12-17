@@ -14,7 +14,8 @@ use Symfony\Component\Security\Core\Exception\RuntimeException;
  *     indexes={
  *         @ODM\Index(keys={"userName"="desc"}, options={"unique"=false}),
  *         @ODM\Index(keys={"email"="desc"}, options={"unique"=true})
- *     }
+ *     },
+ *     repositoryClass="\Models\UserRepository"
  * )
  * @JMS\ExclusionPolicy("none")
  *

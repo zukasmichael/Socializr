@@ -28,18 +28,19 @@ class Message
 
     /**
      * @ODM\String
+     * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
+     * @JMS\Type("string")
+     * @JMS\Readonly
+     */
+    private $groupId;
+
+    /**
+     * @ODM\String
      * @JMS\Accessor(getter="getBoardId",setter="setBoardId")
      * @JMS\Type("string")
      * @JMS\Readonly
      */
     private $boardId;
-
-    /**
-     * @ODM\ReferenceOne(targetDocument="\Models\Pinboard")
-     * @JMS\Accessor(getter="getBoard",setter="setBoard")
-     * @JMS\Type("\Models\Pinboard")
-     */
-    private $board;
 
     /**
      * @ODM\String
@@ -87,6 +88,24 @@ class Message
      * @param mixed $id
      * @return \Models\Message
      */
+    public function setGroupId($id)
+    {
+        $this->groupId = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupId()
+    {
+        return $this->groupId;
+    }
+
+    /**
+     * @param mixed $id
+     * @return \Models\Message
+     */
     public function setBoardId($id)
     {
         $this->boardId = $id;
@@ -99,24 +118,6 @@ class Message
     public function getBoardId()
     {
         return $this->boardId;
-    }
-
-    /**
-     * @param \Models\Pinboard $board
-     * @return \Models\Message
-     */
-    public function setBoard(Pinboard $board)
-    {
-        $this->board = $board;
-        return $this;
-    }
-
-    /**
-     * @return \Models\Pinboard
-     */
-    public function getBoard()
-    {
-        return $this->board;
     }
 
     /**

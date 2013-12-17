@@ -7,7 +7,8 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ODM\Document(
- *     collection="boards"
+ *     collection="boards",
+ *     repositoryClass="\Models\PinboardRepository"
  * )
  * @JMS\ExclusionPolicy("none")
  *

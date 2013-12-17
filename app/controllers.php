@@ -38,7 +38,7 @@ $app->match('/logout', function () {})->bind('logout');
  * https://speakerdeck.com/simensen/writing-silex-service-providers-and-controller-providers-madison-php
  */
 $app->mount('/group', new \Controllers\GroupProvider());
-$app->mount('/pinboard', new \Controllers\PinboardProvider());
+$app->mount('/board', new \Controllers\PinboardProvider());
 $app->mount('/message', new \Controllers\MessageProvider());
 
 /**
@@ -47,11 +47,6 @@ $app->mount('/message', new \Controllers\MessageProvider());
 $app->get('/user/{id}', function ($id) use ($app) {
     if ($id == 'current') {
         $user = $app['user'];
-        $user->setLogoutUrl(
-            $app['url_generator']->generate('logout', array(
-                '_csrf_token' => $app['form.csrf_provider']->generateCsrfToken('logout')
-            ))
-        );
     } else {
         $user = $app['doctrine.odm.mongodb.dm']
             ->createQueryBuilder('Models\\User')
@@ -64,6 +59,12 @@ $app->get('/user/{id}', function ($id) use ($app) {
     if (!$user) {
         throw new ResourceNotFound();
     }
+
+    $user->setLogoutUrl(
+        $app['url_generator']->generate('logout', array(
+            '_csrf_token' => $app['form.csrf_provider']->generateCsrfToken('logout')
+        ))
+    );
 
     return new Response($app['serializer']->serialize($user, 'json'), 200, array(
         "Content-Type" => $app['request']->getMimeType('json')

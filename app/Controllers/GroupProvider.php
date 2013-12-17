@@ -41,7 +41,7 @@ class GroupProvider extends AbstractProvider
         $controllers->get('/{id}', function ($id) use ($app) {
             $group = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Group')
-                ->field('id')
+                ->field('_id')
                 ->equals($id)
                 ->getQuery()
                 ->getSingleResult();
@@ -72,9 +72,11 @@ class GroupProvider extends AbstractProvider
          */
         $controllers->post('/', function (Request $request) use ($app) {
 
-            $this->checkLoggedin();
+            $user = $this->checkLoggedin();
 
-            $group = $app['serializer']->deserialize($request->getContent(), 'Models\Group', 'json');
+            $group = $app['serializer']->deserialize($request->getContent(), 'Models\\Group', 'json');
+            $group->addAdmin($user);
+
             $app['doctrine.odm.mongodb.dm']->persist($group);
             $app['doctrine.odm.mongodb.dm']->flush();
 
@@ -88,14 +90,14 @@ class GroupProvider extends AbstractProvider
 
             $this->checkLoggedin();
 
-            $board = $app['doctrine.odm.mongodb.dm']
-                ->createQueryBuilder('Models\\Pinboard')
-                ->field('groupId')
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')
                 ->equals($groupId)
                 ->getQuery()
                 ->getSingleResult();
 
-            if (!$board) {
+            if (!$group) {
                 throw new ResourceNotFound();
             }
 
