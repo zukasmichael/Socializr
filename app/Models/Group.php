@@ -4,6 +4,8 @@ namespace Models;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Intl\Exception\NotImplementedException;
+
 /**
  * @ODM\Document(
  *     collection="groups",
@@ -24,46 +26,63 @@ class Group
      * @JMS\Type("string")
      */
     private $id;
+
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getName",setter="setName")
      * @JMS\Type("string")
      */
     private $name;
+
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getDescription",setter="setDescription")
      * @JMS\Type("string")
      */
     private $description;
+
     /**
-     * @ODM\ReferenceMany(targetDocument="\Models\Pinboard")
-     * @JMS\Exclude
+     * @ODM\ReferenceMany(
+     *     targetDocument="\Models\Pinboard",
+     *     mappedBy="groupId",
+     *     repositoryMethod="findByGroup"
+     * )
+     * @JMS\Accessor(getter="getBoards",setter="setBoards")
+     * @JMS\Readonly
+     * @JMS\Type("array")
      */
-    private $pinboards;
+    private $boards = array();
+
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
      * @JMS\Type("string")
      */
     private $visibility;
+
     /**
      * @ODM\ReferenceMany(targetDocument="\Models\Member")
      * @JMS\Exclude
      */
     private $members;
+
     /**
-     * @ODM\ReferenceMany(targetDocument="\Models\User")
+     * @ODM\Collection
+     * @JMS\Accessor(getter="getAdminIds",setter="setAdminIds")
+     * @JMS\Exclude
+     */
+    private $adminIds;
+
+    /**
+     * @ODM\ReferenceMany(
+     *     targetDocument="\Models\User",
+     *     repositoryMethod="findByGroup"
+     * )
      * @JMS\Accessor(getter="getAdmins",setter="setAdmins")
      * @JMS\Type("array")
      */
     private $admins;
-    /**
-     * @ODM\ReferenceMany(targetDocument="\Models\Message")
-     * @JMS\Accessor(getter="getMessages",setter="setMessages")
-     * @JMS\Type("array")
-     */
-    private $messages;
+
     /**
      * @param mixed $id
      * @return \Models\Group
@@ -81,6 +100,7 @@ class Group
     {
         return $this->id;
     }
+
     /**
      * @param string $name
      * @return \Models\Group
@@ -98,8 +118,9 @@ class Group
     {
         return $this->name;
     }
+
     /**
-     * @param string $name
+     * @param string $description
      * @return \Models\Group
      */
     public function setDescription($description)
@@ -115,6 +136,7 @@ class Group
     {
         return $this->description;
     }
+
     /**
      * @param string $visibility
      * @return \Models\Group
@@ -132,6 +154,7 @@ class Group
     {
         return $this->visibility;
     }
+
     /**
      * @param \Models\Member $members
      * @return \Models\Group
@@ -149,13 +172,18 @@ class Group
     {
         return $this->members;
     }
+
     /**
      * @param array $admins
      * @return \Models\Group
      */
     public function setAdmins($admins)
     {
+        $this->adminIds = array();
         $this->admins = $admins;
+        foreach ($admins as $admin) {
+            $this->adminIds[] = $admin->getId();
+        }
         return $this;
     }
 
@@ -166,54 +194,59 @@ class Group
     {
         return $this->admins;
     }
-    /**
-     * @param array $messages
-     * @return \Models\Group
-     */
-    public function setMessages($messages)
-    {
-        $this->messages = $messages;
-        return $this;
-    }
-    /**
-     * @return array
-     */
-    public function getMessages(){
-        return $this->messages;
-    }
 
     /**
      * @param \Models\User $admin
      * @return \Models\Group
      */
-    public function addAdmin(\Models\User $admin)
+    public function addAdmin(User $admin)
     {
+        $this->adminIds[] = $admin->getId();
         $this->admins[] = $admin;
         return $this;
     }
+
     /**
-     * @param array $pinboards
+     * @throws \Symfony\Component\Intl\Exception\NotImplementedException
+     */
+    public function setAdminIds()
+    {
+        throw new NotImplementedException('Set these id\'s by setting the model.');
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdminIds()
+    {
+        return $this->adminIds;
+    }
+
+    /**
+     * @param array $boards
      * @return \Models\Group
      */
-    public function setPinboards(array $pinboards)
+    public function setBoards(array $boards)
     {
-        $this->pinboards = $pinboards;
+        $this->boards = $boards;
         return $this;
     }
+
     /**
-     * @param \Models\Pinboard $pinboard
+     * @param \Models\Pinboard $board
      * @return \Models\Group
      */
-    public function addPinboard(\Models\Pinboard $pinboard)
+    public function addBoard(\Models\Pinboard $board)
     {
-        $this->pinboards[] = $pinboard;
+        $this->boards[] = $board;
         return $this;
     }
+
     /**
-     * @return string
+     * @return array
      */
-    public function getPinboards()
+    public function getBoards()
     {
-        return $this->pinboards;
+        return $this->boards;
     }
 } 
