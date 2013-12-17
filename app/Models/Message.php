@@ -21,13 +21,14 @@ class Message
      * @JMS\Type("string")
      */
     private $id;
+
     /**
      * @ODM\String
-     * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
+     * @JMS\Accessor(getter="getBoardId",setter="setBoardId")
      * @JMS\Type("string")
      * @JMS\Readonly
      */
-    private $groupId;
+    private $boardId;
 
     /**
      * @ODM\String
@@ -46,6 +47,7 @@ class Message
     /**
      * @ODM\Field(type="timestamp")
      * @JMS\Readonly
+     * @TODO auto update in mongodb on creation?
      */
     private $createdAt;
 
@@ -71,18 +73,18 @@ class Message
      * @param mixed $id
      * @return \Models\Message
      */
-    public function setGroupId($id)
+    public function setBoardId($id)
     {
-        $this->groupId = $id;
+        $this->boardId = $id;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getGroupId()
+    public function getBoardId()
     {
-        return $this->groupId;
+        return $this->boardId;
     }
 
     /**

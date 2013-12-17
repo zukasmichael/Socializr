@@ -143,9 +143,10 @@ class Group
     {
         return $this->members;
     }
+
     /**
-     * @param \Models\Member $members
-     * @return \Models\Group
+     * @param $admins
+     * @return $this
      */
     public function setAdmins($admins)
     {
@@ -160,15 +161,17 @@ class Group
     {
         return $this->admins;
     }
+
     /**
-     * @param \Models\Pinboard $pinboard
-     * @return \Models\Group
+     * @param Member $admin
+     * @return $this
      */
     public function addAdmin(\Models\Member $admin)
     {
         $this->admins[] = $admin;
         return $this;
     }
+
     /**
      * @param array $pinboards
      * @return \Models\Group
