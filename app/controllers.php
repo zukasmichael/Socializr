@@ -86,6 +86,13 @@ $app->error(function (\AppException\ResourceNotFound $e) {
     $message = $e->getMessage() ?: 'The requested resource was not found.';
     return new JsonResponse(array('Message' => $message), 404);
 });
+
+// Handle model validation errors
+$app->error(function (\AppException\ModelInvalid $e) {
+    $message = 'Validation error: ' . $e->getMessage();
+    return new JsonResponse(array('Message' => $message), 400);
+});
+
 // Handle other exception as 500 errors
 $app->error(function (\Exception $e, $code) {
     return new JsonResponse(array('Message' => $e->getMessage()), $code);

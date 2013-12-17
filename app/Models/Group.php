@@ -5,6 +5,7 @@ namespace Models;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Intl\Exception\NotImplementedException;
+use AppException\ModelInvalid;
 
 /**
  * @ODM\Document(
@@ -51,6 +52,7 @@ class Group
      * @JMS\Accessor(getter="getBoards",setter="setBoards")
      * @JMS\Type("array")
      * @JMS\Readonly
+     * @JMS\MaxDepth(1)
      */
     private $boards = array();
 
@@ -251,5 +253,26 @@ class Group
     public function getBoards()
     {
         return $this->boards;
+    }
+
+    /**
+     * @ODM\PrePersist
+     * @ODM\PreUpdate
+     */
+    public function validate()
+    {
+        $admins = $this->getAdmins();
+        if (empty($admins)) {
+            throw new ModelInvalid('A group must have an admin.');
+        }
+
+        if ($this->getVisibility() < 1 || $this->getVisibility() > 3) {
+            throw new ModelInvalid('Visibility for a group must be 1, 2 or 3.');
+        }
+
+        $name = $this->getName();
+        if (empty($name)) {
+            throw new ModelInvalid('A group must have a name.');
+        }
     }
 } 

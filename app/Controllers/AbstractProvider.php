@@ -7,6 +7,8 @@ use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use JMS\Serializer\SerializationContext;
+
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
 
@@ -43,7 +45,7 @@ abstract class AbstractProvider implements ControllerProviderInterface
      */
     protected function getJsonResponseAndSerialize($responseData, $statusCode = 200)
     {
-        return $this->getResponseForJson($this->app['serializer']->serialize($responseData, 'json'), $statusCode);
+        return $this->getResponseForJson($this->app['serializer']->serialize($responseData, 'json', SerializationContext::create()->enableMaxDepthChecks()), $statusCode);
     }
 
     /**
