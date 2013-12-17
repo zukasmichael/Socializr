@@ -6,7 +6,7 @@
                 <li class="dropdown"><a class="dropdown-toggle" href="/groups">Groepen</a>
                     <ul class="dropdown-menu">
                         <li data-access-level="accessLevels.public" active-nav><a tabindex="-1" href="/groups">Zoeken</a></li>
-                        <li data-access-level='{{ accessLevels.user }}' active-nav><a tabindex="-1" href="/groups/new">Nieuwe Groep</a></li>
+                        <li data-access-level='accessLevels.user' active-nav><a tabindex="-1" href="/groups/new">Nieuwe Groep</a></li>
                     </ul>
                 </li>
                 <li ng-class="{ active: isActive('/user/profile/')}" data-access-level='accessLevels.user' active-nav><a href="/users/profile/">Profiel</a></li>

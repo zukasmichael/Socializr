@@ -1,0 +1,21 @@
+<div class="board-title">
+    <strong>{{board.title}}</strong>
+</div>
+<ul class="board-index">
+    <li ng-repeat="message in messages" class="board-message">
+        <p>
+            <strong>{{message.title}}</strong><br />
+            {{message.content}}
+        </p>
+    </li>
+</ul>
+
+<form ng-submit="addBoard()">
+<label>Titel</label><input ng-model="message.title"><br/>
+<label>Bericht</label><textarea ng-model="message.content"></textarea><br />
+<button ng-click="addMessage(message)">Reageer</button>
+</form>
+<strong>Voorbeeld</strong>
+<div class="content">
+    <markdown ng-model="message.content"></markdown>
+</div>
