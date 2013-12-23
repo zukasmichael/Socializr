@@ -245,7 +245,7 @@ angular.module('boards', []).config(['$routeProvider', function ($routeProvider)
     $routeProvider.when('/boards/:boardId', {
         templateUrl: '/app/boards/details.tpl.html',
         controller: 'BoardDetailsController',
-        access: access.user
+        access: access.public
     });
 }]);
 
@@ -264,21 +264,47 @@ angular.module('boards').controller('BoardNewController', ['$scope', '$http', '$
 }]);
 
 angular.module('boards').controller('BoardDetailsController', ['$scope', '$http', '$routeParams', 'Auth', function($scope, $http, $routeParams, Auth){
+    $scope.boardId = $routeParams.boardId;
+    $scope.message;
+    $scope.user = Auth.user;
+
+    $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+
     $http.get("https://api.socializr.io/board/" + $routeParams.boardId).success(function (data) {
         $scope.board = data;
-        $scope.md2Html = function() {
-            return $scope.html = $window.marked($scope.markdown);
-        };
-        $scope.content = '#hoi';
-        $scope.initFromUrl = function(url) {
-            return $http.get(url).success(function(data) {
-                $scope.markdown = data;
-                return $scope.md2Html();
-            });
-        };
-        return $scope.initFromText = function(text) {
-            $scope.markdown = text;
-            return $scope.md2Html();
-        };
     });
+
+    $http.get("https://api.socializr.io/board/" + $routeParams.boardId + '/message').success(function (data) {
+        $scope.messages = data;
+    });
+
+    $scope.md2Html = function() {
+        return $scope.html = $window.marked($scope.markdown);
+    };
+
+    $scope.initFromUrl = function(url) {
+        return $http.get(url).success(function(data) {
+            $scope.markdown = data;
+            return $scope.md2Html();
+        });
+    };
+
+    $scope.permissions = {
+        loggedin: ($scope.user.role === Auth.userRoles.user) || $scope.user.role === Auth.userRoles.admin
+    };
+
+    $scope.addMessage = function(){
+        console.log('addMesage');
+        $http.post("https://api.socializr.io/board/" + $scope.boardId +'/message', $scope.message)
+            .success(function (data, status, headers, config) {
+                $scope.$apply();
+            }).error(function (data, status, headers, config) {
+                console.log(status);
+            });
+    };
+
+    return $scope.initFromText = function(text) {
+        $scope.markdown = text;
+        return $scope.md2Html();
+    };
 }]);

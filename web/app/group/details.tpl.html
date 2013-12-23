@@ -4,4 +4,4 @@
 <ul class="group-index">
     <li ng-repeat="board in boards" class="group-topic"><a href="/boards/{{board.id}}">{{board.title}}</a></li>
 </ul>
-<button ng-click="addBoard()">Voeg prikbord toe</button>
+<button ng-click="addBoard()" ng-show="permissions.loggedin">Voeg prikbord toe</button>
