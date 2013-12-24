@@ -28,6 +28,7 @@ class User implements AdvancedUserInterface
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
      * @JMS\Readonly
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details"})
      */
     protected $id;
 
@@ -35,6 +36,7 @@ class User implements AdvancedUserInterface
      * @ODM\String
      * @JMS\Accessor(getter="getUserName",setter="setUserName")
      * @JMS\Type("string")
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details"})
      */
     protected $userName;
 
@@ -42,6 +44,7 @@ class User implements AdvancedUserInterface
      * @ODM\String
      * @JMS\Accessor(getter="getEmail",setter="setEmail")
      * @JMS\Type("string")
+     * @JMS\Groups({"user-list", "user-details"})
      */
     protected $email;
 
@@ -51,6 +54,7 @@ class User implements AdvancedUserInterface
      * @JMS\Accessor(getter="getRoles",setter="setRoles")
      * @JMS\Type("array<string>")
      * @JMS\Readonly
+     * @JMS\Exclude
      */
     protected $roles = array();
 
@@ -60,6 +64,7 @@ class User implements AdvancedUserInterface
      * )
      * @JMS\Accessor(getter="getPermissions",setter="setPermissions")
      * @JMS\Type("array")
+     * @JMS\Exclude
      */
     private $permissions = array();
 
@@ -80,6 +85,7 @@ class User implements AdvancedUserInterface
      * @var string
      * @ODM\NotSaved
      * @JMS\Type("string")
+     * @JMS\Groups({"user-details"})
      */
     protected $logoutUrl;
 
@@ -87,6 +93,7 @@ class User implements AdvancedUserInterface
      * @var boolean
      * @ODM\Boolean
      * @JMS\Type("boolean")
+     * @JMS\Groups({"user-list", "user-details"})
      */
     protected $enabled = true;
 

@@ -52,7 +52,7 @@ class GroupProvider extends AbstractProvider
                 ->execute();
 
             $groups = array_values($groups->toArray());
-            return $this->getJsonResponseAndSerialize($groups, 200, '');
+            return $this->getJsonResponseAndSerialize($groups, 200, 'group-list');
         });
 
         /**
@@ -73,7 +73,7 @@ class GroupProvider extends AbstractProvider
             //Check permissions manually
             $this->checkGroupPermission($group, Permission::READONLY);
 
-            return $this->getJsonResponseAndSerialize($group);
+            return $this->getJsonResponseAndSerialize($group, 200, 'group-details');
         })->assert('id', '[0-9a-z]+');
 
         /**
@@ -110,7 +110,7 @@ class GroupProvider extends AbstractProvider
                 ->execute();
 
             $boards = array_values($boards->toArray());
-            return $this->getJsonResponseAndSerialize($boards);
+            return $this->getJsonResponseAndSerialize($boards, 200, 'board-list');
         })->assert('groupId', '[0-9a-z]+');
 
         /**
@@ -140,7 +140,7 @@ class GroupProvider extends AbstractProvider
                 throw $e;
             }
 
-            return $this->getJsonResponseAndSerialize($group, 201);
+            return $this->getJsonResponseAndSerialize($group, 201, 'group-details');
         });
 
         /**
@@ -163,10 +163,12 @@ class GroupProvider extends AbstractProvider
 
             $board = $app['serializer']->deserialize($request->getContent(), 'Models\\Pinboard', 'json');
             $board->setGroupId($groupId);
-            $app['doctrine.odm.mongodb.dm']->persist($board);
+            $group->addBoard($board);
+
+            $app['doctrine.odm.mongodb.dm']->persist($group);
             $app['doctrine.odm.mongodb.dm']->flush();
 
-            return $this->getJsonResponseAndSerialize($board, 201);
+            return $this->getJsonResponseAndSerialize($board, 201, 'board-details');
         })->assert('groupId', '[0-9a-z]+');
 
         return $controllers;

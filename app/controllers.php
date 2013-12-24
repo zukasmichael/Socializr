@@ -19,6 +19,9 @@ $app->before(function () use ($app) {
     }
 });
 
+/**
+ * Service to update user in session
+ */
 $app['service.updateSessionUser'] = $app->share(function ($app) {
     return function (\Models\User $user) use($app) {
         $token = $app['security']->getToken();
@@ -54,37 +57,7 @@ $app->match('/logout', function () {})->bind('logout');
 $app->mount('/group', new \Controllers\GroupProvider());
 $app->mount('/board', new \Controllers\PinboardProvider());
 $app->mount('/message', new \Controllers\MessageProvider());
-
-/**
- * Get user by id
- */
-$app->get('/user/{id}', function ($id) use ($app) {
-    if ($id == 'current') {
-        $user = $app['user'];
-    } else {
-        $user = $app['doctrine.odm.mongodb.dm']
-            ->createQueryBuilder('Models\\User')
-            ->field('id')
-            ->equals($id)
-            ->getQuery()
-            ->getSingleResult();
-    }
-
-    if (!$user) {
-        throw new ResourceNotFound();
-    }
-
-    $user->setLogoutUrl(
-        $app['url_generator']->generate('logout', array(
-            '_csrf_token' => $app['form.csrf_provider']->generateCsrfToken('logout')
-        ))
-    );
-
-    return new Response($app['serializer']->serialize($user, 'json'), 200, array(
-        "Content-Type" => $app['request']->getMimeType('json')
-    ));
-})->assert('id', '[0-9a-z]+');
-
+$app->mount('/user', new \Controllers\UserProvider());
 
 /**
  * Register error handlers
