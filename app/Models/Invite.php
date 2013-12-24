@@ -10,13 +10,8 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @see http://docs.doctrine-project.org/projects/doctrine-mongodb-odm/en/latest/reference/embedded-mapping.html
  */
-class Permission
+class Invite
 {
-    const READONLY = 0;
-    const MEMBER = 1;
-    const MODERATOR = 3;
-    const ADMIN = 5;
-
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
@@ -28,16 +23,16 @@ class Permission
 
     /**
      * @ODM\Int
-     * @JMS\Accessor(getter="getAccessLevel",setter="setAccessLevel")
-     * @JMS\Type("integer")
+     * @JMS\Accessor(getter="getHash",setter="setHash")
+     * @JMS\Type("string")
      * @JMS\Readonly
      * @JMS\Groups({"user-current"})
      */
-    private $accessLevel = self::READONLY;
+    private $hash;
 
     /**
      * @param string $id
-     * @return \Models\Permission
+     * @return \Models\Invite
      */
     public function setGroupId($id)
     {
@@ -54,31 +49,20 @@ class Permission
     }
 
     /**
-     * @param int $accessLevel
-     * @return \Models\Permission
+     * @param string $hash
+     * @return \Models\Invite
      */
-    public function setAccessLevel($accessLevel)
+    public function setHash($hash)
     {
-        $this->accessLevel = (int)$accessLevel;
+        $this->hash = $hash;
         return $this;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getAccessLevel()
+    public function getHash()
     {
-        return $this->accessLevel;
-    }
-
-    /**
-     * Check if the given access level has access
-     * @param int $accessLevel
-     * @return bool
-     */
-    public function hasAccess($accessLevel)
-    {
-        $accessLevel = (int)$accessLevel;
-        return $accessLevel <= $this->getAccessLevel();
+        return $this->hash;
     }
 } 

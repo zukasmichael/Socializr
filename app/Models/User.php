@@ -28,7 +28,7 @@ class User implements AdvancedUserInterface
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
      * @JMS\Readonly
-     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details"})
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details", "user-current"})
      */
     protected $id;
 
@@ -36,7 +36,7 @@ class User implements AdvancedUserInterface
      * @ODM\String
      * @JMS\Accessor(getter="getUserName",setter="setUserName")
      * @JMS\Type("string")
-     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details"})
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details", "user-current"})
      */
     protected $userName;
 
@@ -44,7 +44,7 @@ class User implements AdvancedUserInterface
      * @ODM\String
      * @JMS\Accessor(getter="getEmail",setter="setEmail")
      * @JMS\Type("string")
-     * @JMS\Groups({"user-list", "user-details"})
+     * @JMS\Groups({"user-list", "user-details", "user-current"})
      */
     protected $email;
 
@@ -64,15 +64,28 @@ class User implements AdvancedUserInterface
      * )
      * @JMS\Accessor(getter="getPermissions",setter="setPermissions")
      * @JMS\Type("array")
-     * @JMS\Exclude
+     * @JMS\Readonly
+     * @JMS\Groups({"user-current"})
      */
     private $permissions = array();
+
+    /**
+     * @ODM\EmbedMany(
+     *     targetDocument="\Models\Invite"
+     * )
+     * @JMS\Accessor(getter="getInvites",setter="setInvites")
+     * @JMS\Type("array")
+     * @JMS\Readonly
+     * @JMS\Groups({"user-current"})
+     */
+    private $invites = array();
 
     /**
      * @ODM\Hash
      * @var array
      * @JMS\Type("array<string, string>")
-     * @JMS\Exclude
+     * @JMS\Readonly
+     * @JMS\Groups({"user-current"})
      */
     protected $loginProviderId = array(
         UserProviderListener::SERVICE_FACEBOOK => null,
@@ -85,7 +98,7 @@ class User implements AdvancedUserInterface
      * @var string
      * @ODM\NotSaved
      * @JMS\Type("string")
-     * @JMS\Groups({"user-details"})
+     * @JMS\Groups({"user-details", "user-current"})
      */
     protected $logoutUrl;
 
@@ -93,7 +106,7 @@ class User implements AdvancedUserInterface
      * @var boolean
      * @ODM\Boolean
      * @JMS\Type("boolean")
-     * @JMS\Groups({"user-list", "user-details"})
+     * @JMS\Groups({"user-list", "user-details", "user-current"})
      */
     protected $enabled = true;
 
@@ -315,6 +328,35 @@ class User implements AdvancedUserInterface
             }
         }
         return $groupIds;
+    }
+
+    /**
+     * Get the permissions
+     * @return array
+     */
+    public function getInvites()
+    {
+        return $this->invites;
+    }
+
+    /**
+     * @param array $invites
+     * @return \Models\User
+     */
+    public function setInvites(array $invites)
+    {
+        $this->invites = $invites;
+        return $this;
+    }
+
+    /**
+     * @param \Models\Invite $invite
+     * @return \Models\User
+     */
+    public function addInvite(\Models\Invite $invite)
+    {
+        $this->invites[] = $invite;
+        return $this;
     }
 
     /**
