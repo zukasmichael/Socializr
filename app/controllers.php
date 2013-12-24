@@ -12,10 +12,24 @@ use AppException\ResourceNotFound;
 $app->before(function () use ($app) {
     $token = $app['security']->getToken();
     $app['user'] = null;
+    $app['anonymous_user'] = new \Models\User();
 
     if ($token && !$app['security.trust_resolver']->isAnonymous($token)) {
         $app['user'] = $token->getUser();
     }
+});
+
+$app['service.updateSessionUser'] = $app->share(function ($app) {
+    return function (\Models\User $user) use($app) {
+        $token = $app['security']->getToken();
+
+        if (!$token || $app['security.trust_resolver']->isAnonymous($token)) {
+            throw new \Exception('Can\'t update a user, authenticate first!');
+        }
+
+        $token->setUser($user);
+        $app['user'] = $user;
+    };
 });
 
 /**

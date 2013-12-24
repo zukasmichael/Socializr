@@ -21,11 +21,16 @@ use AppException\ModelInvalid;
  */
 class Group
 {
+    const VISIBILITY_OPEN = 1;
+    const VISIBILITY_PROTECTED = 2;
+    const VISIBILITY_SECRET = 3;
+
     /**
      * @ODM\Id(strategy="AUTO")
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
      * @JMS\Readonly
+     * @JMS\Groups({"list", "details"})
      */
     private $id;
 
@@ -33,6 +38,7 @@ class Group
      * @ODM\String
      * @JMS\Accessor(getter="getName",setter="setName")
      * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
      */
     private $name;
 
@@ -40,8 +46,19 @@ class Group
      * @ODM\String
      * @JMS\Accessor(getter="getDescription",setter="setDescription")
      * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
      */
     private $description;
+
+    /**
+     * @ODM\Int
+     * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
+     * @JMS\Type("integer")
+     * @JMS\Groups({"list", "details"})
+     *
+     * Valid values: [SELF::VISIBILITY_OPEN, SELF::VISIBILITY_PROTECTED, SELF::VISIBILITY_SECRET]
+     */
+    private $visibility;
 
     /**
      * @ODM\ReferenceMany(
@@ -53,40 +70,10 @@ class Group
      * @JMS\Type("array")
      * @JMS\Readonly
      * @JMS\MaxDepth(1)
+     * @JMS\Groups({"details"})
      */
     private $boards = array();
 
-    /**
-     * @ODM\String
-     * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
-     * @JMS\Type("string")
-     * Valid values: {open:'1', besloten:'2', geheim:'3'}
-     */
-    private $visibility;
-
-    /**
-     * @ODM\ReferenceMany(targetDocument="\Models\Member")
-     * @JMS\Exclude
-     */
-    private $members;
-
-    /**
-     * @ODM\Collection
-     * @JMS\Accessor(getter="getAdminIds",setter="setAdminIds")
-     * @JMS\Exclude
-     */
-    private $adminIds = array();
-
-    /**
-     * @ODM\ReferenceMany(
-     *     targetDocument="\Models\User",
-     *     repositoryMethod="findByGroup"
-     * )
-     * @JMS\Accessor(getter="getAdmins",setter="setAdmins")
-     * @JMS\Type("array")
-     * @JMS\Readonly
-     */
-    private $admins = array();
 
     /**
      * @param mixed $id
@@ -143,88 +130,21 @@ class Group
     }
 
     /**
-     * @param string $visibility
+     * @param int $visibility
      * @return \Models\Group
      */
     public function setVisibility($visibility)
     {
-        $this->visibility = $visibility;
+        $this->visibility = (int)$visibility;
         return $this;
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getVisibility()
     {
         return $this->visibility;
-    }
-
-    /**
-     * @param \Models\Member $members
-     * @return \Models\Group
-     */
-    public function setMembers($members)
-    {
-        $this->members = $members;
-        return $this;
-    }
-
-    /**
-     * @return \Models\Member
-     */
-    public function getMembers()
-    {
-        return $this->members;
-    }
-
-    /**
-     * @param array $admins
-     * @return \Models\Group
-     */
-    public function setAdmins(array $admins)
-    {
-        $this->adminIds = array();
-        $this->admins = $admins;
-        foreach ($admins as $admin) {
-            $this->adminIds[] = $admin->getId();
-        }
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAdmins()
-    {
-        return $this->admins;
-    }
-
-    /**
-     * @param \Models\User $admin
-     * @return \Models\Group
-     */
-    public function addAdmin(User $admin)
-    {
-        $this->adminIds[] = $admin->getId();
-        $this->admins[] = $admin;
-        return $this;
-    }
-
-    /**
-     * @throws \Symfony\Component\Intl\Exception\NotImplementedException
-     */
-    public function setAdminIds()
-    {
-        throw new NotImplementedException('Set these id\'s by setting the model.');
-    }
-
-    /**
-     * @return array
-     */
-    public function getAdminIds()
-    {
-        return $this->adminIds;
     }
 
     /**
@@ -261,11 +181,6 @@ class Group
      */
     public function validate()
     {
-        $admins = $this->getAdmins();
-        if (empty($admins)) {
-            throw new ModelInvalid('A group must have an admin.');
-        }
-
         if ($this->getVisibility() < 1 || $this->getVisibility() > 3) {
             throw new ModelInvalid('Visibility for a group must be 1, 2 or 3.');
         }
@@ -274,5 +189,10 @@ class Group
         if (empty($name)) {
             throw new ModelInvalid('A group must have a name.');
         }
+    }
+
+    public function unsetAllData()
+    {
+
     }
 } 

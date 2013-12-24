@@ -6,8 +6,8 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Neutron\Silex\Provider\MongoDBODMServiceProvider;
-use Macedigital\Silex\Provider\SerializerProvider;
-use \Auth\Listener\UserProviderListener;
+use Serialization\SerializerProvider;
+use Auth\Listener\UserProviderListener;
 use JDesrosiers\Silex\Provider\CorsServiceProvider;
 
 $app->register(new HttpCacheServiceProvider());
