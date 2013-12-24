@@ -5,17 +5,24 @@
     <li ng-repeat="message in messages" class="board-message">
         <p>
             <strong>{{message.title}}</strong><br />
-            {{message.content}}
+            <div class="content">
+                <markdown ng-model="message.contents"></markdown>
+            </div>
         </p>
     </li>
 </ul>
+<br />
+<div ng-show="permissions.loggedin">
+    <form ng-submit="addMessage()">
+        <p>
+        <label>Titel</label><input ng-model="message.title">
+        </p>
+        <label>Bericht</label><textarea ng-model="message.contents" rows="4" cols="80"></textarea><br />
+        <button class="btn btn-default">Reageer</button>
+    </form>
 
-<form ng-submit="addBoard()">
-<label>Titel</label><input ng-model="message.title"><br/>
-<label>Bericht</label><textarea ng-model="message.content"></textarea><br />
-<button ng-click="addMessage(message)">Reageer</button>
-</form>
-<strong>Voorbeeld</strong>
-<div class="content">
-    <markdown ng-model="message.content"></markdown>
+    <strong>Voorbeeld</strong>
+    <div class="content">
+        <markdown ng-model="message.contents"></markdown>
+    </div>
 </div>

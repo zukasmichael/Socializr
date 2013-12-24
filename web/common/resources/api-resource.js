@@ -62,7 +62,6 @@ angular.module('apiResource', []).factory('apiResource', ['API_CONFIG', '$http',
             };
 
             //instance methods
-
             Resource.prototype.$id = function () {
                 if (this._id && this._id.$oid) {
                     return this._id.$oid;
@@ -96,6 +95,7 @@ angular.module('apiResource', []).factory('apiResource', ['API_CONFIG', '$http',
         }
         return ApiResourceFactory;
 }]);
+
 angular.module('resources.groups', ['apiResource']);
 angular.module('resources.groups').factory('Groups', ['apiResource', function (apiResource) {
     var Groups = apiResource('group');
