@@ -25,6 +25,7 @@ class Message
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
      * @JMS\Readonly
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details"})
      */
     private $id;
 
@@ -33,6 +34,7 @@ class Message
      * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
      * @JMS\Type("string")
      * @JMS\Readonly
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details"})
      */
     private $groupId;
 
@@ -41,6 +43,7 @@ class Message
      * @JMS\Accessor(getter="getBoardId",setter="setBoardId")
      * @JMS\Type("string")
      * @JMS\Readonly
+     * @JMS\Groups({"board-list", "message-list", "message-details"})
      */
     private $boardId;
 
@@ -61,6 +64,7 @@ class Message
      * @JMS\Accessor(getter="getPostUser",setter="setPostUser")
      * @JMS\Type("Models\User")
      * @JMS\Readonly
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details"})
      */
     private $postUser;
 
@@ -68,6 +72,7 @@ class Message
      * @ODM\String
      * @JMS\Accessor(getter="getTitle",setter="setTitle")
      * @JMS\Type("string")
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details"})
      */
     private $title;
 
@@ -75,6 +80,7 @@ class Message
      * @ODM\String
      * @JMS\Accessor(getter="getContents",setter="setContents")
      * @JMS\Type("string")
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details"})
      */
     private $contents;
 
@@ -83,6 +89,7 @@ class Message
      * @JMS\Accessor(getter="getFormattedCreateAt",setter="setCreateAt")
      * @JMS\Type("string")
      * @JMS\Readonly
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details"})
      */
     private $createdAt;
 

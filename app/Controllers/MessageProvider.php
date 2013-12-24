@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Models\Permission;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,9 +10,9 @@ use AppException\AccessDenied;
 use AppException\ResourceNotFound;
 
 /**
- * Handles all /group routes
+ * Handles all /message routes
  *
- * Class GroupProvider
+ * Class MessageProvider
  * @package Controllers
  */
 class MessageProvider extends AbstractProvider
@@ -35,7 +36,7 @@ class MessageProvider extends AbstractProvider
                 ->getQuery()
                 ->getSingleResult();
 
-            return $this->getJsonResponseAndSerialize($message);
+            return $this->getJsonResponseAndSerialize($message, 200, 'message-details');
         })->assert('id', '[0-9a-z]+');
 
         return $controllers;

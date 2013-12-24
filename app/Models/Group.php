@@ -30,7 +30,7 @@ class Group
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
      * @JMS\Readonly
-     * @JMS\Groups({"list", "details"})
+     * @JMS\Groups({"group-list", "group-details"})
      */
     private $id;
 
@@ -38,7 +38,7 @@ class Group
      * @ODM\String
      * @JMS\Accessor(getter="getName",setter="setName")
      * @JMS\Type("string")
-     * @JMS\Groups({"list", "details"})
+     * @JMS\Groups({"group-list", "group-details"})
      */
     private $name;
 
@@ -46,7 +46,7 @@ class Group
      * @ODM\String
      * @JMS\Accessor(getter="getDescription",setter="setDescription")
      * @JMS\Type("string")
-     * @JMS\Groups({"list", "details"})
+     * @JMS\Groups({"group-list", "group-details"})
      */
     private $description;
 
@@ -54,7 +54,7 @@ class Group
      * @ODM\Int
      * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
      * @JMS\Type("integer")
-     * @JMS\Groups({"list", "details"})
+     * @JMS\Groups({"group-list", "group-details"})
      *
      * Valid values: [SELF::VISIBILITY_OPEN, SELF::VISIBILITY_PROTECTED, SELF::VISIBILITY_SECRET]
      */
@@ -70,7 +70,7 @@ class Group
      * @JMS\Type("array")
      * @JMS\Readonly
      * @JMS\MaxDepth(1)
-     * @JMS\Groups({"details"})
+     * @JMS\Groups({"group-list", "group-details"})
      */
     private $boards = array();
 
