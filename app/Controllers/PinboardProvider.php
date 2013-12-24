@@ -95,7 +95,7 @@ class PinboardProvider extends AbstractProvider
             $app['doctrine.odm.mongodb.dm']->persist($message);
             $app['doctrine.odm.mongodb.dm']->flush();
 
-            return new Response('', 201);
+            return $this->getJsonResponseAndSerialize($message, 201);
         })->assert('boardId', '[0-9a-z]+');
 
         return $controllers;

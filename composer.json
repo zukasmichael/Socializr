@@ -40,7 +40,8 @@
                     "Models": "app/",
                     "Auth": "app/",
                     "Controllers": "app/",
-                    "AppException": "app/"
+                    "AppException": "app/",
+                    "Serialization": "app/"
         }
     }
 }

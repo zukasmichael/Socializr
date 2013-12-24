@@ -7,6 +7,8 @@ use Silex\ControllerProviderInterface;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use JMS\Serializer\SerializationContext;
+
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
 
@@ -25,25 +27,52 @@ abstract class AbstractProvider implements ControllerProviderInterface
     }
 
     /**
+     * @param bool $throwException
+     * @return mixed
      * @throws \AppException\AccessDenied
-     * @return \Models\User
      */
-    protected function checkLoggedin()
+    protected function checkLoggedin($throwException = true)
     {
-        if ($this->app['user'] === null) {
+        if ($this->app['user'] === null && $throwException) {
             throw new AccessDenied();
         }
         return $this->app['user'];
     }
 
     /**
+     * @param \Models\Group $group
+     * @param int $accessLevel
+     * @return \Models\User
+     * @throws \AppException\AccessDenied
+     */
+    protected function checkGroupPermission(\Models\Group $group, $accessLevel)
+    {
+        if ($group->getVisibility() === \Models\Group::VISIBILITY_OPEN && $accessLevel == \Models\Permission::READONLY) {
+            return true;
+        }
+
+        $user = $this->checkLoggedin();
+
+        if (!$user->hasPermissionForGroup($group, $accessLevel)) {
+            throw new AccessDenied('You do not have the correct group permissions.');
+        }
+        return $user;
+    }
+
+    /**
      * @param $responseData
      * @param int $statusCode
+     * @param array|string|null $groups
      * @return Response
      */
-    protected function getJsonResponseAndSerialize($responseData, $statusCode = 200)
+    protected function getJsonResponseAndSerialize($responseData, $statusCode = 200, $groups = null)
     {
-        return $this->getResponseForJson($this->app['serializer']->serialize($responseData, 'json'), $statusCode);
+        $serializeContext = SerializationContext::create()->enableMaxDepthChecks();
+        if (!empty($groups)) {
+            $serializeContext->setGroups($groups);
+        }
+
+        return $this->getResponseForJson($this->app['serializer']->serialize($responseData, 'json', $serializeContext), $statusCode);
     }
 
     /**
