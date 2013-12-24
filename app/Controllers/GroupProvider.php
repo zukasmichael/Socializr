@@ -166,7 +166,7 @@ class GroupProvider extends AbstractProvider
             $board->setGroupId($groupId);
             $group->addBoard($board);
 
-            $app['doctrine.odm.mongodb.dm']->persist($group);
+            $app['doctrine.odm.mongodb.dm']->persist($board);
             $app['doctrine.odm.mongodb.dm']->flush();
 
             return $this->getJsonResponseAndSerialize($board, 201, 'board-details');
