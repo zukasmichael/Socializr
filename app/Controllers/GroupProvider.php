@@ -6,6 +6,7 @@ use Models\Permission;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
 
@@ -74,7 +75,7 @@ class GroupProvider extends AbstractProvider
             $this->checkGroupPermission($group, Permission::READONLY);
 
             return $this->getJsonResponseAndSerialize($group, 200, 'group-details');
-        })->assert('id', '[0-9a-z]+');
+        })->assert('id', '[0-9a-z]+')->bind('groupDetails');
 
         /**
          * Get group boards
@@ -111,7 +112,7 @@ class GroupProvider extends AbstractProvider
 
             $boards = array_values($boards->toArray());
             return $this->getJsonResponseAndSerialize($boards, 200, 'board-list');
-        })->assert('groupId', '[0-9a-z]+');
+        })->assert('groupId', '[0-9a-z]+')->bind('boardDetails');
 
         /**
          * Add group
@@ -170,6 +171,68 @@ class GroupProvider extends AbstractProvider
 
             return $this->getJsonResponseAndSerialize($board, 201, 'board-details');
         })->assert('groupId', '[0-9a-z]+');
+
+
+        /**
+         * Invite a user for a group
+         */
+        $controllers->get('/{groupId}/invite/{userId}', function (Request $request, $groupId, $userId) use ($app) {
+
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')
+                ->equals($groupId)
+                ->getQuery()
+                ->getSingleResult();
+
+            $invitedUser = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\User')
+                ->field('_id')
+                ->equals($userId)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$group || !$invitedUser) {
+                throw new ResourceNotFound();
+            }
+
+            //Check admin permissions manually for current user
+            $user = $this->checkGroupPermission($group, Permission::ADMIN);
+
+            foreach ($invitedUser->getInvites() as $invite) {
+                if ($invite->getGroupId() == $groupId) {
+                    return $this->getJsonResponseAndSerialize($user, 202, 'user-list');
+                }
+            }
+
+            $hash = sha1(openssl_random_pseudo_bytes(32));
+
+            $acceptUri = $app['url_generator']->generate('userAcceptInvite', array(
+                'id' => $invitedUser->getId(),
+                'hash' => $hash
+            ), UrlGenerator::ABSOLUTE_URL);
+            $groupUri = $app['url_generator']->generate('groupDetails', array(
+                'id' => $group->getId()
+            ), UrlGenerator::ABSOLUTE_URL);
+
+            $mailContents = $this->getMailContent('invite', array(
+                '%%SENDERUSERNAME%%' => $user->getUserName(),
+                '%%GROUPNAME%%' => $group->getName(),
+                '%%GROUPURI%%' => $groupUri,
+                '%%ACCEPTURI%%' => $acceptUri
+            ));
+
+            //Send e-mail to user with invite for group
+            $message = \Swift_Message::newInstance()
+                ->setSubject('Socializr - U bent uitgenodigd voor een nieuwe groep!')
+                ->setFrom('socializr.io@gmail.com')
+                ->setTo($invitedUser->getEmail())
+                ->setBody($mailContents)
+                ->setContentType("text/html");
+            $app['mailer']->send($message);
+
+            return $this->getJsonResponseAndSerialize($user, 202, 'user-list');
+        })->assert('groupId', '[0-9a-z]+')->bind('groupInviteUser');
 
         return $controllers;
     }
