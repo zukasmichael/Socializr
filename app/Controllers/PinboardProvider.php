@@ -2,11 +2,13 @@
 
 namespace Controllers;
 
+use Models\Permission;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
+use Symfony\Component\Intl\Exception\NotImplementedException;
 
 /**
  * Handles all /pinboard routes
@@ -26,14 +28,9 @@ class PinboardProvider extends AbstractProvider
 
         /**
          * Get ALL pinboards
-         * TODO: check permissions and visibility
          */
-        $controllers->get('/', function () use ($app) {
-            $boards = $app['doctrine.odm.mongodb.dm']
-                ->getRepository('Models\\Pinboard')
-                ->findAll();
-            $boards = array_values($boards->toArray());
-            return $this->getJsonResponseAndSerialize($boards);
+        $controllers->get('/', function (Request $request) use ($app) {
+            throw new NotImplementedException('This is not implemented and I guess not needed!');
         });
 
         /**
@@ -47,7 +44,25 @@ class PinboardProvider extends AbstractProvider
                 ->getQuery()
                 ->getSingleResult();
 
-            return $this->getJsonResponseAndSerialize($board);
+            if (!$board) {
+                throw new ResourceNotFound();
+            }
+
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')
+                ->equals($board->getGroupId())
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound();
+            }
+
+            //Check permissions manually
+            $this->checkGroupPermission($group, Permission::READONLY);
+
+            return $this->getJsonResponseAndSerialize($board, 200, 'board-details');
         })->assert('id', '[0-9a-z]+');
 
         /**
@@ -55,17 +70,48 @@ class PinboardProvider extends AbstractProvider
          * GET /board/52aa3011341d4140047b23c6/message?limit=30
          */
         $controllers->get('/{boardId}/message', function (Request $request, $boardId) use ($app) {
+
+            //Get limit and offset from request
             $limit = $request->query->getInt('limit', 20);
+            $offset = $request->query->getInt('offset', 0);
+
+            $board = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Pinboard')
+                ->field('_id')
+                ->equals($boardId)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$board) {
+                throw new ResourceNotFound();
+            }
+
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')
+                ->equals($board->getGroupId())
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound();
+            }
+
+            //Check permissions manually
+            $this->checkGroupPermission($group, Permission::READONLY);
+
             $messages = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Message')
                 ->field('boardId')
                 ->equals($boardId)
                 ->limit($limit)
+                ->skip($offset)
                 ->getQuery()
                 ->execute();
 
             $messages = array_values($messages->toArray());
-            return $this->getJsonResponseAndSerialize($messages);
+
+            return $this->getJsonResponseAndSerialize($messages, 200, 'message-list');
         })->assert('boardId', '[0-9a-z]+');
 
         /**
@@ -95,7 +141,7 @@ class PinboardProvider extends AbstractProvider
             $app['doctrine.odm.mongodb.dm']->persist($message);
             $app['doctrine.odm.mongodb.dm']->flush();
 
-            return new Response('', 201);
+            return $this->getJsonResponseAndSerialize($message, 201, 'message-details');
         })->assert('boardId', '[0-9a-z]+');
 
         return $controllers;

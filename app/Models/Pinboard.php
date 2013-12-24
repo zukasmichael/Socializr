@@ -20,6 +20,7 @@ class Pinboard
      * @ODM\Id(strategy="AUTO")
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
+     * @JMS\Groups({"group-list", "group-details", "board-list", "board-details"})
      */
     private $id;
 
@@ -28,6 +29,7 @@ class Pinboard
      * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
      * @JMS\Type("string")
      * @JMS\Readonly
+     * @JMS\Groups({"group-list", "board-list", "board-details"})
      */
     private $groupId;
 
@@ -35,6 +37,7 @@ class Pinboard
      * @ODM\String
      * @JMS\Accessor(getter="getTitle",setter="setTitle")
      * @JMS\Type("string")
+     * @JMS\Groups({"group-list", "group-details", "board-list", "board-details"})
      */
     private $title;
 
@@ -47,13 +50,14 @@ class Pinboard
      * @JMS\Accessor(getter="getMessages",setter="setMessages")
      * @JMS\Type("array")
      * @JMS\Readonly
+     * @JMS\Groups({"group-details", "board-list", "board-details"})
      */
     private $messages = array();
 
     /**
      * @ODM\Field(type="timestamp")
      * @JMS\Readonly
-     * @TODO auto update in mongodb on creation?
+     * @JMS\Groups({"group-list", "group-details", "board-list", "board-details"})
      */
     private $createdAt;
 
@@ -127,6 +131,16 @@ class Pinboard
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    /**
+     * @param \Models\Message $message
+     * @return \Models\Pinboard
+     */
+    public function addMessage(\Models\Message $message)
+    {
+        $this->messages[] = $message;
+        return $this;
     }
 
     //TODO: private $newsitems;

@@ -11,4 +11,8 @@ require __DIR__.'/../app/app.php';
 
 require __DIR__.'/../app/controllers.php';
 
-$app['debug'] ? $app->run() : $app['http_cache']->run();
+if ($app['debug']) {
+    $app->run();
+} else {
+    $app['http_cache']->run();
+}

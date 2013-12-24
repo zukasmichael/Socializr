@@ -28,6 +28,7 @@ class User implements AdvancedUserInterface
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
      * @JMS\Readonly
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details"})
      */
     protected $id;
 
@@ -35,6 +36,7 @@ class User implements AdvancedUserInterface
      * @ODM\String
      * @JMS\Accessor(getter="getUserName",setter="setUserName")
      * @JMS\Type("string")
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details"})
      */
     protected $userName;
 
@@ -42,6 +44,7 @@ class User implements AdvancedUserInterface
      * @ODM\String
      * @JMS\Accessor(getter="getEmail",setter="setEmail")
      * @JMS\Type("string")
+     * @JMS\Groups({"user-list", "user-details"})
      */
     protected $email;
 
@@ -51,8 +54,19 @@ class User implements AdvancedUserInterface
      * @JMS\Accessor(getter="getRoles",setter="setRoles")
      * @JMS\Type("array<string>")
      * @JMS\Readonly
+     * @JMS\Exclude
      */
     protected $roles = array();
+
+    /**
+     * @ODM\EmbedMany(
+     *     targetDocument="\Models\Permission"
+     * )
+     * @JMS\Accessor(getter="getPermissions",setter="setPermissions")
+     * @JMS\Type("array")
+     * @JMS\Exclude
+     */
+    private $permissions = array();
 
     /**
      * @ODM\Hash
@@ -71,6 +85,7 @@ class User implements AdvancedUserInterface
      * @var string
      * @ODM\NotSaved
      * @JMS\Type("string")
+     * @JMS\Groups({"user-details"})
      */
     protected $logoutUrl;
 
@@ -78,6 +93,7 @@ class User implements AdvancedUserInterface
      * @var boolean
      * @ODM\Boolean
      * @JMS\Type("boolean")
+     * @JMS\Groups({"user-list", "user-details"})
      */
     protected $enabled = true;
 
@@ -193,6 +209,115 @@ class User implements AdvancedUserInterface
     }
 
     /**
+     * Get the permissions
+     * @return array
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * @param array $permissions
+     * @return \Models\User
+     */
+    public function setPermissions(array $permissions)
+    {
+        $this->permissions = $permissions;
+        return $this;
+    }
+
+    /**
+     * @param Permission $permission
+     * @return \Models\User
+     */
+    public function addPermission(\Models\Permission $permission)
+    {
+        $this->permissions[] = $permission;
+        return $this;
+    }
+
+    /**
+     * Get a permission for a group
+     * @param string $groupId
+     * @return \Models\Permission
+     */
+    public function getPermissionForGroup($groupId)
+    {
+        foreach ($this->permissions as $permission) {
+            if ($permission->getGroupId() == $groupId) {
+                return $permission;
+            }
+        }
+        $permission = new \Models\Permission();
+        $permission->setGroupId($groupId);
+        $this->permissions[] = $permission;
+        return $permission;
+    }
+
+    /**
+     * Set a permission for a group
+     * @param string $groupId
+     * @param int $accessLevel
+     * @return \Models\User
+     */
+    public function setPermissionForGroup($groupId, $accessLevel)
+    {
+        if (empty($groupId)) {
+            throw new \Exception('Can\'t set a permission for a non existing group.');
+        }
+        $this->getPermissionForGroup($groupId)->setAccessLevel($accessLevel);
+        return $this;
+    }
+
+    /**
+     * Check if user has a permission for a group
+     * If the visibility for a group is protected or secret, we always check for accessLevel member or higher
+     *
+     * @param \Models\Group $group
+     * @param int $accessLevel
+     * @return bool
+     */
+    public function hasPermissionForGroup(\Models\Group $group, $accessLevel = \Models\Permission::READONLY)
+    {
+        if ($group->getVisibility() === \Models\Group::VISIBILITY_OPEN && $accessLevel == \Models\Permission::READONLY) {
+            return true;
+        }
+
+        //check for MEMBER or higher, cause OPEN and READONLY check is done
+        if ($accessLevel < \Models\Permission::MEMBER) {
+            $accessLevel = \Models\Permission::MEMBER;
+        }
+
+        $groupPermission = null;
+        $groupId = $group->getId();
+        foreach ($this->getPermissions() as $permission) {
+            if ($permission->getGroupId() == $groupId) {
+                $groupPermission = $permission;
+                break;
+            }
+        }
+
+        return (!empty($groupId) && $groupPermission !== null && $groupPermission->hasAccess($accessLevel));
+    }
+
+    /**
+     * Get the groupId's for permissions with minimum access level
+     * @param int $minimumAccessLevel
+     * @return array
+     */
+    public function getPermissionGroupIds($minimumAccessLevel = \Models\Permission::MEMBER)
+    {
+        $groupIds = array();
+        foreach ($this->getPermissions() as $permission) {
+            if ($permission->getAccessLevel() >= $minimumAccessLevel) {
+                $groupIds[] = $permission->getGroupId();
+            }
+        }
+        return $groupIds;
+    }
+
+    /**
      * @return bool|string
      */
     public function getPassword()
@@ -305,4 +430,16 @@ class User implements AdvancedUserInterface
     public function eraseCredentials()
     {
     }
+
+    /**
+     * @ODM\PrePersist
+     * @ODM\PreUpdate
+     */
+    /*public function validate()
+    {
+        $permissions = $this->getPermissions();
+        if (is_object($permissions)) {
+            $this->permissions = $permissions->toArray();
+        }
+    }*/
 }
