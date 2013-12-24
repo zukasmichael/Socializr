@@ -188,7 +188,7 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
             $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
             $http.post("https://api.socializr.io/group/", $scope.group)
                 .success(function (data, status, headers, config) {
-                    $scope.group = data;
+                    $location.path('/groups');
                 }).error(function (data, status, headers, config) {
                     console.log(status);
                 });
@@ -249,7 +249,7 @@ angular.module('boards', []).config(['$routeProvider', function ($routeProvider)
     });
 }]);
 
-angular.module('boards').controller('BoardNewController', ['$scope', '$http', '$routeParams', 'Auth', function($scope, $http, $routeParams, Auth){
+angular.module('boards').controller('BoardNewController', ['$scope', '$http', '$routeParams', 'Auth', '$location', function($scope, $http, $routeParams, Auth, $location){
     $scope.board;
     $scope.groupId = $routeParams.groupId;
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
@@ -257,13 +257,14 @@ angular.module('boards').controller('BoardNewController', ['$scope', '$http', '$
     $scope.addBoard = function(){
         $http.post("https://api.socializr.io/group/" + $scope.groupId +'/board', $scope.board)
             .success(function (data, status, headers, config) {
+                $location.path('/groups/' + $scope.groupId);
             }).error(function (data, status, headers, config) {
                 console.log(status);
             });
     };
 }]);
 
-angular.module('boards').controller('BoardDetailsController', ['$scope', '$http', '$routeParams', 'Auth', function($scope, $http, $routeParams, Auth){
+angular.module('boards').controller('BoardDetailsController', ['$scope', '$http', '$routeParams', 'Auth', '$route', function($scope, $http, $routeParams, Auth, $route){
     $scope.boardId = $routeParams.boardId;
     $scope.message;
     $scope.user = Auth.user;
@@ -297,7 +298,7 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
         console.log('addMesage');
         $http.post("https://api.socializr.io/board/" + $scope.boardId +'/message', $scope.message)
             .success(function (data, status, headers, config) {
-                $scope.$apply();
+                $route.reload();
             }).error(function (data, status, headers, config) {
                 console.log(status);
             });
