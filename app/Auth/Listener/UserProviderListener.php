@@ -69,8 +69,7 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
     {
         //Find user by provider id
         $appUser = $this->dm->createQueryBuilder('Models\\User')
-            ->field('loginProviderId.'.$token->getService())
-            ->equals($token->getUid())
+            ->field('loginProviderId.'.$token->getService())->equals($token->getUid())
             ->getQuery()
             ->getSingleResult();
         if ($appUser) {
@@ -78,7 +77,10 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
         }
 
         //If user not found, find user by email
-        $appUser = $this->dm->getRepository('Models\\User')->findOneBy(['email' => $oauthUser->getEmail()]);
+        $appUser = $this->dm->createQueryBuilder('Models\\User')
+            ->field('email')->equals($oauthUser->getEmail())
+            ->getQuery()
+            ->getSingleResult();
         if ($appUser) {
             $appUser = $this->addProviderForUser($appUser, $token);
             return $appUser;

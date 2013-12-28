@@ -219,11 +219,22 @@ if count($php_values['modules']['pecl']) > 0 {
 }
 if count($php_values['ini']) > 0 {
   $php_values['ini'].each { |$key, $value|
-    puphpet::ini { $key:
-      entry       => "CUSTOM/${key}",
-      value       => $value,
-      php_version => $php_values['version'],
-      webserver   => $php_webserver_service
+    if is_array($value) {
+        $php_values['ini'][$key].each { |$innerkey, $innervalue|
+            puphpet::ini { "${key}_${innerkey}":
+              entry       => "CUSTOM_${innerkey}/${key}",
+              value       => $innervalue,
+              php_version => $php_values['version'],
+              webserver   => $php_webserver_service
+            }
+        }
+    } else {
+        puphpet::ini { $key:
+          entry       => "CUSTOM/${key}",
+          value       => $value,
+          php_version => $php_values['version'],
+          webserver   => $php_webserver_service
+        }
     }
   }
 }
@@ -376,4 +387,40 @@ file { '/socializrVendor':
     owner  => "vagrant",
     group  => "www-data",
     mode   => 777
+}
+
+#install zeromq
+exec {"Fetch0MQ":
+    cwd     => "/tmp",
+    command => "/usr/bin/wget http://download.zeromq.org/zeromq-3.2.4.tar.gz -O /tmp/zeromq-3.2.4.tar.gz",
+    unless  => "test -f /tmp/zeromq-3.2.4.tar.gz",
+    require => [ Package["wget"] ],
+}
+
+exec {"Extract0MQ":
+    cwd     => "/tmp",
+    command => "tar -zxf zeromq-3.2.4.tar.gz -C /tmp",
+    unless  => "test -f /tmp/zeromq-3.2.4",
+    require => [ Exec["Fetch0MQ"] ]
+}
+
+exec {"Configure0MQ":
+    cwd     => "/tmp/zeromq-3.2.4",
+    command => "/tmp/zeromq-3.2.4/configure",
+    unless  => "test -f /tmp/zeromq-3.2.4/Makefile",
+    require => [ Exec["Extract0MQ"], Package["libtool"], Package["autoconf"], Package["automake"], Package["uuid-dev"] ]
+}
+
+exec {"Install0MQ":
+    cwd     => "/tmp/zeromq-3.2.4",
+    command => "make install && ldconfig",
+    unless => "test -f /usr/local/lib/libzmq.so",
+    require => [ Exec["Configure0MQ"] ]
+}
+
+exec {"Pecl0Mq":
+    cwd     => "/tmp",
+    command => "yes \"\" | pecl install zmq-beta",
+    unless => "test -f /usr/lib/php5/20100525/zmq.so",
+    require => [ Package["pkg-config"] ]
 }

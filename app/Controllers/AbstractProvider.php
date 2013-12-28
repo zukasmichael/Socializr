@@ -86,23 +86,4 @@ abstract class AbstractProvider implements ControllerProviderInterface
             "Content-Type" => $this->app['request']->getMimeType('json')
         ));
     }
-
-    /**
-     * Get email content for html file
-     * @param $templateName
-     * @param array $variables
-     * @return mixed|null|string
-     */
-    protected function getMailContent($templateName, array $variables) {
-        $file = __DIR__.'/../../resources/email/' . $templateName . '.html';
-        if (!file_exists($file)) {
-            return null;
-        }
-        $content = file_get_contents($file);
-
-        foreach ($variables as $key => $value) {
-            $content = str_replace($key, htmlspecialchars($value, ENT_QUOTES, 'UTF-8'), $content);
-        }
-        return $content;
-    }
 } 

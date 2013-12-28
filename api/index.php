@@ -1,4 +1,5 @@
 <?php
+set_time_limit(360);//6 seconds
 
 $loader = require_once __DIR__.'/../vendor/autoload.php';
 

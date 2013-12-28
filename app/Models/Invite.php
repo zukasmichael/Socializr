@@ -16,16 +16,14 @@ class Invite
      * @ODM\String
      * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
      * @JMS\Type("string")
-     * @JMS\Readonly
      * @JMS\Groups({"user-current"})
      */
     private $groupId;
 
     /**
-     * @ODM\Int
+     * @ODM\String
      * @JMS\Accessor(getter="getHash",setter="setHash")
      * @JMS\Type("string")
-     * @JMS\Readonly
      * @JMS\Groups({"user-current"})
      */
     private $hash;

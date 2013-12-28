@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 /**
  * Handles all /user routes
@@ -77,14 +78,15 @@ class UserProvider extends AbstractProvider
         /**
          * Accept an invite for user
          */
-        $controllers->get('/{id}/invite/{hash}', function ($id) use ($app) {
-            if ($id == 'current') {
-                $user = $app['user'];
-            } else {
+        $controllers->get('/invite/{hash}', function (Request $request, $hash) use ($app) {
+
+            $user = null;
+
+            if ($app['user']) {
                 $user = $app['doctrine.odm.mongodb.dm']
                     ->createQueryBuilder('Models\\User')
-                    ->field('id')
-                    ->equals($id)
+                    ->field('_id')->equals($app['user']->getId())
+                    ->field('invites.hash')->equals($hash)
                     ->getQuery()
                     ->getSingleResult();
             }
@@ -93,13 +95,24 @@ class UserProvider extends AbstractProvider
                 throw new ResourceNotFound();
             }
 
-            $user->setLogoutUrl(
-                $app['url_generator']->generate('logout', array(
-                    '_csrf_token' => $app['form.csrf_provider']->generateCsrfToken('logout')
-                ))
-            );
+            //The user object is serialized from the session and needs do be merged with the documentManager for saving
+            $user = $app['doctrine.odm.mongodb.dm']->merge($user);
 
-            return $this->getJsonResponseAndSerialize($user, 200, 'user-details');
+            $groupId = $user->getInviteForHash($hash)->getGroupId();
+
+            $user->setPermissionForGroup($groupId, \Models\Permission::MEMBER);
+            $user->removeInviteForHash($hash);
+            $app['service.updateSessionUser']($user);
+
+            $app['doctrine.odm.mongodb.dm']->persist($user);
+            $app['doctrine.odm.mongodb.dm']->flush();
+
+            //Redirect the user!
+            //TODO: handle errors for users that access the API url and need a nice error page...
+
+            return $app->redirect(
+                $this->app['angular.urlGenerator']->generate('groupDetails', array('id' => $groupId), UrlGenerator::ABSOLUTE_URL)
+            );
         })->assert('id', '[0-9a-z]+')->bind('userAcceptInvite');
 
         return $controllers;
