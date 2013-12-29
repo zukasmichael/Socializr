@@ -80,6 +80,7 @@ class Permission extends BaseModel
     public function hasAccess($accessLevel)
     {
         $accessLevel = (int)$accessLevel;
-        return $accessLevel >= $this->getAccessLevel();
+        //When the tested access level is smaller then or equal to the actual level, access is granted.
+        return $accessLevel <= $this->getAccessLevel();
     }
 } 

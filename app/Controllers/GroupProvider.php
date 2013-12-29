@@ -266,7 +266,7 @@ class GroupProvider extends AbstractProvider
             return $this->getJsonResponseAndSerialize($blockUser, 200, 'user-list');
         })->assert('groupId', '[0-9a-z]+')->bind('groupBlockUser');
 
-        
+
         /**
          * Promote a user for a group
          */

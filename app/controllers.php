@@ -58,6 +58,7 @@ $app->mount('/group', new \Controllers\GroupProvider());
 $app->mount('/board', new \Controllers\PinboardProvider());
 $app->mount('/message', new \Controllers\MessageProvider());
 $app->mount('/user', new \Controllers\UserProvider());
+$app->mount('/search', new \Controllers\SearchProvider());
 
 /**
  * Register error handlers
