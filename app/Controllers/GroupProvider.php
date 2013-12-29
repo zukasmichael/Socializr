@@ -58,7 +58,7 @@ class GroupProvider extends AbstractProvider
 
             $groups = array_values($groups->toArray());
             return $this->getJsonResponseAndSerialize($groups, 200, 'group-list');
-        });
+        })->bind('groupList');
 
         /**
          * Get group by id
@@ -113,7 +113,7 @@ class GroupProvider extends AbstractProvider
 
             $boards = array_values($boards->toArray());
             return $this->getJsonResponseAndSerialize($boards, 200, 'board-list');
-        })->assert('groupId', '[0-9a-z]+')->bind('boardDetails');
+        })->assert('groupId', '[0-9a-z]+')->bind('boardList');
 
         /**
          * Add group

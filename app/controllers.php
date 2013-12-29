@@ -45,9 +45,9 @@ $app['account.controller'] = $app->share(function() use ($app) {
 /**
  * Login service providers for home url
  */
-$app->get('/', function () use ($app) { return $app->redirect('https://socializr.io'); });
+$app->get('/', function () use ($app) { return $app->redirect('https://socializr.io'); })->bind('home');
 $app->get('/login', 'account.controller:loginAction')->bind('login');
-$app->get('/loginfailed', 'account.controller:loginFailedAction')->bind('loginfailed');
+$app->get('/loginfailed', 'account.controller:loginFailedAction')->bind('loginFailed');
 $app->match('/logout', function () {})->bind('logout');
 
 /**

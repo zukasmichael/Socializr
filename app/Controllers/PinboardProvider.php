@@ -65,7 +65,7 @@ class PinboardProvider extends AbstractProvider
             $this->checkGroupPermission($group, Permission::READONLY);
 
             return $this->getJsonResponseAndSerialize($board, 200, 'board-details');
-        })->assert('id', '[0-9a-z]+');
+        })->assert('id', '[0-9a-z]+')->bind('boardDetails');
 
         /**
          * Get board messages
@@ -114,7 +114,7 @@ class PinboardProvider extends AbstractProvider
             $messages = array_values($messages->toArray());
 
             return $this->getJsonResponseAndSerialize($messages, 200, 'message-list');
-        })->assert('boardId', '[0-9a-z]+');
+        })->assert('boardId', '[0-9a-z]+')->bind('messageList');
 
         /**
          * Add a message to a board
