@@ -91,25 +91,26 @@ class UserProvider extends AbstractProvider
                     ->getSingleResult();
             }
 
-            if (!$user) {
-                throw new ResourceNotFound();
+            if ($user) {
+                //The user object is serialized from the session and needs do be merged with the documentManager for saving
+                $user = $app['doctrine.odm.mongodb.dm']->merge($user);
+
+                $groupId = $user->getInviteForHash($hash)->getGroupId();
+
+                $user->setPermissionForGroup($groupId, \Models\Permission::MEMBER);
+                $user->removeInviteForHash($hash);
+                $app['service.updateSessionUser']($user);
+
+                $app['doctrine.odm.mongodb.dm']->persist($user);
+                $app['doctrine.odm.mongodb.dm']->flush();
+            } else {
+                //TODO: handle errors for users that access the API url and need a nice error page...
+                return $app->redirect(
+                    $this->app['angular.urlGenerator']->generate('home', array(), UrlGenerator::ABSOLUTE_URL)
+                );
             }
 
-            //The user object is serialized from the session and needs do be merged with the documentManager for saving
-            $user = $app['doctrine.odm.mongodb.dm']->merge($user);
-
-            $groupId = $user->getInviteForHash($hash)->getGroupId();
-
-            $user->setPermissionForGroup($groupId, \Models\Permission::MEMBER);
-            $user->removeInviteForHash($hash);
-            $app['service.updateSessionUser']($user);
-
-            $app['doctrine.odm.mongodb.dm']->persist($user);
-            $app['doctrine.odm.mongodb.dm']->flush();
-
             //Redirect the user!
-            //TODO: handle errors for users that access the API url and need a nice error page...
-
             return $app->redirect(
                 $this->app['angular.urlGenerator']->generate('groupDetails', array('id' => $groupId), UrlGenerator::ABSOLUTE_URL)
             );

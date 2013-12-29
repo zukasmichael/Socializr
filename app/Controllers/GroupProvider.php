@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
+use AppException\ModelInvalid;
 use Service\Queue\Invite as InviteService;
 
 /**
@@ -181,31 +182,37 @@ class GroupProvider extends AbstractProvider
 
             $group = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Group')
-                ->field('_id')
-                ->equals($groupId)
+                ->field('_id')->equals($groupId)
                 ->getQuery()
                 ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound('Group does not exist.');
+            } else {
+                //Check admin permissions manually for current user
+                $user = $this->checkGroupPermission($group, Permission::ADMIN);
+            }
 
             $invitedUser = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\User')
-                ->field('_id')
-                ->equals($userId)
+                ->field('_id')->equals($userId)
                 ->getQuery()
                 ->getSingleResult();
 
-            if (!$group || !$invitedUser) {
-                throw new ResourceNotFound();
+            if (!$invitedUser) {
+                throw new ResourceNotFound('Invited user does not exist.');
+            } elseif ($invitedUser->hasPermissionForGroup($group, Permission::MEMBER)) {
+                throw new ModelInvalid('This user already has permission.');
             }
 
-            //Check admin permissions manually for current user
-            $user = $this->checkGroupPermission($group, Permission::ADMIN);
-
+            //Return 200 OK if the invite for the user exists.
             foreach ($invitedUser->getInvites() as $invite) {
                 if ($invite->getGroupId() == $groupId) {
                     return $this->getJsonResponseAndSerialize($user, 200, 'user-list');
                 }
             }
 
+            //Add new invite to the queue
             $inviteService = new \Service\Queue\Invite($app);
             $inviteService->queueInvite(
                 (new \Models\Invite())->setGroupId($groupId),
