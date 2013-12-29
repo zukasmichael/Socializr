@@ -222,6 +222,94 @@ class GroupProvider extends AbstractProvider
             return $this->getJsonResponseAndSerialize($user, 202, 'user-list');
         })->assert('groupId', '[0-9a-z]+')->bind('groupInviteUser');
 
+
+        /**
+         * Block a user for a group
+         */
+        $controllers->get('/{groupId}/block/{userId}', function (Request $request, $groupId, $userId) use ($app) {
+
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')->equals($groupId)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound('Group does not exist.');
+            } else {
+                //Check admin permissions manually for current user
+                $user = $this->checkGroupPermission($group, Permission::ADMIN);
+                if ($user->getId() == $userId) {
+                    throw new ModelInvalid('You can\'t block yourself.');
+                }
+            }
+
+            $blockUser = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\User')
+                ->field('_id')->equals($userId)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$blockUser) {
+                throw new ResourceNotFound('Block user does not exist.');
+            } elseif (!$blockUser->hasPermissionForGroup($group, Permission::MEMBER)) {
+                throw new ModelInvalid('This user does is not a member of this group.');
+            } elseif ($blockUser->hasPermissionForGroup($group, Permission::ADMIN)) {
+                throw new ModelInvalid('Can\'t block an other admin.');
+            }
+
+            $blockUser->setPermissionForGroup($group->getId(), Permission::BLOCKED, false);
+
+            $app['doctrine.odm.mongodb.dm']->persist($blockUser);
+            $app['doctrine.odm.mongodb.dm']->flush();
+
+            return $this->getJsonResponseAndSerialize($blockUser, 200, 'user-list');
+        })->assert('groupId', '[0-9a-z]+')->bind('groupBlockUser');
+
+        
+        /**
+         * Promote a user for a group
+         */
+        $controllers->get('/{groupId}/promote/{userId}', function (Request $request, $groupId, $userId) use ($app) {
+
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')->equals($groupId)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound('Group does not exist.');
+            } else {
+                //Check admin permissions manually for current user
+                $user = $this->checkGroupPermission($group, Permission::ADMIN);
+                if ($user->getId() == $userId) {
+                    throw new ModelInvalid('You can\'t promote yourself.');
+                }
+            }
+
+            $promoteUser = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\User')
+                ->field('_id')->equals($userId)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$promoteUser) {
+                throw new ResourceNotFound('Promote user does not exist.');
+            } elseif (!$promoteUser->hasPermissionForGroup($group, Permission::MEMBER)) {
+                throw new ModelInvalid('This user does is not a member of this group.');
+            } elseif ($promoteUser->hasPermissionForGroup($group, Permission::ADMIN)) {
+                throw new ModelInvalid('Can\'t promote an other admin.');
+            }
+
+            $promoteUser->setPermissionForGroup($group->getId(), Permission::ADMIN);
+
+            $app['doctrine.odm.mongodb.dm']->persist($promoteUser);
+            $app['doctrine.odm.mongodb.dm']->flush();
+
+            return $this->getJsonResponseAndSerialize($promoteUser, 200, 'user-list');
+        })->assert('groupId', '[0-9a-z]+')->bind('groupPromoteUser');
+
         return $controllers;
     }
 }

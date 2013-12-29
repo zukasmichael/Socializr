@@ -47,7 +47,7 @@ abstract class AbstractProvider implements ControllerProviderInterface
      */
     protected function checkGroupPermission(\Models\Group $group, $accessLevel)
     {
-        if ($group->getVisibility() === \Models\Group::VISIBILITY_OPEN && $accessLevel == \Models\Permission::READONLY) {
+        if ($accessLevel == \Models\Permission::READONLY && $group->getVisibility() === \Models\Group::VISIBILITY_OPEN) {
             return true;
         }
 

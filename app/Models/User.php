@@ -306,7 +306,7 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      */
     public function hasPermissionForGroup(\Models\Group $group, $accessLevel = \Models\Permission::READONLY)
     {
-        if ($group->getVisibility() === \Models\Group::VISIBILITY_OPEN && $accessLevel == \Models\Permission::READONLY) {
+        if ($accessLevel == \Models\Permission::READONLY && $group->getVisibility() === \Models\Group::VISIBILITY_OPEN) {
             return true;
         }
 

@@ -12,6 +12,7 @@ use JMS\Serializer\Annotation as JMS;
  */
 class Permission extends BaseModel
 {
+    const BLOCKED = -1;
     const READONLY = 0;
     const MEMBER = 1;
     const MODERATOR = 3;
@@ -79,6 +80,6 @@ class Permission extends BaseModel
     public function hasAccess($accessLevel)
     {
         $accessLevel = (int)$accessLevel;
-        return $accessLevel <= $this->getAccessLevel();
+        return $accessLevel >= $this->getAccessLevel();
     }
 } 
