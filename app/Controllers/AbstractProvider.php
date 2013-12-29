@@ -62,12 +62,13 @@ abstract class AbstractProvider implements ControllerProviderInterface
     /**
      * @param $responseData
      * @param int $statusCode
-     * @param array|string|null $groups
+     * @param null $groups
+     * @param bool $enableDepthChecks
      * @return Response
      */
-    protected function getJsonResponseAndSerialize($responseData, $statusCode = 200, $groups = null)
+    protected function getJsonResponseAndSerialize($responseData, $statusCode = 200, $groups = null, $enableDepthChecks = true)
     {
-        $serializeContext = SerializationContext::create()->enableMaxDepthChecks();
+        $serializeContext = $enableDepthChecks ? SerializationContext::create()->enableMaxDepthChecks() : SerializationContext::create();
         if (!empty($groups)) {
             $serializeContext->setGroups($groups);
         }

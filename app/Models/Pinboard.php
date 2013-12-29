@@ -14,7 +14,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
-class Pinboard
+class Pinboard extends BaseModel
 {
     /**
      * @ODM\Id(strategy="AUTO")
@@ -55,11 +55,20 @@ class Pinboard
     private $messages = array();
 
     /**
-     * @ODM\Field(type="timestamp")
+     * @ODM\Date
      * @JMS\Readonly
      * @JMS\Groups({"group-list", "group-details", "board-list", "board-details"})
      */
     private $createdAt;
+
+    /**
+     * @ODM\Date
+     * @JMS\Accessor(getter="getFormattedLastPostAt",setter="setLastPostAt")
+     * @JMS\Type("string")
+     * @JMS\Readonly
+     * @JMS\Groups({"group-list", "group-details", "board-list", "board-details"})
+     */
+    private $lastPostAt;
 
     /**
      * @param mixed $id
@@ -141,6 +150,36 @@ class Pinboard
     {
         $this->messages[] = $message;
         return $this;
+    }
+
+    /**
+     * @param string $lastPostAt
+     * @return \Models\Pinboard
+     */
+    public function setLastPostAt($lastPostAt)
+    {
+        $this->lastPostAt = $lastPostAt;
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastPostAt()
+    {
+        return $this->lastPostAt;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getFormattedLastPostAt()
+    {
+        if (!$this->lastPostAt) {
+            return $this->lastPostAt;
+        }
+        return $this->lastPostAt->format('c');
     }
 
     //TODO: private $newsitems;

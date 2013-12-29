@@ -19,7 +19,7 @@ use AppException\ModelInvalid;
  *
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
-class Group
+class Group extends BaseModel
 {
     const VISIBILITY_OPEN = 1;
     const VISIBILITY_PROTECTED = 2;

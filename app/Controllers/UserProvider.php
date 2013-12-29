@@ -2,6 +2,10 @@
 
 namespace Controllers;
 
+use Models\Permission;
+use Models\Group;
+use Models\Message;
+
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -74,6 +78,28 @@ class UserProvider extends AbstractProvider
 
             return $this->getJsonResponseAndSerialize($user, 200, $jsonGroup);
         })->assert('id', '[0-9a-z]+')->bind('userDetail');
+
+        /**
+         * Get news feed for user
+         */
+        $controllers->get('/current/news', function (Request $request) use ($app) {
+
+            //Get limit and offset from request
+            $limit = $request->query->getInt('limit', 20);
+            $offset = $request->query->getInt('offset', 0);
+            $allGroupNews = (bool) $request->query->getInt('forAllGroups', 0);
+
+            //Get permissionId's for user
+            $user = $app['user'];
+            if (!$user) {
+                throw new AccessDenied();
+            }
+
+            $newsService = new \Service\News($app);
+            $news = $newsService->getNewsForUser($user, $limit, $offset, $allGroupNews);
+
+            return $this->getJsonResponseAndSerialize($news, 200, ['group-list', 'board-list'], false);
+        })->bind('userNews');
 
         /**
          * Accept an invite for user

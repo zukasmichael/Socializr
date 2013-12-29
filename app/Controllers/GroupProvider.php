@@ -3,6 +3,8 @@
 namespace Controllers;
 
 use Models\Permission;
+use Models\Group;
+
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +45,7 @@ class GroupProvider extends AbstractProvider
 
             //Check permission in query
             $qb = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Group');
-            $qb->addOr($qb->expr()->field('visibility')->notEqual(\Models\Group::VISIBILITY_SECRET));
+            $qb->addOr($qb->expr()->field('visibility')->notEqual(Group::VISIBILITY_SECRET));
             if (!empty($permissionGroupIds)) {
                 $qb->addOr($qb->expr()->field('_id')->in($permissionGroupIds));
             }
@@ -64,8 +66,7 @@ class GroupProvider extends AbstractProvider
         $controllers->get('/{id}', function ($id) use ($app) {
             $group = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Group')
-                ->field('_id')
-                ->equals($id)
+                ->field('_id')->equals($id)
                 ->getQuery()
                 ->getSingleResult();
 
@@ -87,8 +88,7 @@ class GroupProvider extends AbstractProvider
 
             $group = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Group')
-                ->field('_id')
-                ->equals($groupId)
+                ->field('_id')->equals($groupId)
                 ->getQuery()
                 ->getSingleResult();
 
@@ -105,8 +105,7 @@ class GroupProvider extends AbstractProvider
 
             $boards = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Pinboard')
-                ->field('groupId')
-                ->equals($groupId)
+                ->field('groupId')->equals($groupId)
                 ->limit($limit)
                 ->skip($offset)
                 ->getQuery()
@@ -153,8 +152,7 @@ class GroupProvider extends AbstractProvider
 
             $group = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Group')
-                ->field('_id')
-                ->equals($groupId)
+                ->field('_id')->equals($groupId)
                 ->getQuery()
                 ->getSingleResult();
 

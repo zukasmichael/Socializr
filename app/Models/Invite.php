@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @see http://docs.doctrine-project.org/projects/doctrine-mongodb-odm/en/latest/reference/embedded-mapping.html
  */
-class Invite
+class Invite extends BaseModel
 {
     /**
      * @ODM\String

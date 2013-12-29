@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Exception\RuntimeException;
  *
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
-class User implements AdvancedUserInterface, \Serializable
+class User extends BaseModel implements AdvancedUserInterface, \Serializable
 {
     /**
      * @ODM\Id(strategy="AUTO")
