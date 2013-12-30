@@ -10,22 +10,20 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @see http://docs.doctrine-project.org/projects/doctrine-mongodb-odm/en/latest/reference/embedded-mapping.html
  */
-class Invite
+class Invite extends BaseModel
 {
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
      * @JMS\Type("string")
-     * @JMS\Readonly
      * @JMS\Groups({"user-current"})
      */
     private $groupId;
 
     /**
-     * @ODM\Int
+     * @ODM\String
      * @JMS\Accessor(getter="getHash",setter="setHash")
      * @JMS\Type("string")
-     * @JMS\Readonly
      * @JMS\Groups({"user-current"})
      */
     private $hash;

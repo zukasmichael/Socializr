@@ -3,6 +3,8 @@
 namespace Controllers;
 
 use Models\Permission;
+use Models\Group;
+
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -132,13 +134,33 @@ class PinboardProvider extends AbstractProvider
                 throw new ResourceNotFound();
             }
 
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')
+                ->equals($board->getGroupId())
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound();
+            }
+
+            //Check permissions manually
+            $this->checkGroupPermission($group, Permission::MEMBER);
+
+            $now = new \DateTime();
+
             $message = $app['serializer']->deserialize($request->getContent(), 'Models\\Message', 'json');
             $message->setBoardId($boardId);
-            $message->setGroupId($board->getGroupId());
+            $message->setGroupId($group->getId());
             $message->setPostUser($user);
-            $message->setCreatedAt(new \DateTime());
+            $message->setCreatedAt($now);
+            $message->setVisibility($group->getVisibility());
 
             $app['doctrine.odm.mongodb.dm']->persist($message);
+
+            $board->setLastPostAt($now);
+            $app['doctrine.odm.mongodb.dm']->persist($board);
             $app['doctrine.odm.mongodb.dm']->flush();
 
             return $this->getJsonResponseAndSerialize($message, 201, 'message-details');

@@ -3,12 +3,16 @@
 namespace Controllers;
 
 use Models\Permission;
+use Models\Group;
+
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
+use AppException\ModelInvalid;
+use Service\Queue\Invite as InviteService;
 
 /**
  * Handles all /group routes
@@ -41,7 +45,7 @@ class GroupProvider extends AbstractProvider
 
             //Check permission in query
             $qb = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Group');
-            $qb->addOr($qb->expr()->field('visibility')->notEqual(\Models\Group::VISIBILITY_SECRET));
+            $qb->addOr($qb->expr()->field('visibility')->notEqual(Group::VISIBILITY_SECRET));
             if (!empty($permissionGroupIds)) {
                 $qb->addOr($qb->expr()->field('_id')->in($permissionGroupIds));
             }
@@ -62,8 +66,7 @@ class GroupProvider extends AbstractProvider
         $controllers->get('/{id}', function ($id) use ($app) {
             $group = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Group')
-                ->field('_id')
-                ->equals($id)
+                ->field('_id')->equals($id)
                 ->getQuery()
                 ->getSingleResult();
 
@@ -85,8 +88,7 @@ class GroupProvider extends AbstractProvider
 
             $group = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Group')
-                ->field('_id')
-                ->equals($groupId)
+                ->field('_id')->equals($groupId)
                 ->getQuery()
                 ->getSingleResult();
 
@@ -103,8 +105,7 @@ class GroupProvider extends AbstractProvider
 
             $boards = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Pinboard')
-                ->field('groupId')
-                ->equals($groupId)
+                ->field('groupId')->equals($groupId)
                 ->limit($limit)
                 ->skip($offset)
                 ->getQuery()
@@ -151,8 +152,7 @@ class GroupProvider extends AbstractProvider
 
             $group = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Group')
-                ->field('_id')
-                ->equals($groupId)
+                ->field('_id')->equals($groupId)
                 ->getQuery()
                 ->getSingleResult();
 
@@ -180,56 +180,44 @@ class GroupProvider extends AbstractProvider
 
             $group = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\Group')
-                ->field('_id')
-                ->equals($groupId)
+                ->field('_id')->equals($groupId)
                 ->getQuery()
                 ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound('Group does not exist.');
+            } else {
+                //Check admin permissions manually for current user
+                $user = $this->checkGroupPermission($group, Permission::ADMIN);
+            }
 
             $invitedUser = $app['doctrine.odm.mongodb.dm']
                 ->createQueryBuilder('Models\\User')
-                ->field('_id')
-                ->equals($userId)
+                ->field('_id')->equals($userId)
                 ->getQuery()
                 ->getSingleResult();
 
-            if (!$group || !$invitedUser) {
-                throw new ResourceNotFound();
+            if (!$invitedUser) {
+                throw new ResourceNotFound('Invited user does not exist.');
+            } elseif ($invitedUser->hasPermissionForGroup($group, Permission::MEMBER)) {
+                throw new ModelInvalid('This user already has permission.');
             }
 
-            //Check admin permissions manually for current user
-            $user = $this->checkGroupPermission($group, Permission::ADMIN);
-
+            //Return 200 OK if the invite for the user exists.
             foreach ($invitedUser->getInvites() as $invite) {
                 if ($invite->getGroupId() == $groupId) {
-                    return $this->getJsonResponseAndSerialize($user, 202, 'user-list');
+                    return $this->getJsonResponseAndSerialize($user, 200, 'user-list');
                 }
             }
 
-            $hash = sha1(openssl_random_pseudo_bytes(32));
-
-            $acceptUri = $app['url_generator']->generate('userAcceptInvite', array(
-                'id' => $invitedUser->getId(),
-                'hash' => $hash
-            ), UrlGenerator::ABSOLUTE_URL);
-            $groupUri = $app['url_generator']->generate('groupDetails', array(
-                'id' => $group->getId()
-            ), UrlGenerator::ABSOLUTE_URL);
-
-            $mailContents = $this->getMailContent('invite', array(
-                '%%SENDERUSERNAME%%' => $user->getUserName(),
-                '%%GROUPNAME%%' => $group->getName(),
-                '%%GROUPURI%%' => $groupUri,
-                '%%ACCEPTURI%%' => $acceptUri
-            ));
-
-            //Send e-mail to user with invite for group
-            $message = \Swift_Message::newInstance()
-                ->setSubject('Socializr - U bent uitgenodigd voor een nieuwe groep!')
-                ->setFrom('socializr.io@gmail.com')
-                ->setTo($invitedUser->getEmail())
-                ->setBody($mailContents)
-                ->setContentType("text/html");
-            $app['mailer']->send($message);
+            //Add new invite to the queue
+            $inviteService = new \Service\Queue\Invite($app);
+            $inviteService->queueInvite(
+                (new \Models\Invite())->setGroupId($groupId),
+                $group,
+                $invitedUser,
+                $user
+            );
 
             return $this->getJsonResponseAndSerialize($user, 202, 'user-list');
         })->assert('groupId', '[0-9a-z]+')->bind('groupInviteUser');

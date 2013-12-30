@@ -1,0 +1,10 @@
+Options +FollowSymLinks
+IndexIgnore */*
+
+<ifModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !index
+    RewriteRule ^(.*)$ /#/$1 [R=301,NE,L]
+</ifModule>
