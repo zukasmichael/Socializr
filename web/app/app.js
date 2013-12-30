@@ -237,7 +237,7 @@ angular.module('users')
         function ($scope, $http, Auth, profileService) {
             $scope.profileService = new profileService();
 
-            $scope.numPerPage = 8;
+            $scope.numPerPage = 6;
             $scope.currentPage = 1;
 
             $scope.nextPage = function(){
