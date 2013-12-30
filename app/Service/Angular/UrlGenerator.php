@@ -40,13 +40,19 @@ class UrlGenerator extends SymfonyUrlGenerator
         '%23' => '#',
     );
 
+    protected $clientHost;
+    protected $clientScheme;
+
     /**
      * Constructor.
      *
      * @param LoggerInterface|null $logger  A logger instance
      */
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct($clientHost = 'socializr.io', $clientScheme = 'https', LoggerInterface $logger = null)
     {
+        $this->clientHost = $clientHost;
+        $this->clientScheme = $clientScheme;
+
         parent::__construct($this->generateRouteCollection(), $this->generateRequestContext(), $logger);
     }
 
@@ -82,8 +88,8 @@ class UrlGenerator extends SymfonyUrlGenerator
     protected function generateRequestContext()
     {
         $context = new RequestContext();
-        $context->setHost('socializr.io');
-        $context->setScheme('https');
+        $context->setHost($this->clientHost);
+        $context->setScheme($this->clientScheme);
         $context->setHttpPort(80);
         $context->setHttpsPort(443);
         $context->setQueryString('');

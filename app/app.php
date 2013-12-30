@@ -19,10 +19,6 @@ $app->register(new Silex\Provider\FormServiceProvider()); // for CSRF token
 $app->register(new Silex\Provider\SwiftmailerServiceProvider());
 $app->register(new \Service\AngularServiceProvider());
 
-ini_set('session.cookie_domain', '.socializr.io');
-session_name('socializr_sess');
-session_set_cookie_params(0, '/', '.socializr.io');
-
 
 $app['swiftmailer.options'] = $app['mail.options'];
 
@@ -140,8 +136,6 @@ $app['oauth.user_provider_listener'] = $app->share(function ($app) {
     return new \Auth\Listener\UserProviderListener($app['doctrine.odm.mongodb.dm']);
 });
 
-$app->register(new CorsServiceProvider(), array(
-    "cors.allowOrigin" => "https://socializr.io",
-));
+$app->register(new CorsServiceProvider(), $app['config.cors']);
 
 $app->after($app["cors"]);

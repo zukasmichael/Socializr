@@ -68,7 +68,7 @@ Application set-up
 
 * ```./web``` is the app root folder and is exposed to the webserver
 * App libraries are installed via composer in ```./vendor```
-* Add the following to your hosts file: ```192.168.56.110 socializr.io api.socializr.io mongo.socializr.io webgrind.socializr.io```
+* Add the following to your hosts file: ```192.168.56.110 socializr.io api.socializr.io mongo.socializr.io webgrind.socializr.io test.socializr.io testapi.socializr.io```
 * At [mongo.socializr.io](http://mongo.socializr.io) you can manage your mongodb data via an php admin interface
 * For better performance,
 

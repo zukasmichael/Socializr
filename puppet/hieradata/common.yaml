@@ -77,6 +77,14 @@ apache:
                 - 'APP_ENV dev'
             override:
                 - All
+        jKDLATestApi:
+            servername: test.socializr.io
+            docroot: /vagrant/tests/api
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+            override:
+                - All
         hEDLAudgVxUu:
             servername: socializr.io
             serveraliases:
@@ -92,6 +100,8 @@ apache:
             ssl_cert: /etc/apache2/ssl/api.socializr.io.cert
         9M7chQ0DcUuQ:
             servername: api.socializr.io
+            serveraliases:
+                - testapi.socializr.io
             docroot: /vagrant/api
             port: '443'
             setenv:
@@ -103,6 +113,8 @@ apache:
             ssl_cert: /etc/apache2/ssl/api.socializr.io.cert
         4S7chQ0DcUuQ:
             servername: api.socializr.io
+            serveraliases:
+                - testapi.socializr.io
             docroot: /vagrant/api
             port: '80'
             setenv:

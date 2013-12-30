@@ -14,5 +14,15 @@ $app['log.options'] = array(
     'monolog.level'   => 100 // = Logger::DEBUG
 );
 
+// Doctrine (mongodb)
+$app['mongodb.options'] = array(
+    'database'   => 'socializr',
+    'host'     => 'localhost',
+    'port'   => 27017
+);
+
 // enable the debug mode
 $app['debug'] = true;
+
+// disable the test mode
+$app['test'] = false;
