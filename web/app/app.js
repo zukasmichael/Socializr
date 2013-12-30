@@ -198,33 +198,13 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
 
 angular.module('users', []);
 
-angular.module('users').factory('GroupResource', function($http) {
-    var GroupResource = function() {
-        this.groups = [];
-        this.busy = false;
-        this.page = 0;
-        this.limit = 6;
-    };
-
-    GroupResource.prototype.nextPage = function() {
-        if (this.busy) return;
-        this.busy = true;
-        var url = "https://api.socializr.io/group/";
-        $http.get(url).success(function(data) {
-            this.groups = data;
-            this.busy = false;
-        }.bind(this));
-    };
-    return GroupResource;
-});
-
 angular.module('users')
     .config(['$routeProvider', function ($routeProvider) {
         var access = routingConfig.accessLevels;
         $routeProvider.when('/users/profile', {
             templateUrl: '/app/user/profile.tpl.html',
             controller: 'UserProfileCtrl',
-            access: access.public
+            access: access.user
         });
         $routeProvider.when('/users/login', {
             templateUrl: '/app/user/login.tpl.html',
@@ -232,10 +212,43 @@ angular.module('users')
             access: access.public
         });
     }])
-    .controller('UserProfileCtrl', ['$scope', '$http', 'Auth', 'GroupResource',
-        function ($scope, $http, Auth, GroupResource) {
-            $scope.groupresource = new GroupResource();
-            $scope.groups =  $scope.groupresource.nextPage();
+    .factory('profileService', function($http) {
+        groups = [];
+        var profileService = function(){
+            groups = [];
+        };
+        profileService.prototype.getGroups = function(offset, limit) {
+            $http.get('https://api.socializr.io/user/current/news?limit='+limit + '&offset=' + offset)
+                .success(function(data){
+                    var items = data;
+                    for(var i =0; i < data.length; i++){
+                        groups.push(data[i]);
+                    }
+                });
+            return groups;
+        };
+
+        profileService.prototype.count = function() {
+            return groups.length;
+        };
+        return profileService;
+    })
+    .controller('UserProfileCtrl', ['$scope', '$http', 'Auth', 'profileService',
+        function ($scope, $http, Auth, profileService) {
+            $scope.profileService = new profileService();
+
+            $scope.numPerPage = 8;
+            $scope.currentPage = 1;
+
+            $scope.nextPage = function(){
+                $scope.currentPage++;
+            };
+
+            $scope.setPage = function () {
+                $scope.groups = $scope.profileService.getGroups( ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage );
+            };
+
+            $scope.$watch( 'currentPage', $scope.setPage );
         }])
     .controller('UserLoginCtrl', ['$scope', '$http',
         function ($scope, $http) {
@@ -256,7 +269,17 @@ angular.module('users')
                 window.location = "https://api.socializr.io" + $scope.logins.google;
             };
         }]
-    );
+    ).directive('whenScrolled', function() {
+        return function(scope, elm, attr) {
+            var raw = elm[0];
+
+            elm.bind('scroll', function() {
+                if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+                    scope.$apply(attr.whenScrolled);
+                }
+            });
+        };
+    });
 angular.module('boards', []).config(['$routeProvider', function ($routeProvider) {
     var access = routingConfig.accessLevels;
     $routeProvider.when('/boards/new/:groupId', {

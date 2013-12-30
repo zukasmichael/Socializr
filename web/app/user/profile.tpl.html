@@ -3,9 +3,13 @@
     <strong>Naam:</strong> {{user.user_name}}<br />
     <strong>E-mail:</strong> {{user.email}}<br />
 </p>
+<div id="news" when-scrolled="nextPage()">
 <div ng-repeat="group in groups" class="profile-group">
     <a href="/groups/{{group.id}}"><strong>{{group.name}}</strong></a>
-    <div ng-repeat="board in group.boards">{{board.title}}
-        <ul><li ng-repeat="message in board.messages">{{message.title}}</li></ul>
+    <div ng-repeat="board in group.boards"><a href="/boards/{{board.id}}">{{board.title}}</a>
+        <ul>
+            <li ng-repeat="message in board.messages">{{message.title}}</li>
+        </ul>
     </div>
+</div>
 </div>
