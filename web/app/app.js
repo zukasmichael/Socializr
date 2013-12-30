@@ -39,7 +39,7 @@ angular.module('socializrApp').run(['$rootScope', '$location', '$http', 'Auth', 
         }
     });
 
-}])
+}]);
 angular.module('socializrApp').controller('AppCtrl', ['$scope', 'Auth', function ($scope, Auth) {
     Auth.login(
         function(user) {
@@ -197,6 +197,27 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
 );
 
 angular.module('users', []);
+
+angular.module('users').factory('GroupResource', function($http) {
+    var GroupResource = function() {
+        this.groups = [];
+        this.busy = false;
+        this.page = 0;
+        this.limit = 6;
+    };
+
+    GroupResource.prototype.nextPage = function() {
+        if (this.busy) return;
+        this.busy = true;
+        var url = "https://api.socializr.io/group/";
+        $http.get(url).success(function(data) {
+            this.groups = data;
+            this.busy = false;
+        }.bind(this));
+    };
+    return GroupResource;
+});
+
 angular.module('users')
     .config(['$routeProvider', function ($routeProvider) {
         var access = routingConfig.accessLevels;
@@ -211,9 +232,10 @@ angular.module('users')
             access: access.public
         });
     }])
-    .controller('UserProfileCtrl', ['$scope', '$http', 'Auth',
-        function ($scope, $http, Auth) {
-
+    .controller('UserProfileCtrl', ['$scope', '$http', 'Auth', 'GroupResource',
+        function ($scope, $http, Auth, GroupResource) {
+            $scope.groupresource = new GroupResource();
+            $scope.groups =  $scope.groupresource.nextPage();
         }])
     .controller('UserLoginCtrl', ['$scope', '$http',
         function ($scope, $http) {
