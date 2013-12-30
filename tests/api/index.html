@@ -10,11 +10,11 @@
 <div id="mocha">
     <p>Tests for users that are not logged-in:</p>
     <div id="loggedout">
-        <span class="messages">Initializing test suite for logged-out users...</span>
+        <h2 class="messages">Initializing test suite for logged-out users...</h2>
     </div>
     <p>Tests for users that are logged-in:</p>
     <div id="loggedin">
-        <span class="messages">Initializing test suite for logged-in users...</span>
+        <h2 class="messages">Initializing test suite for logged-in users...</h2>
     </div>
 </div>
 <script src="vendor/jquery.js"></script>
@@ -46,17 +46,17 @@
     request.done(function( msg ) {
         currentUser = msg;
 
-        $("#loggedout").html('<span>Can\'t run tests, you are logged-in. Log out first!</span>');
+        $("#loggedout").html('<h2>Can\'t run tests, you are logged-in. Log out first!</h2>');
 
         $("#loggedin").html(
-            '<button onclick="logout();">Logout</button>' +
-            '<a href="/logintests.html"><button>Start logged-in tests</button></a>'
+            '<a href="/loggedintests.html"><button>Start logged-in tests</button></a></br>' +
+            '<button onclick="logout();">Logout</button>'
         );
     });
 
     request.fail(function( jqXHR, textStatus ) {
         if (jqXHR.status == 404) {
-            $("#loggedout").html('<a href="/logouttests.html"><button>Start logged-out tests</button></a>');
+            $("#loggedout").html('<a href="/loggedouttests.html"><button>Start logged-out tests</button></a>');
 
             //show login
             var request = $.ajax({
@@ -73,7 +73,7 @@
                     alert('Unknown login format');
                 }
                 $("#loggedin").html(
-                    '<p>First login with a test user</p>' +
+                    '<h2>First login with a test user</h2>' +
                     '<a href="http://testapi.socializr.io' + msg.loginPaths.facebook + '"><button>Login with Facebook</button></a></br>' +
                     '<a href="http://testapi.socializr.io' + msg.loginPaths.google + '"><button>Login with Google</button></a></br>' +
                     '<a href="http://testapi.socializr.io' + msg.loginPaths.twitter + '"><button>Login with Twitter</button></a>'
