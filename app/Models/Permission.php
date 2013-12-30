@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @see http://docs.doctrine-project.org/projects/doctrine-mongodb-odm/en/latest/reference/embedded-mapping.html
  */
-class Permission
+class Permission extends BaseModel
 {
     const READONLY = 0;
     const MEMBER = 1;

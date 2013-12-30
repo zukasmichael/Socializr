@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\Exception\RuntimeException;
  *
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
-class User implements AdvancedUserInterface
+class User extends BaseModel implements AdvancedUserInterface, \Serializable
 {
     /**
      * @ODM\Id(strategy="AUTO")
@@ -270,16 +270,29 @@ class User implements AdvancedUserInterface
 
     /**
      * Set a permission for a group
-     * @param string $groupId
-     * @param int $accessLevel
-     * @return \Models\User
+     *
+     * @param $groupId
+     * @param $accessLevel
+     * @param bool $disableDowngrade Disable the downgrading of permissions, default=true
+     * @return $this
+     * @throws \Exception
      */
-    public function setPermissionForGroup($groupId, $accessLevel)
+    public function setPermissionForGroup($groupId, $accessLevel, $disableDowngrade = true)
     {
         if (empty($groupId)) {
             throw new \Exception('Can\'t set a permission for a non existing group.');
         }
-        $this->getPermissionForGroup($groupId)->setAccessLevel($accessLevel);
+
+        $permission = $this->getPermissionForGroup($groupId);
+
+        //Special case for downgrading permissions
+        if ($disableDowngrade && $permission->getAccessLevel() >= $accessLevel) {
+            //Only set the access level if the current permission is smaller then the given permission
+            return $this;
+        }
+
+        $permission->setAccessLevel($accessLevel);
+
         return $this;
     }
 
@@ -356,6 +369,37 @@ class User implements AdvancedUserInterface
     public function addInvite(\Models\Invite $invite)
     {
         $this->invites[] = $invite;
+        return $this;
+    }
+
+    /**
+     * @param string hash
+     * @return \Models\Invite
+     */
+    public function getInviteForHash($hash)
+    {
+        foreach ($this->invites as $invite) {
+            if ($invite->getHash() == $hash) {
+                return $invite;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string hash
+     * @return \Models\User
+     */
+    public function removeInviteForHash($hash)
+    {
+        foreach ($this->invites as $key => $invite) {
+            if ($invite->getHash() == $hash) {
+                unset($this->invites[$key]);
+                break;
+            }
+        }
+
         return $this;
     }
 
@@ -484,4 +528,32 @@ class User implements AdvancedUserInterface
             $this->permissions = $permissions->toArray();
         }
     }*/
+
+    public function serialize()
+    {
+        $data = array();
+        foreach (get_class_methods($this) as $methodName) {
+            if (stripos($methodName, 'get') === 0) {
+                $propName = lcfirst(substr($methodName, 3));
+                if (property_exists($this, $propName)) {
+                    $data[$propName] = $this->{$methodName}();
+                    if ($data[$propName] instanceof \Doctrine\ODM\MongoDB\PersistentCollection) {
+                        $data[$propName] = $data[$propName]->toArray();
+                    }
+                }
+            }
+        }
+        return serialize($data);
+    }
+
+    public function unserialize($data)
+    {
+        $data = unserialize($data);
+        foreach ($data as $key => $value) {
+            $methodName = 'set' . ucfirst($key);
+            if (method_exists($this, $methodName)) {
+                $this->{$methodName}($value);
+            }
+        }
+    }
 }

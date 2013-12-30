@@ -19,6 +19,6 @@ class PinboardRepository extends \Doctrine\ODM\MongoDB\DocumentRepository
      */
     public function findByGroupId($groupId)
     {
-        return $this->findBy(array('groupId' => $groupId));
+        return $this->findBy(array('groupId' => $groupId))->sort(array('lastPostAt' => 'desc'));
     }
 } 

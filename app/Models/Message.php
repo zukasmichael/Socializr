@@ -18,7 +18,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
-class Message
+class Message extends BaseModel
 {
     /**
      * @ODM\Id(strategy="AUTO")
@@ -92,6 +92,16 @@ class Message
      * @JMS\Groups({"board-list", "board-details", "message-list", "message-details"})
      */
     private $createdAt;
+
+    /**
+     * @ODM\Int
+     * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
+     * @JMS\Type("integer")
+     * @JMS\Groups({"group-list", "group-details"})
+     *
+     * Valid values: [Group::VISIBILITY_OPEN, Group::VISIBILITY_PROTECTED, Group::VISIBILITY_SECRET]
+     */
+    private $visibility;
 
     /**
      * @param mixed $id
@@ -242,7 +252,27 @@ class Message
      */
     public function getFormattedCreateAt()
     {
+        if (!$this->createdAt) {
+            return $this->createdAt;
+        }
         return $this->createdAt->format('c');
     }
 
+    /**
+     * @param int $visibility
+     * @return \Models\Message
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = (int)$visibility;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
 } 

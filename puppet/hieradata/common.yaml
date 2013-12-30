@@ -48,11 +48,17 @@ server:
     packages:
         - build-essential
         - vim
+        - wget
         - curl
         - git-core
         - ssh
         - openssl
         - libssl-dev
+        - libtool
+        - autoconf
+        - automake
+        - uuid-dev
+        - pkg-config
     dot_files:
         -
             bash_aliases: null
@@ -136,7 +142,9 @@ php:
     ini:
         display_errors: On
         error_reporting: '-1'
-        extension: 'mongo.so'
+        extension:
+            - 'mongo.so'
+            - 'zmq.so'
         xdebug.profiler_output_dir: '"/vagrant/xdebug"'
         xdebug.profiler_enable_trigger: 1
         xdebug.profiler_output_name: 'xdebug.out.%H%R-%t'

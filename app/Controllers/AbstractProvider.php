@@ -62,12 +62,13 @@ abstract class AbstractProvider implements ControllerProviderInterface
     /**
      * @param $responseData
      * @param int $statusCode
-     * @param array|string|null $groups
+     * @param null $groups
+     * @param bool $enableDepthChecks
      * @return Response
      */
-    protected function getJsonResponseAndSerialize($responseData, $statusCode = 200, $groups = null)
+    protected function getJsonResponseAndSerialize($responseData, $statusCode = 200, $groups = null, $enableDepthChecks = true)
     {
-        $serializeContext = SerializationContext::create()->enableMaxDepthChecks();
+        $serializeContext = $enableDepthChecks ? SerializationContext::create()->enableMaxDepthChecks() : SerializationContext::create();
         if (!empty($groups)) {
             $serializeContext->setGroups($groups);
         }
@@ -85,24 +86,5 @@ abstract class AbstractProvider implements ControllerProviderInterface
         return new Response($jsonString, $statusCode, array(
             "Content-Type" => $this->app['request']->getMimeType('json')
         ));
-    }
-
-    /**
-     * Get email content for html file
-     * @param $templateName
-     * @param array $variables
-     * @return mixed|null|string
-     */
-    protected function getMailContent($templateName, array $variables) {
-        $file = __DIR__.'/../../resources/email/' . $templateName . '.html';
-        if (!file_exists($file)) {
-            return null;
-        }
-        $content = file_get_contents($file);
-
-        foreach ($variables as $key => $value) {
-            $content = str_replace($key, htmlspecialchars($value, ENT_QUOTES, 'UTF-8'), $content);
-        }
-        return $content;
     }
 } 

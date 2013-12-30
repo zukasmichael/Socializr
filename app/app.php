@@ -17,6 +17,7 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\FormServiceProvider()); // for CSRF token
 $app->register(new Silex\Provider\SwiftmailerServiceProvider());
+$app->register(new \Service\AngularServiceProvider());
 
 ini_set('session.cookie_domain', '.socializr.io');
 session_name('socializr_sess');
@@ -25,10 +26,11 @@ session_set_cookie_params(0, '/', '.socializr.io');
 
 $app['swiftmailer.options'] = $app['mail.options'];
 
+$app->register(new MonologServiceProvider(), $app['log.options']);
+
 /**
  * MongoDb
  */
-$app->register(new MonologServiceProvider(), $app['log.options']);
 $app->register(new MongoDBODMServiceProvider(), array(
     'doctrine.odm.mongodb.connection_options'      => $app['mongodb.options'],
     'doctrine.odm.mongodb.documents' => array(
