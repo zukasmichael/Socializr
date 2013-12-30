@@ -36,6 +36,24 @@ class MessageProvider extends AbstractProvider
                 ->getQuery()
                 ->getSingleResult();
 
+            if (!$message) {
+                throw new ResourceNotFound();
+            }
+
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')
+                ->equals($message->getGroupId())
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound();
+            }
+
+            //Check permissions manually
+            $this->checkGroupPermission($group, Permission::MEMBER);
+
             return $this->getJsonResponseAndSerialize($message, 200, 'message-details');
         })->assert('id', '[0-9a-z]+');
 
