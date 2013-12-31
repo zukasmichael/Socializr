@@ -23,6 +23,9 @@ use Symfony\Component\Security\Core\Exception\RuntimeException;
  */
 class User extends BaseModel implements AdvancedUserInterface, \Serializable
 {
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+
     /**
      * @ODM\Id(strategy="AUTO")
      * @JMS\Accessor(getter="getId",setter="setId")
@@ -207,7 +210,7 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      */
     public function setRoles($roles)
     {
-        $this->roles = $roles;
+        $this->roles = (array)$roles;
         return $this;
     }
 
@@ -217,8 +220,20 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      */
     public function addRole($role)
     {
-        $this->roles[] = $role;
+        if (!in_array($role, $this->roles)) {
+            $this->roles[] = $role;
+        }
         return $this;
+    }
+
+    /**
+     * Check if user is super admin
+     *
+     * @return bool
+     */
+    public function isSuperAdmin()
+    {
+        return in_array(self::ROLE_SUPER_ADMIN, $this->roles);
     }
 
     /**
@@ -300,12 +315,16 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      * Check if user has a permission for a group
      * If the visibility for a group is protected or secret, we always check for accessLevel member or higher
      *
-     * @param \Models\Group $group
+     * @param Group $group
      * @param int $accessLevel
+     * @param bool $trueForSuperAdmin
      * @return bool
      */
-    public function hasPermissionForGroup(\Models\Group $group, $accessLevel = \Models\Permission::READONLY)
+    public function hasPermissionForGroup(\Models\Group $group, $accessLevel = \Models\Permission::READONLY, $trueForSuperAdmin = true)
     {
+        if ($trueForSuperAdmin && $this->isSuperAdmin()) {
+            return true;
+        }
         if ($accessLevel == \Models\Permission::READONLY && $group->getVisibility() === \Models\Group::VISIBILITY_OPEN) {
             return true;
         }
@@ -444,7 +463,7 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      * @return string
      * @throws \RuntimeException
      */
-    public function getProviderId($service = null)
+    public function getLoginProviderId($service = null)
     {
         if ($service === null) {
             return $this->loginProviderId;
@@ -453,6 +472,17 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
             throw new RuntimeException("No login provider service $service configured.");
         }
         return $this->loginProviderId[$service];
+    }
+
+    /**
+     * @param array $loginProviderId
+     * @throws \RuntimeException
+     * @return $this
+     */
+    public function setLoginProviderId(array $loginProviderId)
+    {
+        $this->loginProviderId = $loginProviderId;
+        return $this;
     }
 
     /**

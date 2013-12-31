@@ -94,20 +94,25 @@ class SearchProvider extends AbstractProvider
 
         $qb = $this->app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Group');
 
-        //Get the permission expression
-        //$permExpr = $qb->expr()->field('visibility')->notEqual(Group::VISIBILITY_SECRET);
-        $permExpr= $qb->expr()->addOr($qb->expr()->field('visibility')->notEqual(Group::VISIBILITY_SECRET));
-        if (!empty($permissionGroupIds)) {
-            $permExpr->addOr($qb->expr()->field('_id')->in($permissionGroupIds));
-        }
+        if ($user->isSuperAdmin()) {
+            //Query the different fields
+            $qb->addOr($qb->expr()->field('name')->equals(new \MongoRegex("/.*$query.*/i")));
+            $qb->addOr($qb->expr()->field('description')->equals(new \MongoRegex("/.*$query.*/i")));
+        } else {
+            //Get the permission expression
+            $permExpr= $qb->expr()->addOr($qb->expr()->field('visibility')->notEqual(Group::VISIBILITY_SECRET));
+            if (!empty($permissionGroupIds)) {
+                $permExpr->addOr($qb->expr()->field('_id')->in($permissionGroupIds));
+            }
 
-        //Query the different fields
-        $qb->addOr(
-            $qb->expr()->field('name')->equals(new \MongoRegex("/.*$query.*/i"))->addAnd($permExpr)
-        );
-        $qb->addOr(
-            $qb->expr()->field('description')->equals(new \MongoRegex("/.*$query.*/i"))->addAnd($permExpr)
-        );
+            //Query the different fields
+            $qb->addOr(
+                $qb->expr()->field('name')->equals(new \MongoRegex("/.*$query.*/i"))->addAnd($permExpr)
+            );
+            $qb->addOr(
+                $qb->expr()->field('description')->equals(new \MongoRegex("/.*$query.*/i"))->addAnd($permExpr)
+            );
+        }
 
         $groups = $qb->limit($limit)
             ->skip($offset)

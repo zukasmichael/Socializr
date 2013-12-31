@@ -60,7 +60,16 @@ class Account
 
         if ($this->user !== null)
         {
-            header("Location: https://socializr.io/#/user/profile");
+            if ($_SERVER['is_installation']) {
+                $jsonResponse->loggedin = true;
+                return new JsonResponse($jsonResponse);
+            }
+
+            $locationHeader = "Location: https://socializr.io/#/user/profile";
+            if ($this->app['test'] === true) {
+                $locationHeader = "Location: http://test.socializr.io/";
+            }
+            header($locationHeader);
             exit;
         }
         else

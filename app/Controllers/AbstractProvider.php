@@ -52,6 +52,9 @@ abstract class AbstractProvider implements ControllerProviderInterface
         }
 
         $user = $this->checkLoggedin();
+        if ($user->isSuperAdmin()) {
+            return $user;
+        }
 
         if (!$user->hasPermissionForGroup($group, $accessLevel)) {
             throw new AccessDenied('You do not have the correct group permissions.');

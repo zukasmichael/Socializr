@@ -46,7 +46,9 @@ $app['account.controller'] = $app->share(function() use ($app) {
  * Login service providers for home url
  */
 $app->get('/', function () use ($app) {
-    if ($app['test'] === true) {
+    if ($_SERVER['is_installation']) {
+        return null;//do not redirect on installation
+    } elseif ($app['test'] === true) {
         return $app->redirect('http://test.socializr.io');
     }
     return $app->redirect('https://socializr.io');

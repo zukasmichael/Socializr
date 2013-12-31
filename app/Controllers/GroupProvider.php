@@ -43,11 +43,14 @@ class GroupProvider extends AbstractProvider
             $user = $app['user'] ? $app['user'] : $app['anonymous_user'];
             $permissionGroupIds = $user->getPermissionGroupIds();
 
-            //Check permission in query
             $qb = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Group');
-            $qb->addOr($qb->expr()->field('visibility')->notEqual(Group::VISIBILITY_SECRET));
-            if (!empty($permissionGroupIds)) {
-                $qb->addOr($qb->expr()->field('_id')->in($permissionGroupIds));
+
+            //Check permission in query
+            if (!$user->isSuperAdmin()) {
+                $qb->addOr($qb->expr()->field('visibility')->notEqual(Group::VISIBILITY_SECRET));
+                if (!empty($permissionGroupIds)) {
+                    $qb->addOr($qb->expr()->field('_id')->in($permissionGroupIds));
+                }
             }
 
             //Query all groups
