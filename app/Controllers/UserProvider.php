@@ -55,11 +55,6 @@ class UserProvider extends AbstractProvider
         $controllers->get('/{id}', function ($id) use ($app) {
             if ($id == 'current') {
                 $user = $app['user'];
-                $user->setLogoutUrl(
-                    $app['url_generator']->generate('logout', array(
-                        '_csrf_token' => $app['form.csrf_provider']->generateCsrfToken('logout')
-                    ))
-                );
                 $jsonGroup = 'user-current';
             } else {
                 $jsonGroup = 'user-details';
@@ -73,6 +68,14 @@ class UserProvider extends AbstractProvider
 
             if (!$user) {
                 throw new ResourceNotFound();
+            }
+
+            if ($id == 'current') {
+                $user->setLogoutUrl(
+                    $app['url_generator']->generate('logout', array(
+                        '_csrf_token' => $app['form.csrf_provider']->generateCsrfToken('logout')
+                    ))
+                );
             }
 
             return $this->getJsonResponseAndSerialize($user, 200, $jsonGroup);
