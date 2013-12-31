@@ -1,0 +1,158 @@
+[
+    {
+        "id": "52b99eac341d411b0a7b23c6",
+        "name": "Velgen",
+        "description": "Alles over velgen.",
+        "visibility": 1,
+        "boards": [
+            {
+                "id": "52b9b087341d41f4037b23c6",
+                "group_id": "52b99eac341d411b0a7b23c6",
+                "title": "5 spaaks velgen",
+                "messages": [
+                    {
+                        "id": "52b9b152341d411b0a7b23c7",
+                        "group_id": "52b99eac341d411b0a7b23c6",
+                        "board_id": "52b9b087341d41f4037b23c6",
+                        "post_user": {
+                            "id": "52a74318341d412d067b23c8",
+                            "user_name": "Sander Groen"
+                        },
+                        "title": "Check mijn nieuwe gouden velgen!!!",
+                        "contents": "![gouden velg](http:\/\/i79.photobucket.com\/albums\/j148\/KenjiSil80\/Toyota%20MarkII\/ResizeofFivespoke01.jpg)",
+                        "created_at": "2013-12-24T17:07:46+01:00"
+                    },
+                    {
+                        "id": "52b9b3f4341d411a0a7b23c6",
+                        "group_id": "52b99eac341d411b0a7b23c6",
+                        "board_id": "52b9b087341d41f4037b23c6",
+                        "post_user": {
+                            "id": "52a74318341d412d067b23c8",
+                            "user_name": "Sander Groen"
+                        },
+                        "title": "Cool",
+                        "contents": "Ow wauw diezijn vet!!",
+                        "created_at": "2013-12-24T17:19:00+01:00"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "52b99eac341d411b0a7b23c6",
+        "name": "Banden",
+        "description": "Alles over banden.",
+        "visibility": 1,
+        "boards": [
+            {
+                "id": "3",
+                "group_id": "2",
+                "title": "Dikke sloffen",
+                "messages": [
+                    {
+                        "id": "52b9b152341d411b0a7b23c7",
+                        "group_id": "52b99eac341d411b0a7b23c6",
+                        "board_id": "52b9b087341d41f4037b23c6",
+                        "post_user": {
+                            "id": "52a74318341d412d067b23c8",
+                            "user_name": "Sander Groen"
+                        },
+                        "title": "Check mijn nieuwe gouden velgen!!!",
+                        "contents": "![gouden velg](http:\/\/i79.photobucket.com\/albums\/j148\/KenjiSil80\/Toyota%20MarkII\/ResizeofFivespoke01.jpg)",
+                        "created_at": "2013-12-24T17:07:46+01:00"
+                    },
+                    {
+                        "id": "52b9b3f4341d411a0a7b23c6",
+                        "group_id": "52b99eac341d411b0a7b23c6",
+                        "board_id": "52b9b087341d41f4037b23c6",
+                        "post_user": {
+                            "id": "52a74318341d412d067b23c8",
+                            "user_name": "Sander Groen"
+                        },
+                        "title": "Cool",
+                        "contents": "Ow wauw diezijn vet!!",
+                        "created_at": "2013-12-24T17:19:00+01:00"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "name": "Banden",
+        "description": "Alles over banden.",
+        "visibility": 1,
+        "boards": [
+            {
+                "id": "3",
+                "group_id": "2",
+                "title": "Dikke sloffen",
+                "messages": [
+                    {
+                        "id": "52b9b152341d411b0a7b23c7",
+                        "group_id": "52b99eac341d411b0a7b23c6",
+                        "board_id": "52b9b087341d41f4037b23c6",
+                        "post_user": {
+                            "id": "52a74318341d412d067b23c8",
+                            "user_name": "Sander Groen"
+                        },
+                        "title": "Check mijn nieuwe gouden velgen!!!",
+                        "contents": "![gouden velg](http:\/\/i79.photobucket.com\/albums\/j148\/KenjiSil80\/Toyota%20MarkII\/ResizeofFivespoke01.jpg)",
+                        "created_at": "2013-12-24T17:07:46+01:00"
+                    },
+                    {
+                        "id": "52b9b3f4341d411a0a7b23c6",
+                        "group_id": "52b99eac341d411b0a7b23c6",
+                        "board_id": "52b9b087341d41f4037b23c6",
+                        "post_user": {
+                            "id": "52a74318341d412d067b23c8",
+                            "user_name": "Sander Groen"
+                        },
+                        "title": "Cool",
+                        "contents": "Ow wauw diezijn vet!!",
+                        "created_at": "2013-12-24T17:19:00+01:00"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "name": "Banden",
+        "description": "Alles over banden.",
+        "visibility": 1,
+        "boards": [
+            {
+                "id": "3",
+                "group_id": "2",
+                "title": "Dikke sloffen",
+                "messages": [
+                    {
+                        "id": "52b9b152341d411b0a7b23c7",
+                        "group_id": "52b99eac341d411b0a7b23c6",
+                        "board_id": "52b9b087341d41f4037b23c6",
+                        "post_user": {
+                            "id": "52a74318341d412d067b23c8",
+                            "user_name": "Sander Groen"
+                        },
+                        "title": "Check mijn nieuwe gouden velgen!!!",
+                        "contents": "![gouden velg](http:\/\/i79.photobucket.com\/albums\/j148\/KenjiSil80\/Toyota%20MarkII\/ResizeofFivespoke01.jpg)",
+                        "created_at": "2013-12-24T17:07:46+01:00"
+                    },
+                    {
+                        "id": "52b9b3f4341d411a0a7b23c6",
+                        "group_id": "52b99eac341d411b0a7b23c6",
+                        "board_id": "52b9b087341d41f4037b23c6",
+                        "post_user": {
+                            "id": "52a74318341d412d067b23c8",
+                            "user_name": "Sander Groen"
+                        },
+                        "title": "Cool",
+                        "contents": "Ow wauw diezijn vet!!",
+                        "created_at": "2013-12-24T17:19:00+01:00"
+                    }
+                ]
+            }
+        ]
+    }
+]
