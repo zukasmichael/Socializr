@@ -53,3 +53,33 @@ angular.module('auth').directive('activeNav', ['$location', function($location) 
     };
 
 }]);
+var md = function () {
+    marked.setOptions({
+        gfm:true,
+        pedantic:false,
+        sanitize:true
+    });
+
+    var toHtml = function (markdown) {
+        if (markdown == undefined)
+            return '';
+
+        return marked(markdown);
+    };
+
+    return {
+        toHtml:toHtml
+    };
+}();
+angular.module('boards').directive('markdown', function() {
+    return {
+        restrict: 'E',
+        link: function(scope, element, attrs) {
+            scope.$watch(attrs.ngModel, function(value, oldValue) {
+                var markdown = value;
+                var html = md.toHtml(markdown);
+                element.html(html);
+            });
+        }
+    };
+});

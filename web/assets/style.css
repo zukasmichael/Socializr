@@ -8,3 +8,55 @@ label{
     width:120px;
     float: left;
 }
+.group-title{
+    height:30px;
+    background: #004165;
+    color:#FFF;
+    padding:10px 0 10px 10px;
+}
+.group-index{
+    padding: 0;
+    margin: 0;
+}
+.group-topic{
+    list-style: none;
+    background: #bbbbbb;
+    padding:10px 0 10px 10px;
+    border-bottom: 1px solid #004165;
+    border-left: 1px solid #004165;
+    border-right: 1px solid #004165;
+}
+.board-title{
+    height:30px;
+    background: #004165;
+    color:#FFF;
+    padding:10px 0 10px 10px;
+}
+.board-index{
+    padding: 0;
+    margin: 0;
+}
+.board-message{
+    list-style: none;
+    background: #bbbbbb;
+    padding:10px 0 10px 10px;
+    border-bottom: 1px solid #004165;
+    border-left: 1px solid #004165;
+    border-right: 1px solid #004165;
+}
+.profile-group{
+    width:280px;
+    height:180px;
+    float:left;
+    padding-left: 5px;
+    padding-top: 5px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    background: #cccccc;
+}
+#news{
+    height: 400px;
+    width:1100px;
+    display: block;
+    overflow: auto;
+}
