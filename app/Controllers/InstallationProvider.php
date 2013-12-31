@@ -105,7 +105,7 @@ class InstallationProvider extends AbstractProvider
      * @param \Models\User $user
      * @throws \AppException\AccessDenied
      */
-    protected function populate(\Models\User $user)
+    public function populate(\Models\User $user)
     {
         if (!$user || !$user->isSuperAdmin()) {
             throw new AccessDenied('You have to be logged-in as SUPER ADMIN for db population, perform installation to install yourself as super user.');
@@ -221,7 +221,7 @@ class InstallationProvider extends AbstractProvider
         $this->app['doctrine.odm.mongodb.dm']->flush();
     }
 
-    protected function createGroupBoardMessage(\Models\User $user)
+    public function createGroupBoardMessage(\Models\User $user)
     {
         /**
          * Create groups, boards, messages for the SUPER user
@@ -278,8 +278,6 @@ class InstallationProvider extends AbstractProvider
         $user->setPermissionForGroup($group6->getId(), \Models\Permission::ADMIN);
         $user->setPermissionForGroup($group7->getId(), \Models\Permission::ADMIN);
 
-        //update the session storage if we are updating the session user
-        $this->app['service.updateSessionUser']($user);
         $this->app['doctrine.odm.mongodb.dm']->persist($user);
 
         $board1 = new \Models\Pinboard();
@@ -609,5 +607,43 @@ class InstallationProvider extends AbstractProvider
         $this->app['doctrine.odm.mongodb.dm']->flush();
 
         return [$group1, $group2, $group3, $group4, $group5, $group6, $group7];
+    }
+
+    /**
+     * Populate the db with no user
+     */
+    public function populateWithNoUser()
+    {
+        //Clear all users
+        $qb = $this->app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\User');
+        $qb->remove()
+            ->getQuery()
+            ->execute();
+
+        $qb = $this->app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Group');
+        $qb->remove()
+            ->getQuery()
+            ->execute();
+
+        $qb = $this->app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Message');
+        $qb->remove()
+            ->getQuery()
+            ->execute();
+
+        $qb = $this->app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Pinboard');
+        $qb->remove()
+            ->getQuery()
+            ->execute();
+        $this->app['doctrine.odm.mongodb.dm']->flush();
+
+        $user = new \Models\User();
+        $user->setEmail('otheruser@example.com');
+        $user->addRole(\Models\User::ROLE_USER);
+        $user->setUserName('Other User Example');
+
+        $this->app['doctrine.odm.mongodb.dm']->persist($user);
+        $this->app['doctrine.odm.mongodb.dm']->flush();
+
+        $userGroups = $this->createGroupBoardMessage($user);
     }
 }

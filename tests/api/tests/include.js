@@ -5,6 +5,6 @@
     apiUri = 'http://testapi.socializr.io';
 
     getFullApiUrl = function(partialUri) {
-        return apiUri += partialUri;
+        return apiUri + partialUri;
     }
 })();

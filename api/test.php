@@ -1,4 +1,7 @@
 <?php
+use \Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+
 set_time_limit(360);//6 seconds
 
 $loader = require_once __DIR__.'/../vendor/autoload.php';
@@ -16,5 +19,18 @@ session_set_cookie_params(0, '/', '.socializr.io');
 require __DIR__.'/../app/app.php';
 
 require __DIR__.'/../app/controllers.php';
+
+/**
+ * Match install route, .htaccess forces usage of the install script
+ */
+$app->match('/reset/{param}', function(Request $request, $param) use ($app) {
+    $installProvider = new \Controllers\InstallationProvider();
+    $installProvider->connect($app);
+
+    if ($param == 'nouser') {
+        $installProvider->populateWithNoUser();
+        return new JsonResponse(['result' => 'OK']);
+    }
+});
 
 $app->run();

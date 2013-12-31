@@ -22,13 +22,32 @@
 
 <script src="/tests/include.js"></script>
 <script src="/tests/loggedout/login.js"></script>
+<script src="/tests/loggedout/group.js"></script>
 
 <script>
     mocha.checkLeaks();
     mocha.globals(['jQuery']);
     mocha.globals(['Q']);
-    $("#mocha").empty();
-    mocha.run();
+
+
+    //show login
+    var request = $.ajax({
+        url: "http://testapi.socializr.io/reset/nouser",
+        type: "GET",
+        data: { },
+        dataType: "json",
+        xhrFields: {
+            withCredentials: true
+        }
+    });
+    request.done(function( msg ) {
+        $("#mocha").empty();
+        mocha.run();
+    });
+    request.fail(function( jqXHR, textStatus ) {
+        alert( "Request failed: " + textStatus );
+    });
+
 </script>
 
 </body>
