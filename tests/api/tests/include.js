@@ -18,7 +18,6 @@
         method = method ? method : 'GET';
         saveUri = method + ':' + uri;
 
-        console.log(method, saveUri);
         if (!forceAjax && lastResults[saveUri]) {
             var deferred = Q.defer();
             setTimeout(deferred.resolve(lastResults[saveUri]), 0);
@@ -29,7 +28,10 @@
             options = {
                 type: method,
                 url: getFullApiUrl(uri),
-                dataType: 'json'
+                dataType: 'json',
+                xhrFields: {
+                    withCredentials: true
+                }
             };
 
             if (data) {
