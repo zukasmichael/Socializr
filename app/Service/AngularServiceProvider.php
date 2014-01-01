@@ -19,6 +19,9 @@ class AngularServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['angular.urlGenerator'] = $app->share(function($app) {
+            if ($app['test'] === true) {
+                return new Angular\UrlGenerator('test.socializr.io', 'http');
+            }
             return new Angular\UrlGenerator();
         });
     }

@@ -162,22 +162,28 @@ class News
             ->execute();
 
         $ids = [];
+        $groupIds = [];
         $count = 0;
         foreach ($messages as $message) {
-            if ($count < $offset) {
-                $count++;
-                continue;
-            }
-            if (count($ids) == $limit) {
-                break;
-            }
             if (in_array($message->getGroupId(), $ids)) {
                 continue;
             }
+            //save all id's in array for looping distinct feature
             $ids[] = $message->getGroupId();
+
+            //Manually check offset and limit
+            if ($count < $offset) {
+                $count++;
+                continue;
+            } elseif (count($ids) == $limit) {
+                break;
+            }
+
+            //the next group id's can be used
+            $groupIds[] = $message->getGroupId();
             $count++;
         }
 
-        return $ids;
+        return $groupIds;
     }
 } 

@@ -71,6 +71,16 @@ class Pinboard extends BaseModel
     private $lastPostAt;
 
     /**
+     * @ODM\Int
+     * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
+     * @JMS\Type("integer")
+     * @JMS\Groups({"group-list", "group-details", "board-list", "board-details"})
+     *
+     * Valid values: [Group::VISIBILITY_OPEN, Group::VISIBILITY_PROTECTED, Group::VISIBILITY_SECRET]
+     */
+    private $visibility;
+
+    /**
      * @param mixed $id
      * @return \Models\Message
      */
@@ -180,6 +190,24 @@ class Pinboard extends BaseModel
             return $this->lastPostAt;
         }
         return $this->lastPostAt->format('c');
+    }
+
+    /**
+     * @param int $visibility
+     * @return \Models\Message
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = (int)$visibility;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
     }
 
     //TODO: private $newsitems;

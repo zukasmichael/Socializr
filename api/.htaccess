@@ -3,11 +3,35 @@
 
     RewriteEngine On
 
-    # force ssl
-    #RewriteCond     %{SERVER_PORT} ^80$
-    #RewriteRule     ^(.*)$ https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
 
-    # redirect all to silex app
+##################################################
+# REWRITE ALL REQUESTS TO INSTALLATION FILE
+# FOR APP INSTALLATION
+# COMMENT OR REMOVE THIS BLOCK AFTER INSTALLATION
+##################################################
+#     SetEnv is_installation 1
+
+#     RewriteCond %{DOCUMENT_ROOT}/install.php -f
+#     RewriteCond %{REQUEST_URI} ^/install [OR]
+#     RewriteCond %{REQUEST_URI} ^/auth [OR]
+#     RewriteCond %{REQUEST_URI} ^/login [OR]
+#     RewriteCond %{REQUEST_URI} ^/logout
+#     RewriteRule ^ install.php [L]
+
+#     RewriteCond %{DOCUMENT_ROOT}/install.php -f
+#     RewriteRule ^(.*)$ http://%{HTTP_HOST}/install?request=$1 [L]
+###########################################
+# END INSTALL BLOCK
+# DO NOT REMOVE OR COMMENT THE RULES BELOW
+###########################################
+
+
+    #redirect to test app
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{HTTP_HOST} ^testapi\. [NC]
+    RewriteRule ^ test.php [L]
+
+    # redirect all remaining to silex app
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>

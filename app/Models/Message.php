@@ -97,7 +97,7 @@ class Message extends BaseModel
      * @ODM\Int
      * @JMS\Accessor(getter="getVisibility",setter="setVisibility")
      * @JMS\Type("integer")
-     * @JMS\Groups({"group-list", "group-details"})
+     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details"})
      *
      * Valid values: [Group::VISIBILITY_OPEN, Group::VISIBILITY_PROTECTED, Group::VISIBILITY_SECRET]
      */

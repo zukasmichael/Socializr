@@ -5,6 +5,9 @@ use \Auth\Listener\UserProviderListener;
 // disable the debug mode
 $app['debug'] = false;
 
+// disable the test mode
+$app['test'] = false;
+
 // Local
 $app['locale'] = 'nl';
 $app['session.default_locale'] = $app['locale'];
@@ -15,7 +18,7 @@ $app['http_cache.esi'] = null;
 
 // Doctrine (mongodb)
 $app['mongodb.options'] = array(
-    'database'   => 'socializr',
+    'database'   => 'socializr_prod',
     'host'     => 'localhost',
     'port'   => 27017
 );
@@ -25,6 +28,11 @@ $app['log.options'] = array(
     'monolog.logfile' => __DIR__.'/../logs/app.log',
     'monolog.name'    => 'app',
     'monolog.level'   => 300 // = Logger::WARNING
+);
+
+//cors config
+$app['config.cors'] = array(
+    "cors.allowOrigin" => "https://socializr.io",
 );
 
 //JMS Serializer options, see: http://jmsyst.com/libs/serializer

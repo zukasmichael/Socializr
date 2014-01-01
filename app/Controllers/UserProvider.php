@@ -70,11 +70,13 @@ class UserProvider extends AbstractProvider
                 throw new ResourceNotFound();
             }
 
-            $user->setLogoutUrl(
-                $app['url_generator']->generate('logout', array(
-                    '_csrf_token' => $app['form.csrf_provider']->generateCsrfToken('logout')
-                ))
-            );
+            if ($id == 'current') {
+                $user->setLogoutUrl(
+                    $app['url_generator']->generate('logout', array(
+                        '_csrf_token' => $app['form.csrf_provider']->generateCsrfToken('logout')
+                    ))
+                );
+            }
 
             return $this->getJsonResponseAndSerialize($user, 200, $jsonGroup);
         })->assert('id', '[0-9a-z]+')->bind('userDetail');

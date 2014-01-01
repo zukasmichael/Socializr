@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Socializr tests</title>
+    <link rel="stylesheet" media="all" href="vendor/mocha.css">
+</head>
+<body>
+
+<div id="mocha">
+    <p>Tests for users that are not logged-in:</p>
+    <div id="loggedout">
+        <h2 class="messages">Initializing test suite for logged-out users...</h2>
+    </div>
+    <p>Tests for users that are logged-in:</p>
+    <div id="loggedin">
+        <h2 class="messages">Initializing test suite for logged-in users...</h2>
+    </div>
+</div>
+<script src="vendor/jquery.js"></script>
+
+<script src="tests/array.js"></script>
+<script src="tests/xhr.js"></script>
+
+<script>
+    currentUser = null;
+
+    logout = function () {
+        if (!currentUser) {
+            return;
+        }
+
+        window.location = "http://testapi.socializr.io" + currentUser.logout_url;
+    }
+
+    var request = $.ajax({
+        url: "http://testapi.socializr.io/user/current",
+        type: "GET",
+        data: { },
+        dataType: "json",
+        xhrFields: {
+            withCredentials: true
+        }
+    });
+
+    request.done(function( msg ) {
+        currentUser = msg;
+
+        $("#loggedout").html('<h2>Can\'t run tests, you are logged-in. Log out first!</h2>');
+
+        $("#loggedin").html(
+            '<a href="/loggedintests.html"><button>Start logged-in tests</button></a></br>' +
+            '<button onclick="logout();">Logout</button>'
+        );
+    });
+
+    request.fail(function( jqXHR, textStatus ) {
+        if (jqXHR.status == 404) {
+            $("#loggedout").html('<a href="/loggedouttests.html"><button>Start logged-out tests</button></a>');
+
+            //show login
+            var request = $.ajax({
+                url: "http://testapi.socializr.io/login",
+                type: "GET",
+                data: { },
+                dataType: "json",
+                xhrFields: {
+                    withCredentials: true
+                }
+            });
+            request.done(function( msg ) {
+                if (!msg.loginPaths) {
+                    alert('Unknown login format');
+                }
+                $("#loggedin").html(
+                    '<h2>First login with a test user</h2>' +
+                    '<a href="http://testapi.socializr.io' + msg.loginPaths.facebook + '"><button>Login with Facebook</button></a></br>' +
+                    '<a href="http://testapi.socializr.io' + msg.loginPaths.google + '"><button>Login with Google</button></a></br>' +
+                    '<a href="http://testapi.socializr.io' + msg.loginPaths.twitter + '"><button>Login with Twitter</button></a>'
+                );
+            });
+            request.fail(function( jqXHR, textStatus ) {
+                alert( "Request failed: " + textStatus );
+            });
+
+            return;
+        }
+        alert( "Request failed: " + textStatus );
+    });
+</script>
+
+</body>
+</html>
