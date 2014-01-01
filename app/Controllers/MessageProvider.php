@@ -52,7 +52,7 @@ class MessageProvider extends AbstractProvider
             }
 
             //Check permissions manually
-            $this->checkGroupPermission($group, Permission::MEMBER);
+            $this->checkGroupPermission($group, Permission::READONLY);
 
             return $this->getJsonResponseAndSerialize($message, 200, 'message-details');
         })->assert('id', '[0-9a-z]+');
