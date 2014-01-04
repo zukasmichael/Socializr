@@ -82,6 +82,35 @@ class UserProvider extends AbstractProvider
         })->assert('id', '[0-9a-z]+')->bind('userDetail');
 
         /**
+         * Get groups for user
+         */
+        $controllers->get('/current/groups', function (Request $request) use ($app) {
+
+            //Get limit and offset from request
+            $limit = $request->query->getInt('limit', 20);
+            $offset = $request->query->getInt('offset', 0);
+
+            //Get permissionId's for user
+            $user = $app['user'];
+            if (!$user) {
+                throw new AccessDenied();
+            }
+
+            $permissionGroupIds = $user->getPermissionGroupIds();
+
+            $groups = $this->app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')->in($permissionGroupIds)
+                ->limit($limit)
+                ->skip($offset)
+                ->getQuery()
+                ->execute();
+
+            $groups = array_values($groups->toArray());
+            return $this->getJsonResponseAndSerialize($groups, 200, ['group-list'], false);
+        })->bind('userGroups');
+
+        /**
          * Get news feed for user
          */
         $controllers->get('/current/news', function (Request $request) use ($app) {
