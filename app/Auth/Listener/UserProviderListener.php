@@ -8,6 +8,7 @@ use Gigablah\Silex\OAuth\Security\Authentication\Token\OAuthToken;
 use \Doctrine\ODM\MongoDB\DocumentManager;
 use Models\User;
 use Auth\OauthUser;
+use AppException\Unauthorized;
 
 /**
  * To intercept the UserProviderListener functionality provided by the plugin
@@ -54,6 +55,10 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
 
         if ($oauthUser = $userProvider->loadUserByOAuthCredentials($token)) {
             $user = $this->loadUser($oauthUser, $token);
+            if ($user->isEnabled() !== true) {
+                header("Location: https://socializr.io/#/home?apimsguri=/accountDisabled");
+                exit;
+            }
             $token->setUser($user);
         }
     }
