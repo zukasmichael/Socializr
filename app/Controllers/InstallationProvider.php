@@ -99,19 +99,21 @@ class InstallationProvider extends AbstractProvider
         $this->app['doctrine.odm.mongodb.dm']->flush();
 
         $this->app['service.updateSessionUser']($user);
+        return $user;
     }
 
     /**
      * @param \Models\User $user
+     * @param string $secondEmail
      * @throws \AppException\AccessDenied
      */
-    public function populate(\Models\User $user)
+    public function populate(\Models\User $user, $secondEmail = 'srooijde@twitter.com')
     {
         if (!$user || !$user->isSuperAdmin()) {
             throw new AccessDenied('You have to be logged-in as SUPER ADMIN for db population, perform installation to install yourself as super user.');
         }
 
-        $this->cleanInstall($user);
+        $user = $this->cleanInstall($user);
 
         $user = $this->app['doctrine.odm.mongodb.dm']->merge($user);
 
@@ -124,7 +126,7 @@ class InstallationProvider extends AbstractProvider
         $this->app['doctrine.odm.mongodb.dm']->persist($user2);
 
         $user3 = new \Models\User();
-        $user3->setEmail('srooijde@twitter.com');
+        $user3->setEmail($secondEmail);
         $user3->addRole(\Models\User::ROLE_USER);
         $user3->setUserName('Srooijde Twitter Example');
         $this->app['doctrine.odm.mongodb.dm']->persist($user3);
@@ -146,7 +148,7 @@ class InstallationProvider extends AbstractProvider
          * Build this permission scheme:
          *
          * [Super Admin] => [
-         *     ['srooijde@twitter.com'] => [
+         *     [$secondEmail] => [
          *         ['group1'] => MEMBER,
          *         ['group3'] => MEMBER,
          *         ['group4'] => ADMIN,
@@ -157,7 +159,7 @@ class InstallationProvider extends AbstractProvider
          *     ]
          * ],
          *
-         * [srooijde@twitter.com] => [
+         * [$secondEmail] => [
          *     ['Super Admin'] => [
          *         ['group1'] => BLOCKED,
          *         ['group2'] => MEMBER,
@@ -176,7 +178,7 @@ class InstallationProvider extends AbstractProvider
          *         ['group3'] => MEMBER,
          *         ['group4'] => BLOCKED,
          *     ],
-         *     ['srooijde@twitter.com'] => [
+         *     [$secondEmail] => [
          *         ['group1'] => ADMIN,
          *         ['group3'] => ADMIN,
          *         ['group4'] => MEMBER,
@@ -189,7 +191,7 @@ class InstallationProvider extends AbstractProvider
         //Super Admin permissions
         $user->setPermissionForGroup($user3Groups[0]->getId(), \Models\Permission::MEMBER);
         $user->setPermissionForGroup($user3Groups[2]->getId(), \Models\Permission::MEMBER);
-        $user->setPermissionForGroup($user3Groups[2]->getId(), \Models\Permission::ADMIN);
+        $user->setPermissionForGroup($user3Groups[3]->getId(), \Models\Permission::ADMIN);
 
         $user->setPermissionForGroup($user4Groups[1]->getId(), \Models\Permission::MEMBER);
         $user->setPermissionForGroup($user4Groups[2]->getId(), \Models\Permission::BLOCKED);
@@ -645,5 +647,15 @@ class InstallationProvider extends AbstractProvider
         $this->app['doctrine.odm.mongodb.dm']->flush();
 
         $userGroups = $this->createGroupBoardMessage($user);
+    }
+
+    public function populateWithAdmin($secondEmail = 'srooijde@twitter.com')
+    {
+        $user = $this->app['user'];
+        if (!$user) {
+            throw new AccessDenied('You have to be logged-in for installation.');
+        }
+
+        $this->populate($user, $secondEmail);
     }
 }

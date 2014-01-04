@@ -27,10 +27,39 @@ $app->match('/reset/{param}', function(Request $request, $param) use ($app) {
     $installProvider = new \Controllers\InstallationProvider();
     $installProvider->connect($app);
 
+    $secondUser = 'srooijde@twitter.com';
+
     if ($param == 'nouser') {
         $installProvider->populateWithNoUser();
-        return new JsonResponse(['result' => 'OK']);
     }
+
+    if ($param == 'foradmin') {
+        $installProvider->populateWithAdmin($secondUser);
+    }
+
+    if ($param == 'loginseconduser') {
+        $user = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\User')
+            ->field('email')->equals($secondUser)
+            ->getQuery()
+            ->getSingleResult();
+        if (!$user) {
+            throw new \AppException\ResourceNotFound();
+        }
+        $app['service.updateSessionUser']($user);
+    }
+
+    if ($param == 'loginsuperadmin') {
+        $user = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\User')
+            ->field('roles')->all(array('ROLE_SUPER_ADMIN'))
+            ->getQuery()
+            ->getSingleResult();
+        if (!$user) {
+            throw new \AppException\ResourceNotFound();
+        }
+        $app['service.updateSessionUser']($user);
+    }
+
+    return new JsonResponse(['result' => 'OK']);
 });
 
 $app->run();

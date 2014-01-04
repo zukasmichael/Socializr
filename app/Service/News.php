@@ -154,7 +154,7 @@ class News
             if (empty($permissionGroupIds)) {
                 return [];
             }
-            $qb->addOr($qb->expr()->field('groupId')->in($permissionGroupIds));
+            $qb->field('groupId')->in($permissionGroupIds);
         }
 
         $messages = $qb->sort('createdAt', 'desc')
@@ -175,7 +175,7 @@ class News
             if ($count < $offset) {
                 $count++;
                 continue;
-            } elseif (count($ids) == $limit) {
+            } elseif (count($groupIds) == $limit) {
                 break;
             }
 
