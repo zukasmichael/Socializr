@@ -67,7 +67,7 @@ $app->mount('/board', new \Controllers\PinboardProvider());
 $app->mount('/message', new \Controllers\MessageProvider());
 $app->mount('/user', new \Controllers\UserProvider());
 $app->mount('/search', new \Controllers\SearchProvider());
-
+$app->mount('/profiles', new \Controllers\ProfileProvider());
 /**
  * Register error handlers
  */

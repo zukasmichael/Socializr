@@ -86,11 +86,23 @@ class InstallationProvider extends AbstractProvider
         $qb->remove()
             ->getQuery()
             ->execute();
+
+        $qb = $this->app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Profile');
+        $qb->remove()
+            ->getQuery()
+            ->execute();
         $this->app['doctrine.odm.mongodb.dm']->flush();
 
         $user->setRoles(array(\Models\User::ROLE_USER, \Models\User::ROLE_SUPER_ADMIN));
         $user->setInvites(array());
         $user->setPermissions(array());
+
+        $profile = new \Models\Profile();
+        $profile->setInterests(array());
+        $this->app['doctrine.odm.mongodb.dm']->persist($profile);
+        $this->app['doctrine.odm.mongodb.dm']->flush();
+
+        $user->setProfileId($profile->getId());
 
         //The user object is serialized from the session and needs do be merged with the documentManager for saving
         $user = $this->app['doctrine.odm.mongodb.dm']->merge($user);
@@ -115,6 +127,18 @@ class InstallationProvider extends AbstractProvider
 
         $user = $this->cleanInstall($user);
 
+        $profile2 = new \Models\Profile();
+        $profile2->setInterests(array());
+        $profile3 = new \Models\Profile();
+        $profile3->setInterests(array());
+        $profile4 = new \Models\Profile();
+        $profile4->setInterests(array());
+
+        $this->app['doctrine.odm.mongodb.dm']->persist($profile2);
+        $this->app['doctrine.odm.mongodb.dm']->persist($profile3);
+        $this->app['doctrine.odm.mongodb.dm']->persist($profile4);
+        $this->app['doctrine.odm.mongodb.dm']->flush();
+
         $user = $this->app['doctrine.odm.mongodb.dm']->merge($user);
 
         $userGroups = $this->createGroupBoardMessage($user);
@@ -123,18 +147,21 @@ class InstallationProvider extends AbstractProvider
         $user2->setEmail('newguy@example.com');
         $user2->addRole(\Models\User::ROLE_USER);
         $user2->setUserName('NewGuy Example');
+        $user2->setProfileId($profile2->getId());
         $this->app['doctrine.odm.mongodb.dm']->persist($user2);
 
         $user3 = new \Models\User();
         $user3->setEmail($secondEmail);
         $user3->addRole(\Models\User::ROLE_USER);
         $user3->setUserName('Srooijde Twitter Example');
+        $user2->setProfileId($profile3->getId());
         $this->app['doctrine.odm.mongodb.dm']->persist($user3);
 
         $user4 = new \Models\User();
         $user4->setEmail('otheruser@example.com');
         $user4->addRole(\Models\User::ROLE_USER);
         $user4->setUserName('Other User Example');
+        $user2->setProfileId($profile4->getId());
         $this->app['doctrine.odm.mongodb.dm']->persist($user4);
 
         $this->app['doctrine.odm.mongodb.dm']->flush();
