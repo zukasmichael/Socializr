@@ -1,0 +1,15 @@
+<form ng-controller="ProfileEditCtrl">
+    <p>
+        <label>Verjaardag</label>
+        <input type="text" datepicker-popup="{{format}}" ng-model="profile.birthday" is-open="fromopened" min="minDate"
+               max="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"
+               ng-required="true" close-text="Close"/>
+        <button class="btn" ng-click="fromopen()"><i class="icon-calendar"></i></button>
+    </p>
+    <label>Over mij</label><textarea ng-model="profile.about"></textarea><br />
+    <div ng-repeat="interest in profile.interests track by $index">
+        <label>Interesse</label><input type="text" ng-model="interest.interest"><button class="btn" ng-click="remove($index)">X</button>
+    </div>
+    <button class="btn btn-default" ng-click="add()">Interesse toevoegen</button><br />
+    <button class="btn btn-default" ng-click="save(profile)">Profiel opslaan</button>
+</form>
