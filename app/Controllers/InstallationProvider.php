@@ -99,6 +99,7 @@ class InstallationProvider extends AbstractProvider
         $this->app['doctrine.odm.mongodb.dm']->flush();
 
         $this->app['service.updateSessionUser']($user);
+        return $user;
     }
 
     /**
@@ -112,7 +113,7 @@ class InstallationProvider extends AbstractProvider
             throw new AccessDenied('You have to be logged-in as SUPER ADMIN for db population, perform installation to install yourself as super user.');
         }
 
-        $this->cleanInstall($user);
+        $user = $this->cleanInstall($user);
 
         $user = $this->app['doctrine.odm.mongodb.dm']->merge($user);
 
@@ -190,7 +191,7 @@ class InstallationProvider extends AbstractProvider
         //Super Admin permissions
         $user->setPermissionForGroup($user3Groups[0]->getId(), \Models\Permission::MEMBER);
         $user->setPermissionForGroup($user3Groups[2]->getId(), \Models\Permission::MEMBER);
-        $user->setPermissionForGroup($user3Groups[2]->getId(), \Models\Permission::ADMIN);
+        $user->setPermissionForGroup($user3Groups[3]->getId(), \Models\Permission::ADMIN);
 
         $user->setPermissionForGroup($user4Groups[1]->getId(), \Models\Permission::MEMBER);
         $user->setPermissionForGroup($user4Groups[2]->getId(), \Models\Permission::BLOCKED);
