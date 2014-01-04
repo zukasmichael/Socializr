@@ -1,4 +1,4 @@
-angular.module('socializrApp', ['ngRoute', 'auth', 'home', 'groups', 'users', 'boards', 'ui.bootstrap']);
+angular.module('socializrApp', ['ngRoute', 'auth', 'home', 'groups', 'users', 'boards', 'profiles', 'ui.bootstrap']);
 
 angular.module('socializrApp').constant('API_CONFIG', {
     baseUrl: 'https://api.socializr.io'
@@ -280,6 +280,119 @@ angular.module('users')
             });
         };
     });
+angular.module('profiles', []);
+angular.module('profiles')
+.config(['$routeProvider', function ($routeProvider) {
+    var access = routingConfig.accessLevels;
+    $routeProvider.when('/profiles/:profileId', {
+        templateUrl: '/app/profile/view.tpl.html',
+        controller: 'ProfileViewCtrl',
+        access: access.user
+    });
+    $routeProvider.when('/profiles/edit/:profileId', {
+        templateUrl: '/app/profile/edit.tpl.html',
+        controller: 'ProfileEditCtrl',
+        access: access.user
+    });
+}])
+    .controller('ProfileViewCtrl', ['$scope', '$http', '$routeParams', 'Auth', '$location', function($scope, $http, $routeParams, Auth, $location){
+        $http.get("https://api.socializr.io/profiles/" + $routeParams.profileId)
+            .success(
+            function(data){
+                $scope.profile = data;
+            }
+        );
+        $scope.interests = function(){
+            var interests = '';
+            var cnt = 0;
+            $scope.profile.interests.forEach(function(entry) {
+                interests = interests + entry.interest;
+                if(cnt < $scope.profile.interests.length -1){
+                    interests = interests + ",";
+                }
+                cnt++;
+            });
+            return interests;
+        };
+    }])
+    .controller('ProfileEditCtrl', ['$scope', '$http', '$routeParams', 'Auth', '$location', '$timeout', function($scope, $http, $routeParams, Auth, $location, $timeout){
+
+        $http.get("https://api.socializr.io/profiles/" + $routeParams.profileId)
+            .success(function(data){
+                $scope.profile = data;
+            }
+        );
+
+        $scope.add = function(){
+            $scope.profile.interests.push({interest:''});
+        };
+
+        $scope.remove = function(index) {
+            $scope.profile.interests.splice(index, 1);
+        };
+
+        $scope.save = function(profile){
+            $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+            console.log(profile);
+            $http.post("https://api.socializr.io/profiles/" + $routeParams.profileId, profile)
+                .success(function (data, status, headers, config) {
+                    $scope.profile = data;
+                }
+            ).error(function (data, status, headers, config) {
+                    console.log(status);
+                });
+        };
+
+        $scope.today = function () {
+            $scope.dt = new Date();
+        };
+        $scope.today();
+
+        $scope.showWeeks = true;
+        $scope.toggleWeeks = function () {
+            $scope.showWeeks = !$scope.showWeeks;
+        };
+
+        $scope.clear = function () {
+            $scope.dt = null;
+        };
+
+        // Disable weekend selection
+        $scope.disabled = function (date, mode) {
+            return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+        };
+
+        $scope.toggleMin = function () {
+            $scope.minDate = ( $scope.minDate ) ? null : new Date();
+        };
+
+        $scope.toggleMin();
+
+        $scope.toggleMax = function () {
+            var now = new Date();
+            $scope.maxDate = now;
+        };
+
+        $scope.toggleMax();
+
+        $scope.fromopen = function () {
+            $timeout(function () {
+                $scope.fromopened = true;
+            });
+        };
+        $scope.toopen = function () {
+            $timeout(function () {
+                $scope.toopened = true;
+            });
+        };
+        $scope.dateOptions = {
+            'year-format': "'yyyy'",
+            'starting-day': 1
+        };
+
+        $scope.formats = ['dd-MM-yyyy'];
+        $scope.format = $scope.formats[0];
+    }]);
 angular.module('boards', []).config(['$routeProvider', function ($routeProvider) {
     var access = routingConfig.accessLevels;
     $routeProvider.when('/boards/new/:groupId', {

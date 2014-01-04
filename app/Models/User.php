@@ -52,6 +52,14 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
     protected $email;
 
     /**
+     * @ODM\String
+     * @JMS\Accessor(getter="getProfileId",setter="setProfileId")
+     * @JMS\Type("string")
+     * @JMS\Groups({"user-list", "user-details", "user-current"})
+     */
+    private $profileId;
+
+    /**
      * @ODM\Collection
      * @var array
      * @JMS\Accessor(getter="getRoles",setter="setRoles")
@@ -192,6 +200,22 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
     public function setEmail($email)
     {
         $this->email = $email;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProfileId(){
+        return $this->profileId;
+    }
+    /**
+     * @param $id
+     * @return \Models\User
+     */
+    public function setProfileId($id)
+    {
+        $this->profileId = $id;
         return $this;
     }
 
