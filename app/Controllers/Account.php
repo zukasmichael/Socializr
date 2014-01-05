@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Models\User as User;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\SessionCsrfProvider;
+use Symfony\Component\HttpFoundation\Request;
 
 class Account
 {
@@ -88,12 +89,35 @@ class Account
     /**
      * Give a login error
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function loginFailedAction()
+    public function loginFailedAction(Request $request)
     {
+        if (!$request->isXmlHttpRequest()) {
+            header("Location: https://socializr.io/#/home?apimsguri=/loginfailed");
+            exit;
+        }
         $jsonResponse = new \stdClass();
         $jsonResponse->text = 'Login failed, try again';
+        $jsonResponse->loginUrl = '/login';
+        return new JsonResponse($jsonResponse);
+    }
+
+    /**
+     * Give an accountDisabled error
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function accountDisabledAction(Request $request)
+    {
+        if (!$request->isXmlHttpRequest()) {
+            header("Location: https://socializr.io/#/home?apimsguri=/accountdisabled");
+            exit;
+        }
+        $jsonResponse = new \stdClass();
+        $jsonResponse->text = 'Login failed, your account is disabled.';
         $jsonResponse->loginUrl = '/login';
         return new JsonResponse($jsonResponse);
     }

@@ -119,7 +119,7 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      * @JMS\Type("boolean")
      * @JMS\Groups({"user-list", "user-details", "user-current"})
      */
-    protected $enabled = true;
+    protected $enabled = false;
 
     /**
      * @var boolean
@@ -567,6 +567,15 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
     /**
      * {@inheritdoc}
      */
+    public function disable()
+    {
+        $this->enabled = false;
+        return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function eraseCredentials()
     {
     }
@@ -603,6 +612,9 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
     public function unserialize($data)
     {
         $data = unserialize($data);
+        if (!is_array($data)) {
+            return;
+        }
         foreach ($data as $key => $value) {
             $methodName = 'set' . ucfirst($key);
             if (method_exists($this, $methodName)) {
