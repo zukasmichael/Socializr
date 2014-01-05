@@ -227,28 +227,72 @@ angular.module('users')
                 });
             return groups;
         };
-
+        profileService.prototype.getAllGroups = function(limit){
+            groups = [];
+            $http.get('https://api.socializr.io/user/current/news?limit='+limit)
+                .success(function(data){
+                    var items = data;
+                    for(var i =0; i < data.length; i++){
+                        groups.push(data[i]);
+                    }
+                });
+            return groups;
+        };
         profileService.prototype.count = function() {
             return groups.length;
         };
         return profileService;
     })
-    .controller('UserProfileCtrl', ['$scope', '$http', 'Auth', 'profileService',
-        function ($scope, $http, Auth, profileService) {
+    .controller('UserProfileCtrl', ['$scope', '$http', 'Auth', 'profileService', '$location', '$timeout',
+        function ($scope, $http, Auth, profileService, $location, $timeout) {
+            $http.get("https://api.socializr.io/user/" + $scope.user.id + '/profile')
+                .success(
+                function(data){
+                    $scope.profile = data;
+                }
+            );
+            $scope.disable = function(){
+                var deleteUser = confirm('Weet je zeker dat je je account wilt verwijderen?');
+                if (deleteUser) {
+                    window.location = "https://api.socializr.io/user/current/disable";
+                }
+            };
+            $scope.edit = function(){
+                $location.path('/profiles/edit/' + $scope.user.profile_id);
+            };
+            $scope.interests = function(){
+                var interests = '';
+                var cnt = 0;
+                $scope.profile.interests.forEach(function(entry) {
+                    interests = interests + entry.interest;
+                    if(cnt < $scope.profile.interests.length -1){
+                        interests = interests + ",";
+                    }
+                    cnt++;
+                });
+                return interests;
+            };
+
             $scope.profileService = new profileService();
 
-            $scope.numPerPage = 6;
+            $scope.numPerPage = 9;
             $scope.currentPage = 1;
 
             $scope.nextPage = function(){
                 $scope.currentPage++;
             };
 
+            (function tick() {
+                console.log("tick");
+                $scope.groups = $scope.profileService.getAllGroups( (($scope.currentPage - 1) * $scope.numPerPage) + $scope.numPerPage );
+                $timeout(tick, 5000);
+            })();
+
             $scope.setPage = function () {
                 $scope.groups = $scope.profileService.getGroups( ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage );
             };
 
-            $scope.$watch( 'currentPage', $scope.setPage );
+            //$scope.$watch( 'currentPage', $scope.setPage );
         }])
     .controller('UserLoginCtrl', ['$scope', '$http',
         function ($scope, $http) {

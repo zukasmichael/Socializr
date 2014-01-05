@@ -32,21 +32,21 @@ class Profile extends BaseModel{
      * @var array
      * @JMS\Accessor(getter="getInterests",setter="setInterests")
      * @JMS\Type("array<array>")
-     * @JMS\Groups({"profile-detail", "profile-update"})
+     * @JMS\Groups({"profile-detail", "profile-update", "user-profile"})
      */
     protected $interests = array();
     /**
      * @ODM\Date
-     * @JMS\Accessor(getter="getBirthday",setter="setBirthday")
+     * @JMS\Accessor(getter="getFormattedBirthday",setter="setBirthday")
      * @JMS\Type("string")
-     * @JMS\Groups({"profile-detail", "profile-update"})
+     * @JMS\Groups({"profile-detail", "profile-update", "user-profile"})
      */
     private $birthday;
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getAbout",setter="setAbout")
      * @JMS\Type("string")
-     * @JMS\Groups({"profile-detail", "profile-update"})
+     * @JMS\Groups({"profile-detail", "profile-update", "user-profile"})
      */
     private $about;
 
@@ -72,10 +72,16 @@ class Profile extends BaseModel{
      * @return string
      */
     public function getBirthday(){
+        return $this->birthday;
+    }
+    /**
+     * @return string
+     */
+    public function getFormattedBirthday(){
         if (!$this->birthday) {
             return $this->birthday;
         }
-        return $this->birthday->format('d-m-Y');
+        return $this->birthday->format('Y-m-d\TH:i:s+');
     }
     /**
      * @param $birthday
