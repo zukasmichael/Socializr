@@ -99,6 +99,8 @@ class InstallationProvider extends AbstractProvider
 
         $profile = new \Models\Profile();
         $profile->setInterests(array());
+        $profile->setAbout('');
+        $profile->setBirthday('1855-01-16T23:20:30.000Z');
         $this->app['doctrine.odm.mongodb.dm']->persist($profile);
         $this->app['doctrine.odm.mongodb.dm']->flush();
 
@@ -129,10 +131,16 @@ class InstallationProvider extends AbstractProvider
 
         $profile2 = new \Models\Profile();
         $profile2->setInterests(array());
+        $profile2->setAbout('');
+        $profile2->setBirthday('1855-01-16T23:20:30.000Z');
         $profile3 = new \Models\Profile();
         $profile3->setInterests(array());
+        $profile3->setAbout('');
+        $profile3->setBirthday('1855-01-16T23:20:30.000Z');
         $profile4 = new \Models\Profile();
         $profile4->setInterests(array());
+        $profile4->setAbout('');
+        $profile4->setBirthday('1855-01-16T23:20:30.000Z');
 
         $this->app['doctrine.odm.mongodb.dm']->persist($profile2);
         $this->app['doctrine.odm.mongodb.dm']->persist($profile3);

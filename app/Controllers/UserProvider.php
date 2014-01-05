@@ -80,7 +80,32 @@ class UserProvider extends AbstractProvider
 
             return $this->getJsonResponseAndSerialize($user, 200, $jsonGroup);
         })->assert('id', '[0-9a-z]+')->bind('userDetail');
+        /**
+         * Get user by id
+         */
+        $controllers->get('/{id}/profile', function ($id) use ($app) {
+            $user = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\User')
+                ->field('id')
+                ->equals($id)
+                ->getQuery()
+                ->getSingleResult();
 
+            if (!$user) {
+                throw new ResourceNotFound();
+            }
+
+            $profile = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Profile')
+                ->field('_id')
+                ->equals($user->getProfileId())
+                ->getQuery()
+                ->getSingleResult();
+            if (!$profile) {
+                throw new ResourceNotFound();
+            }
+            return $this->getJsonResponseAndSerialize($profile, 200, 'user-profile');
+        })->assert('id', '[0-9a-z]+')->bind('userProfile');
         /**
          * Get groups for user
          */

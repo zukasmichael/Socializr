@@ -2,7 +2,10 @@
     <h2>Profiel</h2>
     <strong>Naam:</strong> {{user.user_name}}<br />
     <strong>E-mail:</strong> {{user.email}}<br />
-    <a href="/profiles/edit/{{user.profile_id}}">Profiel</a>
+    <strong>Verjaardag:</strong>{{profile.birthday}}<br />
+    <strong>Interesses:</strong> {{interests()}}<br />
+    <strong>Over mij:</strong>{{profile.about}}<br />
+    <a href="/profiles/edit/{{user.profile_id}}">Profiel bewerken</a>
 </p>
 <div id="news" when-scrolled="nextPage()">
 <div ng-repeat="group in groups" class="profile-group">

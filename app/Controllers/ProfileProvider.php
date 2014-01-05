@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
 use Symfony\Component\Intl\Exception\NotImplementedException;
+use Symfony\Component\Security\Acl\Exception\Exception;
+
 /**
  * Handles all /profiles routes
  *
@@ -66,6 +68,11 @@ class ProfileProvider extends AbstractProvider{
                 throw new ResourceNotFound();
             }
             $profile->setInterests($profileObj->getInterests());
+
+            $birthday = \DateTime::createFromFormat('Y-m-d\TH:i:s+', $profileObj->getBirthday());
+            $profile->setBirthday($birthday);
+
+            $profile->setAbout($profileObj->getAbout());
 
             $app['doctrine.odm.mongodb.dm']->persist($profile);
             $app['doctrine.odm.mongodb.dm']->flush();

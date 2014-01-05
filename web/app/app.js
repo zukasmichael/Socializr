@@ -235,9 +235,28 @@ angular.module('users')
     })
     .controller('UserProfileCtrl', ['$scope', '$http', 'Auth', 'profileService',
         function ($scope, $http, Auth, profileService) {
+            $http.get("https://api.socializr.io/user/" + $scope.user.id + '/profile')
+                .success(
+                function(data){
+                    $scope.profile = data;
+                }
+            );
+            $scope.interests = function(){
+                var interests = '';
+                var cnt = 0;
+                $scope.profile.interests.forEach(function(entry) {
+                    interests = interests + entry.interest;
+                    if(cnt < $scope.profile.interests.length -1){
+                        interests = interests + ",";
+                    }
+                    cnt++;
+                });
+                return interests;
+            };
+
             $scope.profileService = new profileService();
 
-            $scope.numPerPage = 6;
+            $scope.numPerPage = 9;
             $scope.currentPage = 1;
 
             $scope.nextPage = function(){
