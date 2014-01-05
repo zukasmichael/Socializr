@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
 use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
 /**
  * Handles all /user routes
@@ -172,6 +174,25 @@ class UserProvider extends AbstractProvider
                 $this->app['angular.urlGenerator']->generate('groupDetails', array('id' => $groupId), UrlGenerator::ABSOLUTE_URL)
             );
         })->assert('id', '[0-9a-z]+')->bind('userAcceptInvite');
+
+        /**
+         * Disable the current user
+         */
+        $controllers->get('/current/disable', function (Request $request) use ($app) {
+            $user = $app['user'];
+            if (!$user) {
+                throw new AccessDenied();
+            }
+
+            $user = $app['doctrine.odm.mongodb.dm']->merge($user);
+            $user->disable();
+
+            $app['doctrine.odm.mongodb.dm']->persist($user);
+            $app['doctrine.odm.mongodb.dm']->flush();
+
+            session_destroy();
+            return $this->getJsonResponseAndSerialize(array('Message' => 'Your account is disabled and you are logged out.'), 200);
+        })->assert('id', '[0-9a-z]+')->bind('userDisable');
 
         return $controllers;
     }

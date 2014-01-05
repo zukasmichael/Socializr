@@ -55,6 +55,7 @@ $app->get('/', function () use ($app) {
 })->bind('home');
 $app->get('/login', 'account.controller:loginAction')->bind('login');
 $app->get('/loginfailed', 'account.controller:loginFailedAction')->bind('loginFailed');
+$app->get('/accountDisabled', 'account.controller:accountDisabledAction')->bind('accountDisabled');
 $app->match('/logout', function () {})->bind('logout');
 
 /**
@@ -74,6 +75,11 @@ $app->mount('/profiles', new \Controllers\ProfileProvider());
 $app->error(function (\AppException\AccessDenied $e) {
     $message = $e->getMessage() ?: 'Access to this resource is forbidden.';
     return new JsonResponse(array('Message' => $message), 403);
+});
+// Handle access denied errors
+$app->error(function (\AppException\Unauthorized $e) {
+    $message = $e->getMessage() ?: 'You can\'t be authorized.';
+    return new JsonResponse(array('Message' => $message), 401);
 });
 
 // Handle Resource not found errors
