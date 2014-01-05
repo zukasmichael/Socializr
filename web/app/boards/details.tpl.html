@@ -8,6 +8,7 @@
             <div class="content">
                 <markdown ng-model="message.contents"></markdown>
             </div>
+            <div class="board-message-user">{{message.post_user.user_name}} - {{message.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</div>
         </p>
     </li>
 </ul>

@@ -126,6 +126,14 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
             ->setEmail($oauthUser->getEmail())
             ->setRoles($oauthUser->getRoles());
 
+        $profile = new \Models\Profile();
+        $profile->setInterests(array());
+        $profile->setAbout('');
+        $profile->setBirthday('');
+        $this->dm->persist($profile);
+        $this->dm->flush();
+
+        $appUser->setProfileId($profile->getId());
         $this->dm->persist($appUser);
         $this->dm->flush();
 
