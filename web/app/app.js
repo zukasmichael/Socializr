@@ -233,14 +233,23 @@ angular.module('users')
         };
         return profileService;
     })
-    .controller('UserProfileCtrl', ['$scope', '$http', 'Auth', 'profileService',
-        function ($scope, $http, Auth, profileService) {
+    .controller('UserProfileCtrl', ['$scope', '$http', 'Auth', 'profileService', '$location',
+        function ($scope, $http, Auth, profileService, $location) {
             $http.get("https://api.socializr.io/user/" + $scope.user.id + '/profile')
                 .success(
                 function(data){
                     $scope.profile = data;
                 }
             );
+            $scope.disable = function(){
+                var deleteUser = confirm('Weet je zeker dat je je account wilt verwijderen?');
+                if (deleteUser) {
+                    window.location = "https://api.socializr.io/user/current/disable";
+                }
+            };
+            $scope.edit = function(){
+                $location.path('/profiles/edit/' + $scope.user.profile_id);
+            };
             $scope.interests = function(){
                 var interests = '';
                 var cnt = 0;

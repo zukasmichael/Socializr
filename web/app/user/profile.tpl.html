@@ -5,8 +5,9 @@
     <strong>Verjaardag:</strong>{{profile.birthday}}<br />
     <strong>Interesses:</strong> {{interests()}}<br />
     <strong>Over mij:</strong>{{profile.about}}<br />
-    <a href="/profiles/edit/{{user.profile_id}}">Profiel bewerken</a>
 </p>
+<button class="btn btn-success" ng-click="edit()">Profiel bewerken</button><br />
+<button class="btn btn-danger" ng-click="disable()">Account verwijderen</button><br />
 <div id="news" when-scrolled="nextPage()">
 <div ng-repeat="group in groups" class="profile-group">
     <a href="/groups/{{group.id}}"><strong>{{group.name}}</strong></a>
