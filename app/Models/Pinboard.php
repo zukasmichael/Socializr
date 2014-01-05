@@ -8,6 +8,10 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * @ODM\Document(
  *     collection="boards",
+ *     indexes={
+ *         @ODM\Index(keys={"id"="desc"}, options={"unique"=true}),
+ *         @ODM\Index(keys={"groupId"="desc"}, options={"unique"=false})
+ *     },
  *     repositoryClass="\Models\PinboardRepository"
  * )
  * @JMS\ExclusionPolicy("none")

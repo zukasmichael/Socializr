@@ -175,6 +175,38 @@ class GroupProvider extends AbstractProvider
             return $this->getJsonResponseAndSerialize($board, 201, 'board-details');
         })->assert('groupId', '[0-9a-z]+');
 
+        /**
+         * Add a sticky note to a group
+         */
+        $controllers->post('/{groupId}/note', function (Request $request, $groupId) use ($app) {
+
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')->equals($groupId)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound();
+            }
+
+            $user = $this->checkGroupPermission($group, Permission::ADMIN);
+            //The user object is serialized from the session and needs do be merged with the documentManager for saving
+            $user = $app['doctrine.odm.mongodb.dm']->merge($user);
+
+            $note = $app['serializer']->deserialize($request->getContent(), 'Models\\Note', 'json');
+            $note->setGroupId($groupId);
+            $group->addNote($note);
+            $note->setPostUser($user);
+            $note->setCreatedAt(new \DateTime());
+            $note->setVisibility($group->getVisibility());
+
+            $app['doctrine.odm.mongodb.dm']->persist($note);
+            $app['doctrine.odm.mongodb.dm']->flush();
+
+            return $this->getJsonResponseAndSerialize($note, 201, 'note-details');
+        })->assert('groupId', '[0-9a-z]+');
+
 
         /**
          * Invite a user for a group

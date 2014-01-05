@@ -31,7 +31,7 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      * @JMS\Accessor(getter="getId",setter="setId")
      * @JMS\Type("string")
      * @JMS\Readonly
-     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details", "user-current"})
+     * @JMS\Groups({"group-details", "board-list", "board-details", "message-list", "message-details", "user-list", "user-details", "user-current"})
      */
     protected $id;
 
@@ -39,7 +39,7 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      * @ODM\String
      * @JMS\Accessor(getter="getUserName",setter="setUserName")
      * @JMS\Type("string")
-     * @JMS\Groups({"board-list", "board-details", "message-list", "message-details", "user-list", "user-details", "user-current"})
+     * @JMS\Groups({"group-details", "board-list", "board-details", "message-list", "message-details", "user-list", "user-details", "user-current"})
      */
     protected $userName;
 

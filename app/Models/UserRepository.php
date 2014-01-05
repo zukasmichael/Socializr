@@ -33,6 +33,15 @@ class UserRepository extends \Doctrine\ODM\MongoDB\DocumentRepository
     }
 
     /**
+     * @param Note $note
+     * @return \Doctrine\ODM\MongoDB\Cursor
+     */
+    public function findOneByNote(\Models\Note $note)
+    {
+        return $this->findOneById($note->getPostUserId());
+    }
+
+    /**
      * @param string $userId
      * @return \Doctrine\ODM\MongoDB\Cursor
      */
