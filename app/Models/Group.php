@@ -11,8 +11,7 @@ use AppException\ModelInvalid;
  * @ODM\Document(
  *     collection="groups",
  *     indexes={
- *         @ODM\Index(keys={"name"="desc"}, options={"unique"=false}),
- *         @ODM\Index(keys={"description"="desc"}, options={"unique"=true})
+ *         @ODM\Index(keys={"id"="desc"}, options={"unique"=true})
  *     }
  * )
  * @JMS\ExclusionPolicy("none")
@@ -73,6 +72,19 @@ class Group extends BaseModel
      * @JMS\Groups({"group-list", "group-details"})
      */
     private $boards = array();
+
+    /**
+     * @ODM\ReferenceMany(
+     *     targetDocument="\Models\Note",
+     *     mappedBy="groupId",
+     *     repositoryMethod="findByGroup"
+     * )
+     * @JMS\Accessor(getter="getNotes",setter="setNotes")
+     * @JMS\Type("array")
+     * @JMS\Readonly
+     * @JMS\Groups({"group-details"})
+     */
+    private $notes = array();
 
 
     /**
@@ -173,6 +185,34 @@ class Group extends BaseModel
     public function getBoards()
     {
         return $this->boards;
+    }
+
+    /**
+     * @param array $notes
+     * @return \Models\Group
+     */
+    public function setNotes(array $notes)
+    {
+        $this->notes = $notes;
+        return $this;
+    }
+
+    /**
+     * @param \Models\Note $note
+     * @return \Models\Group
+     */
+    public function addNote(\Models\Note $note)
+    {
+        $this->notes[] = $note;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getNotes()
+    {
+        return $this->notes;
     }
 
     /**

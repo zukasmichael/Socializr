@@ -4,13 +4,15 @@ namespace Models;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Intl\Exception\NotImplementedException;
 
 /**
  * @ODM\Document(
  *     collection="messages",
  *     indexes={
- *         @ODM\Index(keys={"title"="desc"}, options={"unique"=false}),
- *         @ODM\Index(keys={"contents"="desc"}, options={"unique"=true})
+ *         @ODM\Index(keys={"id"="desc"}, options={"unique"=true}),
+ *         @ODM\Index(keys={"groupId"="desc"}, options={"unique"=false}),
+ *         @ODM\Index(keys={"boardId"="desc"}, options={"unique"=false})
  *     },
  *     repositoryClass="\Models\MessageRepository"
  * )

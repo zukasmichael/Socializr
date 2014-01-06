@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 use AppException\AccessDenied;
 use AppException\ResourceNotFound;
 use Symfony\Component\Intl\Exception\NotImplementedException;
-use Symfony\Component\Security\Acl\Exception\Exception;
 
 /**
  * Handles all /profiles routes
