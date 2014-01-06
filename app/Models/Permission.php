@@ -23,7 +23,7 @@ class Permission extends BaseModel
      * @JMS\Accessor(getter="getGroupId",setter="setGroupId")
      * @JMS\Type("string")
      * @JMS\Readonly
-     * @JMS\Groups({"user-current"})
+     * @JMS\Groups({"user-current", "user-list"})
      */
     private $groupId;
 
@@ -32,7 +32,7 @@ class Permission extends BaseModel
      * @JMS\Accessor(getter="getAccessLevel",setter="setAccessLevel")
      * @JMS\Type("integer")
      * @JMS\Readonly
-     * @JMS\Groups({"user-current"})
+     * @JMS\Groups({"user-current", "user-list"})
      */
     private $accessLevel = self::READONLY;
 

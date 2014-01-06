@@ -1,0 +1,40 @@
+<h1>Groep beheren</h1>
+<strong>Admins</strong><br />
+<p ng-repeat="admin in admins">
+    {{admin.user_name}}
+</p>
+<strong>Leden</strong>
+<table class="table table-bordered table-condensed table-striped table-hover">
+    <thead>
+    <tr>
+        <th class="span3">Name</th>
+        <th class="span5"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="user in members">
+        <td>{{user.user_name}}</td>
+        <td>
+            <button class="btn btn-default" ng-click="promote(user)">Maak admin</button>
+            <button class="btn btn-danger" ng-click="ban(user)">Ban gebruiker</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="table table-bordered table-condensed table-striped table-hover">
+    <thead>
+    <tr>
+        <th class="span3">Name</th>
+        <th class="span5"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="user in users">
+        <td>{{user.user_name}}</td>
+        <td>
+            <button class="btn btn-default" ng-click="invite(user)">Uitnodigen</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
