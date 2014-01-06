@@ -292,11 +292,17 @@ angular.module('users')
             controller: 'UserProfileCtrl',
             access: access.user
         });
+        $routeProvider.when('/users/groups', {
+            templateUrl: '/app/user/groups.tpl.html',
+            controller: 'UserGroupsCtrl',
+            access: access.user
+        });
         $routeProvider.when('/users/login', {
             templateUrl: '/app/user/login.tpl.html',
             controller: 'UserLoginCtrl',
             access: access.public
         });
+
     }])
     .factory('profileService', function($http) {
         groups = [];
@@ -380,6 +386,12 @@ angular.module('users')
 
             //$scope.$watch( 'currentPage', $scope.setPage );
         }])
+    .controller('UserGroupsCtrl', ['$scope', '$http', function ($scope, $http) {
+        $http.get("https://api.socializr.io/user/current/groups")
+            .success(function (data) {
+                $scope.groups = data;
+            });
+    }])
     .controller('UserLoginCtrl', ['$scope', '$http',
         function ($scope, $http) {
             $http.get("https://api.socializr.io/login")
