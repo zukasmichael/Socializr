@@ -229,23 +229,32 @@ angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '
         $scope.groupId = $routeParams.groupId;
         $scope.users = [];
         $scope.members = [];
+        $scope.user = Auth.user;
 
-        $http.get('https://api.socializr.io/user/').success(function(data){
-            data.forEach(function(user) {
-                user.permissions.forEach(function(entry){
-                    if(entry.group_id === $scope.groupId){
-                        if(entry.access_level == 5){
-                            $scope.admins.push(user);
+        $http.get('https://api.socializr.io/user/')
+            .success(function(data){
+                data.forEach(function(user) {
+                    user.permissions.forEach(function(entry){
+                        if(entry.group_id === $scope.groupId){
+                            if(entry.access_level == 5){
+                                $scope.admins.push(user);
+                            }
+                            if (entry.access_level == 1){
+                                $scope.members.push(user);
+                                if(user.id === $scope.user.id){
+                                    $location.path('/groups/' + $scope.groupId);
+                                }
+                            }
+                            if(entry.access_level < 1){
+                                $scope.users.push(user);
+                                if(user.id === $scope.user.id){
+                                    $location.path('/groups/' + $scope.groupId);
+                                }
+                            }
                         }
-                        if (entry.access_level == 1){
-                            $scope.members.push(user);
-                        }
-                        if(entry.access_level < 1){
-                            $scope.users.push(user);
-                        }
-                    }
-                });
-            });
+                    });
+                }
+            );
         });
 
         $scope.invite = function(user){
