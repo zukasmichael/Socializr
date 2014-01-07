@@ -9,7 +9,12 @@
                         <li data-access-level='accessLevels.user' active-nav><a tabindex="-1" href="/groups/new">Nieuwe Groep</a></li>
                     </ul>
                 </li>
-                <li ng-class="{ active: isActive('/user/profile/')}" data-access-level='accessLevels.user' active-nav><a href="/users/profile/">Profiel</a></li>
+                <li class="dropdown"><a class="dropdown-toggle" href="/groups">{{user.user_name}}</a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{ active: isActive('/user/profile/')}" data-access-level='accessLevels.user' active-nav><a href="/users/profile/">Profiel</a></li>
+                        <li ng-class="{ active: isActive('/user/groups/')}" data-access-level='accessLevels.user' active-nav><a href="/users/groups/">Mijn groepen</a></li>
+                    </ul>
+                </li>
                 <li ng-class="{ active: isActive('/user/login/')}" data-access-level="accessLevels.anon" active-nav><a href="/users/login/">Inloggen</a></li>
                 <li ng-class="{ active: isActive('/user/logout/')}" data-access-level="accessLevels.user" active-nav><a href="https://api.socializr.io{{user.logout_url}}">Uitloggen</a></li>
             </ul>

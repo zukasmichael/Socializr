@@ -76,7 +76,7 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      * @JMS\Accessor(getter="getPermissions",setter="setPermissions")
      * @JMS\Type("array")
      * @JMS\Readonly
-     * @JMS\Groups({"user-current"})
+     * @JMS\Groups({"user-current", "user-list"})
      */
     private $permissions = array();
 

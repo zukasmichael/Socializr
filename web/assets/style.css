@@ -26,6 +26,14 @@ label{
     border-left: 1px solid #004165;
     border-right: 1px solid #004165;
 }
+.group-note{
+    list-style: none;
+    background: #eeeeee;
+    padding:10px 0 10px 10px;
+    border-bottom: 1px solid #004165;
+    border-left: 1px solid #004165;
+    border-right: 1px solid #004165;
+}
 .board-title{
     height:30px;
     background: #004165;

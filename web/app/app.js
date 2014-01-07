@@ -104,6 +104,11 @@ angular.module('groups', ['resources.groups'])
             controller: 'GroupDetailCtrl',
             access: access.public
         });
+        $routeProvider.when('/groups/admin/:groupId', {
+            templateUrl: '/app/group/admin.tpl.html',
+            controller: 'GroupAdminCtrl',
+            access: access.public
+        });
     }])
     .controller('GroupListCtrl', ['$rootScope', '$scope', '$location', 'groups',
         function ($rootScope, $scope, $location, groups) {
@@ -154,18 +159,40 @@ angular.module('groups', ['resources.groups'])
             return inputArray.slice(start, start + pageSize);
         };
     });
-angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$http', 'Auth', '$location',
-    function ($rootScope, $scope, $routeParams, $http, Auth, $location) {
+angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$http', 'Auth', '$location', '$route',
+    function ($rootScope, $scope, $routeParams, $http, Auth, $location, $route) {
         $scope.user = Auth.user;
+        $scope.note = {};
+        $scope.isLoggedIn = function(){
+            var isAdmin = false;
+            var isLoggedIn = false;
+            $scope.user.permissions.forEach(function(entry) {
+                if(entry.group_id === $scope.group.id){
+                    isAdmin = entry.access_level == 5;
+                    isLoggedIn = entry.access_level > 0;
+                }
+            });
+            return {
+                isGroupAdmin : isAdmin,
+                isLoggedIn : isLoggedIn
+            };
+        };
 
-        $scope.permissions = {
-            loggedin: ($scope.user.role === Auth.userRoles.user) || $scope.user.role === Auth.userRoles.admin
+        $scope.admin = function(){
+            $location.path('/groups/admin/' + $scope.group.id);
         };
 
         $scope.addBoard = function(){
             $location.path('/boards/new/' + $scope.group.id);
         };
 
+        $scope.addNote = function(note){
+            $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+            $http.post('https://api.socializr.io/group/' + $scope.group.id + '/note', note)
+                .success(function (data) {
+                    $route.reload();
+                });
+        };
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId).success(function (data) {
             $scope.group = data;
         });
@@ -174,6 +201,7 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         });
     }]
 );
+
 angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 'Auth',
     function ($rootScope, $scope, $location, $routeParams, $http, Auth) {
         $scope.group = {};
@@ -195,7 +223,65 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
         };
     }]
 );
+angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 'Auth', '$route',
+    function ($rootScope, $scope, $location, $routeParams, $http, Auth, $route) {
+        $scope.admins = [];
+        $scope.groupId = $routeParams.groupId;
+        $scope.users = [];
+        $scope.members = [];
+        $scope.user = Auth.user;
 
+        $http.get('https://api.socializr.io/user/')
+            .success(function(data){
+                data.forEach(function(user) {
+                    user.permissions.forEach(function(entry){
+                        if(entry.group_id === $scope.groupId){
+                            if(entry.access_level == 5){
+                                $scope.admins.push(user);
+                            }
+                            if (entry.access_level == 1){
+                                $scope.members.push(user);
+                                if(user.id === $scope.user.id){
+                                    $location.path('/groups/' + $scope.groupId);
+                                }
+                            }
+                            if(entry.access_level < 1){
+                                $scope.users.push(user);
+                                if(user.id === $scope.user.id){
+                                    $location.path('/groups/' + $scope.groupId);
+                                }
+                            }
+                        }
+                    });
+                }
+            );
+        });
+
+        $scope.invite = function(user){
+            $http.get('https://api.socializr.io/group/' + $routeParams.groupId +'/invite/' + user.id)
+                .success(function (data) {
+                    $route.reload();
+                }
+            );
+        };
+
+        $scope.promote = function(user){
+            $http.get('https://api.socializr.io/group/' + $routeParams.groupId +'/promote/' + user.id)
+                .success(function (data) {
+                    $route.reload();
+                }
+            );
+        };
+
+        $scope.ban = function(user){
+            $http.get('https://api.socializr.io/group/' + $routeParams.groupId +'/block/' + user.id)
+                .success(function (data) {
+                    $route.reload();
+                }
+            );
+        };
+    }
+]);
 angular.module('users', []);
 
 angular.module('users')
@@ -206,11 +292,17 @@ angular.module('users')
             controller: 'UserProfileCtrl',
             access: access.user
         });
+        $routeProvider.when('/users/groups', {
+            templateUrl: '/app/user/groups.tpl.html',
+            controller: 'UserGroupsCtrl',
+            access: access.user
+        });
         $routeProvider.when('/users/login', {
             templateUrl: '/app/user/login.tpl.html',
             controller: 'UserLoginCtrl',
             access: access.public
         });
+
     }])
     .factory('profileService', function($http) {
         groups = [];
@@ -294,6 +386,12 @@ angular.module('users')
 
             //$scope.$watch( 'currentPage', $scope.setPage );
         }])
+    .controller('UserGroupsCtrl', ['$scope', '$http', function ($scope, $http) {
+        $http.get("https://api.socializr.io/user/current/groups")
+            .success(function (data) {
+                $scope.groups = data;
+            });
+    }])
     .controller('UserLoginCtrl', ['$scope', '$http',
         function ($scope, $http) {
             $http.get("https://api.socializr.io/login")
