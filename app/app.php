@@ -17,7 +17,7 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\FormServiceProvider()); // for CSRF token
 $app->register(new Silex\Provider\SwiftmailerServiceProvider());
-$app->register(new \Service\AngularServiceProvider());
+$app->register(new Service\AngularServiceProvider());
 
 
 $app['swiftmailer.options'] = $app['mail.options'];

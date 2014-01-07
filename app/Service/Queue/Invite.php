@@ -31,8 +31,10 @@ class Invite extends Base
         $groupUri = $this->app['angular.urlGenerator']->generate('groupDetails', array(
             'id' => $group->getId()
         ), UrlGenerator::ABSOLUTE_URL);
+        $profileUri = $this->app['angular.urlGenerator']->generate('userProfile', array(), UrlGenerator::ABSOLUTE_URL);
 
         $mailTemplateVars = array(
+            '%%PROFILEURI%%' => $profileUri,
             '%%SENDERUSERNAME%%' => $sender->getUserName(),
             '%%GROUPNAME%%' => $group->getName(),
             '%%GROUPURI%%' => $groupUri,

@@ -190,6 +190,9 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
      */
     public function getEmail()
     {
+        if (stripos('@twitter.com', $this->email)) {
+            return '';
+        }
         return $this->email;
     }
 

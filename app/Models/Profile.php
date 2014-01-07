@@ -18,7 +18,8 @@ use Symfony\Component\Security\Core\Exception\RuntimeException;
  * @see https://doctrine-mongodb-odm.readthedocs.org/en/latest/reference/annotations-reference.html?highlight=annotations#document
  */
 
-class Profile extends BaseModel{
+class Profile extends BaseModel
+{
     /**
      * @ODM\Id(strategy="AUTO")
      * @JMS\Accessor(getter="getId",setter="setId")
@@ -28,6 +29,13 @@ class Profile extends BaseModel{
     protected $id;
 
     /**
+     * @ODM\Boolean
+     * @JMS\Type("boolean")
+     * @JMS\Groups({"profile-detail", "profile-update", "user-profile"})
+     */
+    protected $mailUpdate = true;
+
+    /**
      * @ODM\Collection
      * @var array
      * @JMS\Accessor(getter="getInterests",setter="setInterests")
@@ -35,6 +43,7 @@ class Profile extends BaseModel{
      * @JMS\Groups({"profile-detail", "profile-update", "user-profile"})
      */
     protected $interests = array();
+
     /**
      * @ODM\Date
      * @JMS\Accessor(getter="getFormattedBirthday",setter="setBirthday")
@@ -42,6 +51,7 @@ class Profile extends BaseModel{
      * @JMS\Groups({"profile-detail", "profile-update", "user-profile"})
      */
     private $birthday;
+
     /**
      * @ODM\String
      * @JMS\Accessor(getter="getAbout",setter="setAbout")
@@ -65,6 +75,24 @@ class Profile extends BaseModel{
     public function setId($id)
     {
         $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMailUpdate()
+    {
+        return $this->mailUpdate;
+    }
+
+    /**
+     * @param $mailUpdate
+     * @return \Models\User
+     */
+    public function setMailUpdate($mailUpdate)
+    {
+        $this->mailUpdate = $mailUpdate;
         return $this;
     }
 
