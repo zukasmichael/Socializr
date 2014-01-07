@@ -36,18 +36,10 @@ class News
             return [];
         }
 
-        //Filter the permitted messageGroups
-        $permittedMessageGroups = array_intersect($permissionGroupIds, $messageGroups);
-
         //Get all groups and do an extra check for visibility and permissions
-        $qb = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Group');
-        $qb->addOr($qb->expr()->field('visibility')->equals(Group::VISIBILITY_OPEN)->field('_id')->in($messageGroups));
-        if (!empty($permissionGroupIds)) {
-            $qb->addOr($qb->expr()->field('_id')->in($permittedMessageGroups));
-        }
-        //Query all groups
-        $groups = $qb->limit($limit)
-            ->skip($offset)
+        $groups = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Group')
+            ->field('_id')->in($messageGroups)
+            ->limit($limit)
             ->getQuery()
             ->execute();
         $groups = $groups->toArray();
