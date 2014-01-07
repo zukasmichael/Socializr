@@ -4,23 +4,19 @@
  * Check the time, because the cron runs every hour
  * We want this script to only run once a day
  */
-define('CRON_RUN_AT_HOUR', 18);
+define('CRON_RUN_AT_HOUR', 14);
 
 $now = new \DateTime();
-if ((int)$now->format('HH') !== CRON_RUN_AT_HOUR) {
-    die('Not the right time to run now...');
+if ((int)$now->format('H') !== CRON_RUN_AT_HOUR) {
+    die('Not the right time to run now... ' . $now->format('H:i:s'));
 }
 
 $loader = require_once __DIR__.'/../vendor/autoload.php';
 
 Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-use Zmqueue\Server;
-use Zmqueue\ServerException;
-use Zmqueue\Request;
-use Zmqueue\Response;
-use Zmqueue\Worker;
-
+use Service\Queue\Email as MailService;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 use Neutron\Silex\Provider\MongoDBODMServiceProvider;
@@ -38,6 +34,11 @@ $app->register(new Service\AngularServiceProvider());
 $logOptions = $app['log.options'];
 $logOptions['monolog.logfile'] = __DIR__.'/../resources/logs/cron.log';
 $app->register(new MonologServiceProvider(), $logOptions);
+
+$app['monolog']->addInfo(sprintf(
+    "Cron started at: '%s'",
+    $now->format('Y-m-d H:i:s')
+));
 
 //Set-up mail
 $app->register(new SwiftmailerServiceProvider());
@@ -70,7 +71,8 @@ $app->register(new MongoDBODMServiceProvider(), array(
         })
 ));
 
-$profileUri = $this->app['angular.urlGenerator']->generate('userProfile', array(), UrlGenerator::ABSOLUTE_URL);
+$profileUri = $app['angular.urlGenerator']->generate('userProfile', array(), UrlGenerator::ABSOLUTE_URL);
+$weekAgo = (new \DateTime())->modify('midnight')->modify('-1 week');
 
 //Get all users
 $users = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\User')
@@ -84,8 +86,11 @@ foreach ($users as $user) {
         continue;
     }
 
-    $profile = $app['doctrine.odm.mongodb.dm']->getRepository('Models\\Profile')->findByUser($user);
-    if (!$profile) {
+    $profile = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Profile')
+        ->field('_id')->equals($user->getProfileId())
+        ->getQuery()
+        ->getSingleResult();
+    if (!$profile || !$profile->getMailUpdate()) {
         continue;
     }
 
@@ -94,10 +99,9 @@ foreach ($users as $user) {
         continue;
     }
 
-    $weekAgo = (new \DateTime())->modify('midnight')->modify('-1 week');
-    $messages = $this->app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Message')
+    $messages = $app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Message')
         ->field('groupId')->in($permissionGroupIds)
-        ->field('createdAt')->lt($weekAgo)
+        ->field('createdAt')->gte($weekAgo)
         ->sort('createdAt', 'desc')
         ->limit(20)
         ->getQuery()
@@ -128,7 +132,7 @@ foreach ($users as $user) {
         $groupUri = '';
         $groupName = '';
         if ($group) {
-            $groupUri = $this->app['angular.urlGenerator']->generate('groupDetails', array(
+            $groupUri = $app['angular.urlGenerator']->generate('groupDetails', array(
                 'id' => $group->getId()
             ), UrlGenerator::ABSOLUTE_URL);
             $groupName = $group->getName();
@@ -163,7 +167,7 @@ foreach ($users as $user) {
 
     $mailContent = MailService::getMailContent('news', [
         '%%PROFILEURI%%' => $profileUri,
-        '%%MESSAGES%%' => $messagesContent
+        '%%HTML_INCLUDE_MESSAGES%%' => $messagesContent
     ]);
 
     $mailTitle = 'Socializr update';
@@ -175,15 +179,15 @@ foreach ($users as $user) {
         ->setBody($mailContent)
         ->setContentType("text/html");
 
-    $this->app['monolog']->addInfo(sprintf(
+    $app['monolog']->addInfo(sprintf(
         "Sending e-mail with Subject: '%s' to Recipient: '%s'",
         $mailTitle,
         $userEmail
     ));
 
-    $result = $this->app['mailer']->send($message);
+    $result = $app['mailer']->send($message);
 }
 
-if ($this->app['mailer.initialized']) {
-    $this->app['swiftmailer.spooltransport']->getSpool()->flushQueue($this->app['swiftmailer.transport']);
+if ($app['mailer.initialized']) {
+    $app['swiftmailer.spooltransport']->getSpool()->flushQueue($app['swiftmailer.transport']);
 }

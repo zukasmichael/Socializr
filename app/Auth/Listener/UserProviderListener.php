@@ -55,7 +55,7 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
 
         if ($oauthUser = $userProvider->loadUserByOAuthCredentials($token)) {
             $user = $this->loadUser($oauthUser, $token);
-            if ($user->isEnabled() !== true) {
+            if (!$_SERVER['is_installation'] && $user && $user->isEnabled() !== true) {
                 header("Location: https://socializr.io/#/home?apimsguri=/accountDisabled");
                 exit;
             }
@@ -83,7 +83,7 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
 
         //If user not found, find user by email
         $appUser = $this->dm->createQueryBuilder('Models\\User')
-            ->field('email')->equals($oauthUser->getEmail())
+            ->field('email')->equals($oauthUser->getEmail(true))
             ->getQuery()
             ->getSingleResult();
         if ($appUser) {
@@ -127,9 +127,6 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
             ->setRoles($oauthUser->getRoles());
 
         $profile = new \Models\Profile();
-        $profile->setInterests(array());
-        $profile->setAbout('');
-        $profile->setBirthday('');
         $this->dm->persist($profile);
         $this->dm->flush();
 

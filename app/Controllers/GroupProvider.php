@@ -234,7 +234,7 @@ class GroupProvider extends AbstractProvider
 
             if (!$invitedUser) {
                 throw new ResourceNotFound('Invited user does not exist.');
-            } elseif ($invitedUser->hasPermissionForGroup($group, Permission::MEMBER)) {
+            } elseif ($invitedUser->hasPermissionForGroup($group, Permission::MEMBER, false)) {
                 throw new ModelInvalid('This user already has permission.');
             }
 
