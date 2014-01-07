@@ -186,10 +186,14 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
     }
 
     /**
+     * @param bool $forceDbValue
      * @return string
      */
-    public function getEmail()
+    public function getEmail($forceDbValue = false)
     {
+        if (!$forceDbValue && stripos($this->email, '@twitter.com') !== false) {
+            return '';
+        }
         return $this->email;
     }
 
@@ -557,11 +561,20 @@ class User extends BaseModel implements AdvancedUserInterface, \Serializable
     }
 
     /**
+     * @return $this
+     */
+    public function enable()
+    {
+        $this->enabled = true;
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function isEnabled()
     {
-        return $this->enabled;
+        return $this->enabled == true;
     }
 
     /**

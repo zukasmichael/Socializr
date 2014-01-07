@@ -45,7 +45,7 @@
                     "AppException": "app/",
                     "Serialization": "app/",
                     "Service": "app/",
-                    "Zmqueue":"zeromq/"
+                    "Zmqueue":"cli/"
         }
     }
 }

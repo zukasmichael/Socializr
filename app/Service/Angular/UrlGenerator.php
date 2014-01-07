@@ -82,6 +82,12 @@ class UrlGenerator extends SymfonyUrlGenerator
                 ->setMethods('GET')
         );
 
+        $routes->add(
+            'userProfile',
+            (new Route('/#/users/profile'))
+                ->setMethods('GET')
+        );
+
         return $routes;
     }
 
