@@ -96,6 +96,7 @@ class InstallationProvider extends AbstractProvider
         $user->setRoles(array(\Models\User::ROLE_USER, \Models\User::ROLE_SUPER_ADMIN));
         $user->setInvites(array());
         $user->setPermissions(array());
+        $user->enable();
 
         $profile = new \Models\Profile();
         $profile->setInterests(array());
@@ -156,20 +157,23 @@ class InstallationProvider extends AbstractProvider
         $user2->addRole(\Models\User::ROLE_USER);
         $user2->setUserName('NewGuy Example');
         $user2->setProfileId($profile2->getId());
+        $user2->enable();
         $this->app['doctrine.odm.mongodb.dm']->persist($user2);
 
         $user3 = new \Models\User();
         $user3->setEmail($secondEmail);
         $user3->addRole(\Models\User::ROLE_USER);
         $user3->setUserName('Srooijde Twitter Example');
-        $user2->setProfileId($profile3->getId());
+        $user3->setProfileId($profile3->getId());
+        $user3->enable();
         $this->app['doctrine.odm.mongodb.dm']->persist($user3);
 
         $user4 = new \Models\User();
         $user4->setEmail('otheruser@example.com');
         $user4->addRole(\Models\User::ROLE_USER);
         $user4->setUserName('Other User Example');
-        $user2->setProfileId($profile4->getId());
+        $user4->setProfileId($profile4->getId());
+        $user4->enable();
         $this->app['doctrine.odm.mongodb.dm']->persist($user4);
 
         $this->app['doctrine.odm.mongodb.dm']->flush();

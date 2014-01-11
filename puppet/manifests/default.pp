@@ -424,3 +424,11 @@ exec {"Pecl0Mq":
     unless => "test -f /usr/lib/php5/20100525/zmq.so",
     require => [ Package["pkg-config"] ]
 }
+
+#Run cron every hour
+cron { dailynewsupdate:
+  command => "/vagrant/newsupdate.sh",
+  user    => www-data,
+##  hour    => 18,
+  minute  => 0
+}

@@ -94,7 +94,7 @@ class Account
      */
     public function loginFailedAction(Request $request)
     {
-        if (!$request->isXmlHttpRequest()) {
+        if (!$_SERVER['is_installation'] && !$request->isXmlHttpRequest()) {
             header("Location: https://socializr.io/#/home?apimsguri=/loginfailed");
             exit;
         }

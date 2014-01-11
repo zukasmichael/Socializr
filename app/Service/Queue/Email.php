@@ -49,7 +49,10 @@ class Email extends Base
         $content = file_get_contents($file);
 
         foreach ($variables as $key => $value) {
-            $content = str_replace($key, htmlspecialchars($value, ENT_QUOTES, 'UTF-8'), $content);
+            if (stripos($key, 'HTML_INCLUDE') === false) {
+                $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+            }
+            $content = str_replace($key, $value, $content);
         }
 
         return $content;

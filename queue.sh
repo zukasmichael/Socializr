@@ -7,7 +7,7 @@ commands=('start' 'stop' 'restart' 'info');
 
 # Define functions
 getQueuePid () {
-    local pidcmd=`ps aux | grep z\[e\]romq/queue | awk '{print $2}'`
+    local pidcmd=`ps aux | grep \[c\]li/queue | awk '{print $2}'`
     pid=$pidcmd
 }
 
@@ -18,7 +18,7 @@ command=$1
 # For info, return at once
 if [[ $command = "info" ]]; then
     echo "USER    PID %CPU %MEM  VSZ   RSS   TTY STAT START TIME COMMAND"
-    echo $(ps aux | grep z\[e\]romq/queue)
+    echo $(ps aux | grep \[c\]li/queue)
     exit 1
 fi
 
@@ -54,7 +54,7 @@ if [[ $pid = "" ]]; then
 
     # Starting queue:
 
-    nohup php ./zeromq/queue.php &
+    nohup php ./cli/queue.php &
     echo "Queue started"
 else
     if [[ $command = "start" ]]; then
@@ -68,7 +68,7 @@ else
 
     if [[ $command = "restart" ]]; then
         # Starting queue:
-        nohup php ./zeromq/queue.php &
+        nohup php ./cli/queue.php &
         echo "Queue started"
     fi
 fi

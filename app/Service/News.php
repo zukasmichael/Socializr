@@ -22,16 +22,16 @@ class News
      * @param \Models\User $user
      * @param $limit
      * @param $offset
-     * @param bool $queryAllGroups
+     * @param bool $justLastWeek
      * @return array
      */
-    public function getNewsForUser(\Models\User $user, $limit, $offset, $queryAllGroups = false)
+    public function getNewsForUser(\Models\User $user, $limit, $offset, $justLastWeek = false)
     {
         $app = $this->app;
 
         $permissionGroupIds = $user->getPermissionGroupIds();
 
-        $messageGroups = $this->getMessageGroups($permissionGroupIds, $limit, $offset, $queryAllGroups);
+        $messageGroups = $this->getMessageGroups($permissionGroupIds, $limit, $offset, $justLastWeek);
         if (empty($messageGroups)) {
             return [];
         }
@@ -129,24 +129,16 @@ class News
      * @param array $permissionGroupIds
      * @param $limit
      * @param $offset
-     * @param $queryAllGroups
+     * @param $justLastWeek
      * @return array
      */
-    protected function getMessageGroups(array $permissionGroupIds, $limit, $offset, $queryAllGroups)
+    public function getMessageGroups(array $permissionGroupIds, $limit, $offset, $justLastWeek)
     {
         $qb = $this->app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\Message');
-        if ($queryAllGroups) {
-            //Query all permitted messageGroups sorted at message creation date/time
-            $qb->addOr($qb->expr()->field('visibility')->equals(Group::VISIBILITY_OPEN));
-            if (!empty($permissionGroupIds)) {
-                $qb->addOr($qb->expr()->field('groupId')->in($permissionGroupIds));
-            }
-        } else {
-            //Check if we have a membership
-            if (empty($permissionGroupIds)) {
-                return [];
-            }
-            $qb->field('groupId')->in($permissionGroupIds);
+        $qb->field('groupId')->in($permissionGroupIds);
+        if ($justLastWeek) {
+            $weekAgo = (new \DateTime())->modify('midnight')->modify('-1 week');
+            $qb->field('createdAt')->lt($weekAgo);
         }
 
         $messages = $qb->sort('createdAt', 'desc')
