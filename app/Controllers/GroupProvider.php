@@ -345,6 +345,57 @@ class GroupProvider extends AbstractProvider
             return $this->getJsonResponseAndSerialize($promoteUser, 200, 'user-list');
         })->assert('groupId', '[0-9a-z]+')->bind('groupPromoteUser');
 
+
+        /**
+         * Fetch permissions for group
+         */
+        $controllers->get('/{groupId}/permissions/{accessLevel}', function (Request $request, $groupId, $accessLevel) use ($app) {
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')->equals($groupId)
+                ->getQuery()
+                ->getSingleResult();
+
+            if (!$group) {
+                throw new ResourceNotFound('Group does not exist.');
+            }
+
+            //Check admin permissions manually for current user
+            $user = $this->checkGroupPermission($group, Permission::ADMIN);
+
+            //also return blocked users
+            if ($accessLevel == 0) {
+                $accessLevel = [-1, 0];
+            } else {
+                $accessLevel = (array)$accessLevel;
+            }
+
+            $users = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\User')
+                ->field('permissions.groupId')->equals($groupId)
+                ->getQuery()
+                ->execute();
+
+            $permissionUsers = [];
+            foreach ($users as $user) {
+                $groupPermission = null;
+                foreach ($user->getPermissions() as $permission) {
+                    if ($permission->getGroupId() == $groupId) {
+                        $groupPermission = $permission;
+                        break;
+                    }
+                }
+                if (!$groupPermission) {
+                    continue;
+                }
+                if ($groupPermission && in_array($groupPermission->getAccessLevel(), $accessLevel)) {
+                    $permissionUsers[] = $user;
+                }
+            }
+
+            return $this->getJsonResponseAndSerialize($permissionUsers, 200, 'user-list');
+        })->assert('groupId', '[0-9a-z]+')->assert('accessLevel', '[015]')->bind('groupPromoteUser');
+
         return $controllers;
     }
 }
