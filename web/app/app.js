@@ -1,4 +1,4 @@
-angular.module('socializrApp', ['ngRoute', 'auth', 'home', 'groups', 'users', 'boards', 'profiles', 'ui.bootstrap']);
+angular.module('socializrApp', ['ngRoute', 'auth', 'home', 'groups', 'users', 'boards', 'profiles', 'markdown', 'ui.bootstrap']);
 
 angular.module('socializrApp').constant('API_CONFIG', {
     baseUrl: 'https://api.socializr.io'
@@ -78,7 +78,7 @@ angular.module('home').config(['$routeProvider', function ($routeProvider) {
         });
 }]);
 angular.module('socializrApp').controller('HomeCtrl', ['$rootScope', '$scope', 'Auth', function ($rootScope, $scope, Auth) {
-
+    $scope.hashtag = 'dwdd';
 }]);
 
 angular.module('groups', ['resources.groups'])
@@ -133,7 +133,7 @@ angular.module('groups', ['resources.groups'])
             };
 
             //pagination
-            $scope.pageSize = 3;
+            $scope.pageSize = 6;
             $scope.pages = [];
             $scope.$watch('filteredGroups.length', function (filteredSize) {
                 $scope.pages.length = 0;
@@ -374,17 +374,17 @@ angular.module('users')
                 $scope.currentPage++;
             };
 
-            (function tick() {
-                console.log("tick");
-                $scope.groups = $scope.profileService.getAllGroups( (($scope.currentPage - 1) * $scope.numPerPage) + $scope.numPerPage );
-                $timeout(tick, 5000);
-            })();
+//            (function tick() {
+//                console.log("tick");
+//                $scope.groups = $scope.profileService.getAllGroups( (($scope.currentPage - 1) * $scope.numPerPage) + $scope.numPerPage );
+//                $timeout(tick, 5000);
+//            })();
 
             $scope.setPage = function () {
                 $scope.groups = $scope.profileService.getGroups( ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage );
             };
 
-            //$scope.$watch( 'currentPage', $scope.setPage );
+            $scope.$watch( 'currentPage', $scope.setPage );
         }])
     .controller('UserGroupsCtrl', ['$scope', '$http', function ($scope, $http) {
         $http.get("https://api.socializr.io/user/current/groups")
@@ -608,4 +608,17 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
         $scope.markdown = text;
         return $scope.md2Html();
     };
+}]);
+
+angular.module('markdown', [])
+    .config(['$routeProvider', function ($routeProvider) {
+        var access = routingConfig.accessLevels;
+        $routeProvider.when('/markdown/help', {
+            templateUrl: '/app/markdown/help.tpl.html',
+            controller: 'MarkdownHelpCtrl',
+            access: access.user
+        });
+    }]);
+angular.module('markdown').controller(['$scope', function($scope){
+
 }]);

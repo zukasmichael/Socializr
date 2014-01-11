@@ -1,4 +1,5 @@
 <p><strong>Mijn groepen</strong></p>
-<div ng-repeat="group in groups" class="profile-group">
-    <a href="/groups/{{group.id}}"><strong>{{group.name}}</strong></a>
+<div ng-repeat="group in groups" class="group">
+    <a href="/groups/{{group.id}}"><strong>{{group.name}}</strong></a><br />
+    <strong>{{group.description}}</strong>
 </div>
