@@ -181,7 +181,6 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         $scope.user = Auth.user;
         $scope.note;
 
-
         $scope.isLoggedIn = function(){
             var isAdmin = false;
             var isLoggedIn = false;
@@ -260,36 +259,20 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
 );
 angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 'Auth', '$route',
     function ($rootScope, $scope, $location, $routeParams, $http, Auth, $route) {
-        $scope.admins = [];
         $scope.groupId = $routeParams.groupId;
-        $scope.users = [];
-        $scope.members = [];
         $scope.user = Auth.user;
 
-        $http.get('https://api.socializr.io/user/')
-            .success(function(data){
-                data.forEach(function(user) {
-                    user.permissions.forEach(function(entry){
-                        if(entry.group_id === $scope.groupId){
-                            if(entry.access_level == 5){
-                                $scope.admins.push(user);
-                            }
-                            if (entry.access_level == 1){
-                                $scope.members.push(user);
-                                if(user.id === $scope.user.id){
-                                    $location.path('/groups/' + $scope.groupId);
-                                }
-                            }
-                            if(entry.access_level < 1){
-                                $scope.users.push(user);
-                                if(user.id === $scope.user.id){
-                                    $location.path('/groups/' + $scope.groupId);
-                                }
-                            }
-                        }
-                    });
-                }
-            );
+        $http.get("https://api.socializr.io/group/" + $routeParams.groupId + '/permissions/5')
+        .success(function(data){
+            $scope.admins = data;
+        }).error(function(){
+            $location.path('/groups/' + $scope.groupId);
+        });
+        $http.get("https://api.socializr.io/group/" + $routeParams.groupId + '/permissions/1').success(function(data){
+            $scope.members = data;
+        });
+        $http.get("http://api.socializr.io/user/").success(function(data){
+            $scope.users = data;
         });
 
         $scope.invite = function(user){
@@ -540,6 +523,7 @@ angular.module('profiles')
             $http.post("https://api.socializr.io/profiles/" + $routeParams.profileId, profile)
                 .success(function (data, status, headers, config) {
                     $scope.profile = data;
+                    $location.path('/users/profile/');
                 }
             ).error(function (data, status, headers, config) {
                     console.log(status);
@@ -596,7 +580,8 @@ angular.module('profiles')
         $scope.formats = ['dd-MM-yyyy'];
         $scope.format = $scope.formats[0];
     }]);
-angular.module('boards', []).config(['$routeProvider', function ($routeProvider) {
+
+angular.module('boards', ['resources.messages']).config(['$routeProvider', function ($routeProvider) {
     var access = routingConfig.accessLevels;
     $routeProvider.when('/boards/new/:groupId', {
         templateUrl: '/app/boards/edit.tpl.html',

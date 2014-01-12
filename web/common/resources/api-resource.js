@@ -95,7 +95,8 @@ angular.module('apiResource', []).factory('apiResource', ['API_CONFIG', '$http',
         }
         return ApiResourceFactory;
 }]);
-angular.module('boards').factory('messageService', function($http) {
+angular.module('resources.messages', [])
+angular.module('resources.messages').factory('messageService', function($http) {
     var results = [];
 
     var messageService = function(){
@@ -119,4 +120,3 @@ angular.module('boards').factory('messageService', function($http) {
 
     return messageService;
 });
-

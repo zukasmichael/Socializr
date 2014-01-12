@@ -14,17 +14,16 @@
 </div>
 <br />
 <div ng-show="permissions.loggedin" class="well">
-    <form ng-submit="addMessage()">
+    <form ng-controller="BoardDetailsController">
         <p>
-        <label>Titel</label><input ng-model="message.title">
+        <label>Titel</label><input type="text" size="60" ng-model="message.title">
         </p>
         <label>Bericht</label><textarea ng-model="message.contents" rows="4" cols="80"></textarea><br />
-        <button class="btn btn-default">Reageer</button>
+        <button class="btn btn-default" ng-click="addMessage">Reageer</button><br />
+        <a ng-href="/markdown/help">Markdown help</a><br />
+        <strong>Voorbeeld</strong>
+        <div class="content">
+            <markdown ng-model="message.contents"></markdown>
+        </div>
     </form>
-
-    <a ng-href="/markdown/help">Markdown help</a><br />
-    <strong>Voorbeeld</strong>
-    <div class="content">
-        <markdown ng-model="message.contents"></markdown>
-    </div>
 </div>

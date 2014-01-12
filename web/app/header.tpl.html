@@ -10,9 +10,8 @@
         <a class="navbar-brand" href="#"><img src="/assets/img/logo_16x16.png" /> Socializr</a>
     </div>
     <div class="navbar-collapse collapse">
-
             <ul class="nav navbar-nav">
-                <li class="dropdown"><a class="dropdown-toggle" href="/groups">Groepen</a>
+                <li class="dropdown" data-access-level='accessLevels.user'><a class="dropdown-toggle" href="/groups">Groepen</a>
                     <ul class="dropdown-menu">
                         <li ng-class="{ active: isActive('/user/groups/')}" data-access-level='accessLevels.user' active-nav><a href="/users/groups/">Mijn groepen</a></li>
                         <li data-access-level='accessLevels.user' active-nav><a tabindex="-1" href="/groups/new">Nieuwe Groep</a></li>
