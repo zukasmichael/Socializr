@@ -124,7 +124,7 @@ angular.module('socializrApp').controller('HomeCtrl', ['$rootScope', '$scope', '
     $scope.hashtag = 'dwdd';
 }]);
 
-angular.module('groups', ['resources.groups'])
+angular.module('groups', [])
     .config(['$routeProvider', function ($routeProvider) {
         var access = routingConfig.accessLevels;
         $routeProvider.when('/groups', {
@@ -625,10 +625,14 @@ angular.module('boards').controller('BoardNewController', ['$scope', '$http', '$
     };
 }]);
 
-angular.module('boards').controller('BoardDetailsController', ['$scope', '$http', '$routeParams', 'Auth', '$route', function($scope, $http, $routeParams, Auth, $route){
+angular.module('boards').controller('BoardDetailsController', ['$scope', '$http', '$routeParams', 'Auth', '$route', 'messageService', function($scope, $http, $routeParams, Auth, $route, messageService){
     $scope.boardId = $routeParams.boardId;
     $scope.message;
     $scope.user = Auth.user;
+    $scope.numPerPage = 6;
+    $scope.currentPage = 1;
+
+    $scope.messageService = new messageService();
 
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
@@ -636,9 +640,15 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
         $scope.board = data;
     });
 
-    $http.get("https://api.socializr.io/board/" + $routeParams.boardId + '/message').success(function (data) {
-        $scope.messages = data;
-    });
+    $scope.nextPage = function(){
+        $scope.currentPage++;
+    };
+
+    $scope.setPage = function () {
+        $scope.messages = $scope.messageService.getMessages(($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.boardId);
+    };
+
+    $scope.$watch( 'currentPage', $scope.setPage );
 
     $scope.md2Html = function() {
         return $scope.html = $window.marked($scope.markdown);
@@ -651,7 +661,7 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
         });
     };
 
-    return $scope.initFromText = function(text) {
+    $scope.initFromText = function(text) {
         $scope.markdown = text;
         return $scope.md2Html();
     };
@@ -669,8 +679,6 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
                 console.log(status);
             });
     };
-
-
 }]);
 
 angular.module('markdown', [])

@@ -35,22 +35,24 @@ label{
     border-right: 1px solid #004165;
 }
 .board-title{
-    height:30px;
-    background: #004165;
+    height:40px;
+    background: #008cba;
     color:#FFF;
     padding:10px 0 10px 10px;
 }
 .board-index{
+    height: 520px;
     padding: 0;
     margin: 0;
+    overflow: auto;
 }
 .board-message{
     list-style: none;
-    background: #bbbbbb;
+    background: #fff;
     padding:10px 0 10px 10px;
-    border-bottom: 1px solid #004165;
-    border-left: 1px solid #004165;
-    border-right: 1px solid #004165;
+    border-bottom: 1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
 }
 .profile-group{
     width:280px;

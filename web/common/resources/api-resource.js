@@ -95,15 +95,28 @@ angular.module('apiResource', []).factory('apiResource', ['API_CONFIG', '$http',
         }
         return ApiResourceFactory;
 }]);
+angular.module('boards').factory('messageService', function($http) {
+    var results = [];
 
-angular.module('resources.groups', ['apiResource']);
-angular.module('resources.groups').factory('Groups', ['apiResource', function (apiResource) {
-    var Groups = apiResource('group');
-    return Groups;
-}]);
-angular.module('resources.messages', ['apiResource']);
-angular.module('resources.messages').factory('Messages', ['apiResource', function (apiResource) {
-    var Messages = apiResource('message');
-    return Messages;
-}]);
+    var messageService = function(){
+        results = [];
+    };
+
+    messageService.prototype.getMessages = function(offset, limit, groupId) {
+        $http.get('https://api.socializr.io/board/' + groupId + '/message?limit='+limit + '&offset=' + offset)
+            .success(function(data){
+                var items = data;
+                for(var i =0; i < items.length; i++){
+                    results.push(items[i]);
+                }
+            });
+        return results;
+    };
+
+    messageService.prototype.count = function() {
+        return results.length;
+    };
+
+    return messageService;
+});
 

@@ -1,19 +1,19 @@
 <div class="board-title">
     <strong>{{board.title}}</strong>
 </div>
-<div class="board-index">
+<div class="board-index" when-scrolled="nextPage()">
     <div ng-repeat="message in messages" class="board-message">
         <p>
             <strong>{{message.title}}</strong><br />
-            <div class="content">
-                <markdown ng-model="message.contents"></markdown>
-            </div>
-            <div class="board-message-user">{{message.post_user.user_name}} - {{message.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+        <div class="content">
+            <markdown ng-model="message.contents"></markdown>
+        </div>
+        <div class="board-message-user">{{message.post_user.user_name}} - {{message.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</div>
         </p>
     </div>
 </div>
 <br />
-<div ng-show="permissions.loggedin">
+<div ng-show="permissions.loggedin" class="well">
     <form ng-submit="addMessage()">
         <p>
         <label>Titel</label><input ng-model="message.title">
