@@ -5,6 +5,49 @@ angular.module('socializrApp').constant('API_CONFIG', {
 });
 
 angular.module('socializrApp')
+    .factory('searchService', function($http) {
+        var results = [];
+        var profileService = function(){
+            results = [];
+        };
+        profileService.prototype.getResults = function(type, offset, limit, query) {
+            $http.get('https://api.socializr.io/search/' + query + '?limit='+limit + '&offset=' + offset + '&type=' + type)
+                .success(function(data){
+                    var items;
+                    if(type==='groups'){
+                        items = data.groups;
+                    }
+                    if(type==='users'){
+                        items = data.users;
+                    }
+                    for(var i =0; i < items.length; i++){
+                        results.push(items[i]);
+                    }
+                });
+            return results;
+        };
+        profileService.prototype.search = function(type, offset, limit, query) {
+            results = [];
+            $http.get('https://api.socializr.io/search/' + query + '?limit='+limit + '&offset=' + offset + '&type=' + type)
+                .success(function(data){
+                    var items;
+                    if(type==='groups'){
+                        items = data.groups;
+                    }
+                    if(type==='users'){
+                        items = data.users;
+                    }
+                    for(var i =0; i < items.length; i++){
+                        results.push(items[i]);
+                    }
+                });
+            return results;
+        };
+        profileService.prototype.count = function() {
+            return results.length;
+        };
+        return profileService;
+    })
     .config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
         var access = routingConfig.accessLevels;
 
@@ -87,11 +130,6 @@ angular.module('groups', ['resources.groups'])
         $routeProvider.when('/groups', {
             templateUrl: '/app/group/group.tpl.html',
             controller: 'GroupListCtrl',
-            resolve: {
-                groups: ['Groups', function (Groups) {
-                    return Groups.all();
-                }]
-            },
             access: access.public
         });
         $routeProvider.when('/groups/new', {
@@ -110,55 +148,34 @@ angular.module('groups', ['resources.groups'])
             access: access.public
         });
     }])
-    .controller('GroupListCtrl', ['$rootScope', '$scope', '$location', 'groups',
-        function ($rootScope, $scope, $location, groups) {
-            $scope.groups = groups;
-            $scope.filteredGroups = $scope.groups;
-            $scope.sortField = undefined;
-            $scope.reverse = false;
+    .controller('GroupListCtrl', ['$rootScope', '$scope', '$location', 'searchService',
+        function ($rootScope, $scope, $location, searchService) {
+            $scope.searchService = new searchService();
+            $scope.criteria = ' ';
+            $scope.numPerPage = 16;
+            $scope.currentPage = 1;
 
-            $scope.sort = function (fieldName) {
-                if ($scope.sortField === fieldName) {
-                    $scope.reverse = !$scope.reverse;
-                } else {
-                    $scope.sortField = fieldName;
-                    $scope.reverse = false;
-                }
-            };
-            $scope.isSortUp = function (fieldName) {
-                return $scope.sortField === fieldName && !$scope.reverse;
-            };
-            $scope.isSortDown = function (fieldName) {
-                return $scope.sortField === fieldName && $scope.reverse;
+            $scope.nextPage = function(){
+                $scope.currentPage++;
             };
 
-            //pagination
-            $scope.pageSize = 6;
-            $scope.pages = [];
-            $scope.$watch('filteredGroups.length', function (filteredSize) {
-                $scope.pages.length = 0;
-                var noOfPages = Math.ceil(filteredSize / $scope.pageSize);
-                for (var i = 0; i < noOfPages; i++) {
-                    $scope.pages.push(i);
-                }
-            });
-
-            $scope.setActivePage = function (pageNo) {
-                if (pageNo >= 0 && pageNo < $scope.pages.length) {
-                    $scope.pageNo = pageNo;
-                }
+            $scope.setPage = function () {
+                $scope.groups = $scope.searchService.getResults('groups', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
             };
+
+            $scope.$watch( 'currentPage', $scope.setPage );
 
             $scope.view = function(group){
                 $location.path('/groups/' + group.id);
             };
+
+            $scope.search = function(){
+                $scope.numPerPage = 16;
+                $scope.currentPage = 1;
+                $scope.groups = $scope.searchService.search('groups', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
+            };
         }]
-    ).filter('pagination', function () {
-        return function (inputArray, selectedPage, pageSize) {
-            var start = selectedPage * pageSize;
-            return inputArray.slice(start, start + pageSize);
-        };
-    });
+    );
 angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$http', 'Auth', '$location', '$route',
     function ($rootScope, $scope, $routeParams, $http, Auth, $location, $route) {
         $scope.user = Auth.user;
@@ -373,12 +390,6 @@ angular.module('users')
             $scope.nextPage = function(){
                 $scope.currentPage++;
             };
-
-//            (function tick() {
-//                console.log("tick");
-//                $scope.groups = $scope.profileService.getAllGroups( (($scope.currentPage - 1) * $scope.numPerPage) + $scope.numPerPage );
-//                $timeout(tick, 5000);
-//            })();
 
             $scope.setPage = function () {
                 $scope.groups = $scope.profileService.getGroups( ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage );
