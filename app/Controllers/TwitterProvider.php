@@ -24,10 +24,10 @@ use Twitter\TwitterAPIExchange;
 class TwitterProvider extends AbstractProvider {
 
     private $settings = array(
-        'oauth_access_token' => "268777066-SVsScQTMVZHUuf8dHK1tySEKGiKVChLagEk1z6Np",
-        'oauth_access_token_secret' => "xiiLp5q9gR31CaNud9Ul5HnMDlFazhhZJabGs83HQjcTR",
-        'consumer_key' => "HvKU4bOInYuhITQvFwEc0g",
-        'consumer_secret' => "ksSRINmn27JuqBW5uxL2vuUchMIUfwRwZZCWrqBYdY"
+        'oauth_access_token' => "",
+        'oauth_access_token_secret' => "",
+        'consumer_key' => "",
+        'consumer_secret' => ""
     );
 
     /**
