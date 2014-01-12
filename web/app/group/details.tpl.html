@@ -1,5 +1,6 @@
 <div class="group-title">
-    <strong>Groep: {{group.name}}</strong> <div>{{group.description}}</div>
+    <strong>Groep: {{group.name}}</strong><br />
+    <div>{{group.description}}</div>
 </div>
 <ul class="group-index">
     <li ng-repeat="note in group.notes" class="group-note">
@@ -10,22 +11,22 @@
     </li>
     <li ng-repeat="board in boards" class="group-topic"><a href="/boards/{{board.id}}">{{board.title}}</a></li>
 </ul>
-<button ng-click="addBoard()" ng-show="isLoggedIn().isLoggedIn" class="btn btn-default">Voeg prikbord toe</button><br />
+<button ng-click="addBoard()" ng-show="isLoggedIn().isLoggedIn" class="btn btn-default">Voeg prikbord toe</button> <button ng-click="admin()" ng-show="isLoggedIn().isGroupAdmin" class="btn btn-default">Groepsbeheer</button><br />
 <p>
 <div ng-show="isLoggedIn().isGroupAdmin">
-    <strong>Aankondiging</strong>
+    <div class="well">
     <form ng-controller="GroupDetailCtrl">
         <p>
-            <label>Titel</label><input ng-model="note.title">
+            <label>Titel</label><input ng-model="note.title"><br />
+            <label>Bericht</label><textarea ng-model="note.contents" rows="4" cols="80"></textarea><br />
         </p>
-        <label>Bericht</label><textarea ng-model="note.contents" rows="4" cols="80"></textarea><br />
         <button class="btn btn-default" ng-click="addNote(note)">Aankondiging toevoegen</button>
     </form>
     <a ng-href="/markdown/help">Markdown help</a><br />
     <strong>Voorbeeld</strong>
-    <p class="content">
+        <div class="content">
         <markdown ng-model="note.contents"></markdown>
-    </p>
+    </div>
+    </div>
 </div>
-<button ng-click="admin()" ng-show="isLoggedIn().isGroupAdmin" class="btn btn-default">Groepsbeheer</button><br />
 </p>

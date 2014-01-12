@@ -1,8 +1,17 @@
-<div class="navbar navbar-fixed-top ng-scope" ng-controller="HeaderCtrl">
-    <div class="navbar-inner">
-        <div class="container">
-            <ul class="nav">
-                <li ng-class="{ active: isActive('/')}" data-access-level="accessLevels.public" active-nav><a href="/">Socializr</a></li>
+<div class="navbar navbar-default navbar-fixed-top ng-scope" ng-controller="HeaderCtrl">
+    <div class="container">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#"><img src="assets/img/logo_16x16.png" /> Socializr</a>
+    </div>
+    <div class="navbar-collapse collapse">
+
+            <ul class="nav navbar-nav">
                 <li class="dropdown"><a class="dropdown-toggle" href="/groups">Groepen</a>
                     <ul class="dropdown-menu">
                         <li ng-class="{ active: isActive('/user/groups/')}" data-access-level='accessLevels.user' active-nav><a href="/users/groups/">Mijn groepen</a></li>

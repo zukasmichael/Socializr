@@ -9,8 +9,8 @@ label{
     float: left;
 }
 .group-title{
-    height:30px;
-    background: #004165;
+    height:60px;
+    background: #008cba;
     color:#FFF;
     padding:10px 0 10px 10px;
 }
@@ -20,11 +20,11 @@ label{
 }
 .group-topic{
     list-style: none;
-    background: #bbbbbb;
+    background: #FFF;
     padding:10px 0 10px 10px;
-    border-bottom: 1px solid #004165;
-    border-left: 1px solid #004165;
-    border-right: 1px solid #004165;
+    border-bottom:1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
 }
 .group-note{
     list-style: none;
@@ -67,13 +67,10 @@ label{
 }
 .group{
     width:200px;
-    height:100px;
+    height:200px;
     float:left;
-    padding-left: 5px;
-    padding-top: 5px;
     margin-left: 10px;
     margin-bottom: 10px;
-    background: #cccccc;
 }
 #group{
     height: 500px;
@@ -86,4 +83,7 @@ label{
     width:1100px;
     display: block;
     overflow: auto;
+}
+.select{
+    width:150px;
 }

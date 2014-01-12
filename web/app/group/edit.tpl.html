@@ -1,8 +1,16 @@
-<form ng-submit="addGroup()">
-    <label>Groepnaam</label><input ng-model="group.name"><br />
-    <label>Zichtbaarheid</label><select ng-model="group.visibility">
-        <option ng-repeat="option in options" value="{{option.value}}" ng-selected="option.value == myChoice">{{option.name}}</option>
-    </select><br />
-    <label>Omschrijving</label><textarea ng-model="group.description"></textarea><br />
-    <button class="btn btn-default">Groep toevoegen</button>
+<div class="well">
+<form ng-submit="addGroup()" class="bs-example form-horizontal">
+    <fieldset>
+        <legend>Nieuwe Groep</legend>
+        <p>
+        <label>Groepnaam</label><input ng-model="group.name"><br />
+        <label>Zichtbaarheid</label>
+        <select ng-model="group.visibility" class="select">
+                <option ng-repeat="option in options" value="{{option.value}}" ng-selected="option.value == myChoice">{{option.name}}</option>
+        </select><br />
+        <label>Omschrijving</label><textarea ng-model="group.description" cols="50" rows="10"></textarea><br />
+        </p>
+        <button class="btn btn-default">Groep toevoegen</button>
+    </fieldset>
 </form>
+</div>
