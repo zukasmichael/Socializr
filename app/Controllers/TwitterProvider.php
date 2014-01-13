@@ -45,14 +45,19 @@ class TwitterProvider extends AbstractProvider {
                 'consumer_secret' => $app['login.providers']['twitter']['API_SECRET']
             );
             $url = 'https://api.twitter.com/1.1/search/tweets.json';
-            $getfield = '?q=#'.$hashtag;
+            $getfield = '?q=#'.$hashtag.'&count=2';
             $requestMethod = 'GET';
             $twitter = new TwitterAPIExchange($settings);
-            echo $twitter->setGetfield($getfield)
+            $feed = $twitter->setGetfield($getfield)
                 ->buildOauth($url, $requestMethod)
                 ->performRequest();
 
-            //return $this->getJsonResponseAndSerialize($feed, 200, 'twitter-feed');
+            $json_output = json_decode($feed, true);
+            $tweets = array();
+            foreach($json_output as $timeline) {
+               // $tweets[] = $timeline->text;
+            }
+            return $this->getJsonResponseAndSerialize($json_output, 200, 'twitter-feed');
         })->assert('hashtag', '[0-9a-z]+')->bind('twitterFeed');
 
         return $controllers;

@@ -219,10 +219,12 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         });
 
         $scope.$watch('hashtag', function() {
-            $http.get("https://api.socializr.io/twitter/" + $scope.hashtag)
-                .success(function (data) {
-                    $scope.twitterfeed = data;
-            });
+            if($scope.hashtag != undefined){
+                $http.get("https://api.socializr.io/twitter/" + $scope.hashtag)
+                    .success(function (data) {
+                        $scope.twitterfeed = data;
+                });
+            }
         });
 
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId + "/board").success(function (data) {
