@@ -148,21 +148,7 @@ exec { "create_ssl_cert":
   cwd => '/etc/apache2/ssl',
   command => "openssl req -new -x509 -key api.socializr.io.key -out api.socializr.io.cert -days 3650 -subj /CN=api.socializr.io",
   creates => "/etc/apache2/ssl/api.socializr.io.cert",
-  notify => Exec["force-reload-apache2"]
-}
-
-# Notify this when apache needs a reload. This is only needed when
-# sites are added or removed, since a full restart then would be
-# a waste of time. When the module-config changes, a force-reload is
-# needed.
-exec { "reload-apache2":
-  command => "/etc/init.d/apache2 reload",
-  refreshonly => true,
-}
-
-exec { "force-reload-apache2":
-  command => "/etc/init.d/apache2 force-reload",
-  refreshonly => true,
+  notify => Service["apache2"]
 }
 
 ## Begin PHP manifest
@@ -372,7 +358,8 @@ class { 'mongodb':
   journal => true,
   nojournal => false,
   smallfiles => true,
-  service_enable => true
+  service_enable => true,
+  notify => Service["apache2"]
 }
 
 exec { 'remove_mongo_lock_lock':
@@ -408,7 +395,7 @@ exec {"Configure0MQ":
     cwd     => "/tmp/zeromq-3.2.4",
     command => "/tmp/zeromq-3.2.4/configure",
     unless  => "test -f /tmp/zeromq-3.2.4/Makefile",
-    require => [ Exec["Extract0MQ"], Package["libtool"], Package["autoconf"], Package["automake"], Package["uuid-dev"] ]
+    require => [ Exec["Extract0MQ"], Package["libtool"], Package["autoconf"], Package["automake"], Package["uuid-dev"], Class['php::pear'], Class['php::devel'] ]
 }
 
 exec {"Install0MQ":
@@ -422,7 +409,8 @@ exec {"Pecl0Mq":
     cwd     => "/tmp",
     command => "yes \"\" | pecl install zmq-beta",
     unless => "test -f /usr/lib/php5/20100525/zmq.so",
-    require => [ Package["pkg-config"] ]
+    require => [ Package["pkg-config"], Exec["Install0MQ"] ],
+    notify => Service["apache2"]
 }
 
 #Run cron every hour

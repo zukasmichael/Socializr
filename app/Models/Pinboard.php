@@ -39,6 +39,15 @@ class Pinboard extends BaseModel
 
     /**
      * @ODM\String
+     * @JMS\Accessor(getter="getGroupName",setter="setGroupName")
+     * @JMS\Type("string")
+     * @JMS\Readonly
+     * @JMS\Groups({"group-list", "board-list", "board-details"})
+     */
+    private $groupName;
+
+    /**
+     * @ODM\String
      * @JMS\Accessor(getter="getTitle",setter="setTitle")
      * @JMS\Type("string")
      * @JMS\Groups({"group-list", "group-details", "board-list", "board-details"})
@@ -104,7 +113,7 @@ class Pinboard extends BaseModel
 
     /**
      * @param mixed $id
-     * @return \Models\Message
+     * @return \Models\Pinboard
      */
     public function setGroupId($id)
     {
@@ -118,6 +127,24 @@ class Pinboard extends BaseModel
     public function getGroupId()
     {
         return $this->groupId;
+    }
+
+    /**
+     * @param string $name
+     * @return \Models\Pinboard
+     */
+    public function setGroupName($name)
+    {
+        $this->groupName = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupName()
+    {
+        return $this->groupName;
     }
 
     /**

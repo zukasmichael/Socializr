@@ -1,5 +1,25 @@
+html{
+    height: 100%;
+}
 body{
+    height: 100%;
     padding-top: 60px;
+}
+h4 {
+    font-size: 18px;
+}
+.btn {
+    padding: 10px 24px;
+}
+.container{
+    height: 100%;
+}
+.navbar-default .navbar-nav {
+    font-size: 14px;
+}
+.navbar .dropdown-menu > li > a,
+.navbar .dropdown-menu > li > a:focus {
+    font-size: 14px;
 }
 .nav li{
     display: inline;
@@ -8,47 +28,68 @@ label{
     width:120px;
     float: left;
 }
-.group-title{
-    height:60px;
+.breadcrumb {
+    white-space: nowrap;
+    font-weight: bold;
+}
+.breadcrumb li,
+.breadcrumb li a {
+    box-sizing: inherit;
+    -webkit-box-sizing: inherit;
+}
+.group-title {
     background: #008cba;
     color:#FFF;
-    padding:10px 0 10px 10px;
+    padding:5px 0 10px 10px;
+    margin-bottom: 15px;
 }
-.group-index{
+.group-index {
     padding: 0;
     margin: 0;
-}
-.group-topic{
-    list-style: none;
-    background: #FFF;
-    padding:10px 0 10px 10px;
+    margin-bottom: 60px;
     border-bottom:1px solid #dddddd;
+}
+.group-topic {
+    list-style: none;
+    background: #fff;
+    padding:10px 0 10px 10px;
+    border-top:1px solid #dddddd;
     border-left: 1px solid #dddddd;
     border-right: 1px solid #dddddd;
 }
-.group-note{
+.group-note {
     list-style: none;
     background: #eeeeee;
-    padding:10px 0 10px 10px;
-    border-bottom: 1px solid #004165;
-    border-left: 1px solid #004165;
-    border-right: 1px solid #004165;
-}
-.board-title{
-    height:40px;
-    background: #008cba;
-    color:#FFF;
+    margin-top: 15px;
+    margin-bottom: 15px;
     padding:10px 0 10px 10px;
 }
+.group-boards-header {
+    list-style: none;
+    background: #fff;
+    margin-top: 15px;
+    padding:10px 10 10px 0;
+}
+.group-buttons {
+    text-align: right;
+    margin: 20px 0;
+}
+
 .board-index{
     height: 520px;
     padding: 0;
     margin: 0;
     overflow: auto;
 }
+.board-title {
+    height:60px;
+    background: #008cba;
+    color:#FFF;
+    padding:10px 0 10px 10px;
+}
 .board-message{
     list-style: none;
-    background: #fff;
+    background: #eeeeee;
     padding:10px 0 10px 10px;
     border-bottom: 1px solid #dddddd;
     border-left: 1px solid #dddddd;
@@ -64,6 +105,9 @@ label{
     margin-bottom: 10px;
     background: #cccccc;
 }
+.profile-head {
+    margin-bottom: 10px;
+}
 .profile-message{
     list-style: none;
 }
@@ -75,16 +119,20 @@ label{
     margin-bottom: 10px;
 }
 #group{
-    height: 500px;
+    height: inherit;
     width:700px;
     display: block;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-left: -10px;
 }
 #news{
-    height: 500px;
+    height: inherit;
     width:1100px;
     display: block;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-left: -10px;
 }
 .select{
     width:150px;

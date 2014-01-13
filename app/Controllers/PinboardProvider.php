@@ -61,6 +61,8 @@ class PinboardProvider extends AbstractProvider
                 throw new ResourceNotFound();
             }
 
+            $board->setGroupName($group->getName());
+
             //Check permissions manually
             $this->checkGroupPermission($group, Permission::READONLY);
 

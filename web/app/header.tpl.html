@@ -10,27 +10,45 @@
         <a class="navbar-brand" href="#"><img src="/assets/img/logo_16x16.png" /> Socializr</a>
     </div>
     <div class="navbar-collapse collapse">
+
             <ul class="nav navbar-nav">
-                <li class="dropdown" data-access-level='accessLevels.user'><a class="dropdown-toggle" href="/groups">Groepen</a>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-access-level='accessLevels.user' href="/groups"><span class="fa fa-bars">&nbsp;&nbsp;</span>Groepen</a>
                     <ul class="dropdown-menu">
-                        <li ng-class="{ active: isActive('/user/groups/')}" data-access-level='accessLevels.user' active-nav><a href="/users/groups/">Mijn groepen</a></li>
-                        <li data-access-level='accessLevels.user' active-nav><a tabindex="-1" href="/groups/new">Nieuwe Groep</a></li>
+                        <li ng-class="{ active: isActive('/user/groups/')}" data-access-level='accessLevels.user' active-nav>
+                            <a href="/users/groups/"><span class="fa fa-sort-amount-desc">&nbsp;&nbsp;</span>Mijn groepen</a>
+                        </li>
+                        <li data-access-level='accessLevels.user' active-nav>
+                            <a tabindex="-1" href="/groups/new"><span class="fa fa-plus">&nbsp;&nbsp;</span>Nieuwe Groep</a>
+                        </li>
                     </ul>
                 </li>
-                <li ng-class="{ active: isActive('/user/profile/')}" data-access-level='accessLevels.user' active-nav><a href="/users/profile/">Profiel</a></li>
-                <li class="dropdown"><a class="dropdown-toggle" href="/search">Zoeken</a>
+                <li ng-class="{ active: isActive('/user/profile/')}" data-access-level='accessLevels.user' active-nav>
+                    <a href="/users/profile/"><span class="fa fa-user">&nbsp;&nbsp;</span>Profiel</a>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" href="/search"><span class="fa fa-search">&nbsp;&nbsp;</span>Zoeken</a>
                     <ul class="dropdown-menu">
-                        <li data-access-level="accessLevels.public" active-nav><a tabindex="-1" href="/groups">Groepen</a></li>
-                        <li data-access-level='accessLevels.user' active-nav><a tabindex="-1" href="/users/search">Gebruikers</a></li>
+                        <li data-access-level="accessLevels.public" active-nav>
+                            <a tabindex="-1" href="/groups"><span class="fa fa-bars">&nbsp;&nbsp;</span>Groepen</a>
+                        </li>
+                        <li data-access-level='accessLevels.user' active-nav>
+                            <a tabindex="-1" href="/users/search"><span class="fa fa-users">&nbsp;&nbsp;</span>Gebruikers</a>
+                        </li>
                     </ul>
                 </li>
-                <li class="dropdown"><a class="dropdown-toggle" href="/markdown">Help</a>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" href="/markdown"><span class="fa fa-info">&nbsp;&nbsp;</span>Help</a>
                     <ul class="dropdown-menu">
                         <li ng-class="{ active: isActive('/markdown/help')}" data-access-level='accessLevels.public' active-nav><a href="/markdown/help">Markdown</a></li>
                     </ul>
                 </li>
-                <li ng-class="{ active: isActive('/user/login/')}" data-access-level="accessLevels.anon" active-nav><a href="/users/login/">Inloggen</a></li>
-                <li ng-class="{ active: isActive('/user/logout/')}" data-access-level="accessLevels.user" active-nav><a href="https://api.socializr.io{{user.logout_url}}">Uitloggen</a></li>
+                <li ng-class="{ active: isActive('/user/login/')}" data-access-level="accessLevels.anon" active-nav>
+                    <a href="/users/login/"><span class="fa fa-sign-in">&nbsp;&nbsp;</span>Inloggen</a>
+                </li>
+                <li ng-class="{ active: isActive('/user/logout/')}" data-access-level="accessLevels.user" active-nav>
+                    <a href="https://api.socializr.io{{user.logout_url}}"><span class="fa fa-sign-out">&nbsp;</span>Uitloggen</a>
+                </li>
             </ul>
         </div>
     </div>
