@@ -9,6 +9,7 @@
                 <option ng-repeat="option in options" value="{{option.value}}" ng-selected="option.value == myChoice">{{option.name}}</option>
         </select><br />
         <label>Omschrijving</label><textarea ng-model="group.description" cols="50" rows="10"></textarea><br />
+        <label>Hashtag</label><input ng-model="group.hashtag"><br />
         </p>
         <button class="btn btn-default">Groep toevoegen</button>
     </fieldset>

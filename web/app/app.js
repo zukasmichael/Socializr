@@ -213,7 +213,18 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         };
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId).success(function (data) {
             $scope.group = data;
+            if($scope.group.hashtag != null){
+                $scope.hashtag = $scope.group.hashtag;
+            }
         });
+
+        $scope.$watch('hashtag', function() {
+            $http.get("https://api.socializr.io/twitter/" + $scope.hashtag)
+                .success(function (data) {
+                    $scope.twitterfeed = data;
+            });
+        });
+
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId + "/board").success(function (data) {
             $scope.boards = data;
         });

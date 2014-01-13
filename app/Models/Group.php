@@ -86,7 +86,13 @@ class Group extends BaseModel
      */
     private $notes = array();
 
-
+    /**
+     * @ODM\String
+     * @JMS\Accessor(getter="getHashtag",setter="setHashtag")
+     * @JMS\Type("string")
+     * @JMS\Groups({"group-details"})
+     */
+    private $hashtag;
     /**
      * @param mixed $id
      * @return \Models\Group
@@ -213,6 +219,24 @@ class Group extends BaseModel
     public function getNotes()
     {
         return $this->notes;
+    }
+
+    /**
+     * @param string $hashtag
+     * @return \Models\Group
+     */
+    public function setHashtag($hashtag)
+    {
+        $this->hashtag = $hashtag;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHashtag()
+    {
+        return $this->hashtag;
     }
 
     /**
