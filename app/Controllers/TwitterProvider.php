@@ -23,13 +23,6 @@ use Twitter\TwitterAPIExchange;
 
 class TwitterProvider extends AbstractProvider {
 
-    private $settings = array(
-        'oauth_access_token' => "",
-        'oauth_access_token_secret' => "",
-        'consumer_key' => "",
-        'consumer_secret' => ""
-    );
-
     /**
      * @param Application $app
      * @return \Silex\ControllerCollection
@@ -45,10 +38,16 @@ class TwitterProvider extends AbstractProvider {
          * Get groups
          */
         $controllers->get('/{hashtag}', function ($hashtag) use ($app) {
+            $settings = array(
+                'oauth_access_token' => $app['login.providers']['twitter']['oauth_access_token'],
+                'oauth_access_token_secret' => $app['login.providers']['twitter']['oauth_access_token_secret'],
+                'consumer_key' => $app['login.providers']['twitter']['API_KEY'],
+                'consumer_secret' => $app['login.providers']['twitter']['API_SECRET']
+            );
             $url = 'https://api.twitter.com/1.1/search/tweets.json';
             $getfield = '?q=#'.$hashtag;
             $requestMethod = 'GET';
-            $twitter = new TwitterAPIExchange($this->settings);
+            $twitter = new TwitterAPIExchange($settings);
             echo $twitter->setGetfield($getfield)
                 ->buildOauth($url, $requestMethod)
                 ->performRequest();
