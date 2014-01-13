@@ -5,11 +5,21 @@ body{
     height: 100%;
     padding-top: 60px;
 }
+h4 {
+    font-size: 18px;
+}
 .btn {
     padding: 10px 24px;
 }
 .container{
     height: 100%;
+}
+.navbar-default .navbar-nav {
+    font-size: 14px;
+}
+.navbar .dropdown-menu > li > a,
+.navbar .dropdown-menu > li > a:focus {
+    font-size: 14px;
 }
 .nav li{
     display: inline;
@@ -20,6 +30,7 @@ label{
 }
 .breadcrumb {
     white-space: nowrap;
+    font-weight: bold;
 }
 .breadcrumb li,
 .breadcrumb li a {
@@ -27,10 +38,9 @@ label{
     -webkit-box-sizing: inherit;
 }
 .group-title {
-    height:60px;
     background: #008cba;
     color:#FFF;
-    padding:10px 0 10px 10px;
+    padding:5px 0 10px 10px;
     margin-bottom: 15px;
 }
 .group-index {
