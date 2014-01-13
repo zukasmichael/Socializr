@@ -220,7 +220,7 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
 
         $scope.$watch('hashtag', function() {
             if($scope.hashtag != undefined){
-                $http.get("https://api.socializr.io/twitter/" + $scope.hashtag)
+                $http.get("https://api.socializr.io/twitter/" + $scope.hashtag +'?limit=6')
                     .success(function (data) {
                         $scope.twitterfeed = data;
                 });

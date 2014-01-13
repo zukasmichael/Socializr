@@ -64,6 +64,13 @@ label{
     margin-bottom: 15px;
     padding:10px 0 10px 10px;
 }
+.group-tweet {
+    list-style: none;
+    background: #eeeeee;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding:10px 0 10px 10px;
+}
 .group-boards-header {
     list-style: none;
     background: #fff;
@@ -74,7 +81,6 @@ label{
     text-align: right;
     margin: 20px 0;
 }
-
 .board-index{
     height: 520px;
     padding: 0;

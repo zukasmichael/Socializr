@@ -37,7 +37,8 @@ class TwitterProvider extends AbstractProvider {
         /**
          * Get groups
          */
-        $controllers->get('/{hashtag}', function ($hashtag) use ($app) {
+        $controllers->get('/{hashtag}', function (Request $request, $hashtag) use ($app) {
+            $limit = $request->query->getInt('limit', 20);
             $settings = array(
                 'oauth_access_token' => $app['login.providers']['twitter']['oauth_access_token'],
                 'oauth_access_token_secret' => $app['login.providers']['twitter']['oauth_access_token_secret'],
@@ -45,7 +46,7 @@ class TwitterProvider extends AbstractProvider {
                 'consumer_secret' => $app['login.providers']['twitter']['API_SECRET']
             );
             $url = 'https://api.twitter.com/1.1/search/tweets.json';
-            $getfield = '?q=#'.$hashtag.'&count=2';
+            $getfield = '?q=#'.$hashtag.'&count='.$limit;
             $requestMethod = 'GET';
             $twitter = new TwitterAPIExchange($settings);
             $feed = $twitter->setGetfield($getfield)
@@ -53,10 +54,6 @@ class TwitterProvider extends AbstractProvider {
                 ->performRequest();
 
             $json_output = json_decode($feed, true);
-            $tweets = array();
-            foreach($json_output as $timeline) {
-               // $tweets[] = $timeline->text;
-            }
             return $this->getJsonResponseAndSerialize($json_output, 200, 'twitter-feed');
         })->assert('hashtag', '[0-9a-z]+')->bind('twitterFeed');
 
