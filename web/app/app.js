@@ -152,7 +152,7 @@ angular.module('groups', ['resources.groups'])
         function ($rootScope, $scope, $location, searchService) {
             $scope.searchService = new searchService();
             $scope.criteria = ' ';
-            $scope.numPerPage = 4;
+            $scope.numPerPage = 15;
             $scope.currentPage = 1;
 
             $scope.nextPage = function(){
@@ -170,7 +170,7 @@ angular.module('groups', ['resources.groups'])
             };
 
             $scope.search = function(){
-                $scope.numPerPage = 4;
+                $scope.numPerPage = 15;
                 $scope.currentPage = 1;
                 $scope.groups = $scope.searchService.search('groups', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
             };
@@ -185,7 +185,7 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         $scope.isLoggedIn = function(){
             var isAdmin = false;
             var isLoggedIn = false;
-            $scope.user.permissions.forEach(function(entry) {
+            angular.forEach($scope.user.permissions, function(entry) {
                 if(entry.group_id === $scope.group.id){
                     isAdmin = entry.access_level == 5;
                     isLoggedIn = entry.access_level > 0;

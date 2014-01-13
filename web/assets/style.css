@@ -69,6 +69,9 @@ label{
     margin-bottom: 10px;
     background: #cccccc;
 }
+.profile-head {
+    margin-bottom: 10px;
+}
 .profile-message{
     list-style: none;
 }
@@ -85,12 +88,15 @@ label{
     display: block;
     overflow-y: auto;
     overflow-x: hidden;
+    margin-left: -10px;
 }
 #news{
-    height: 500px;
+    height: inherit;
     width:1100px;
     display: block;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-left: -10px;
 }
 .select{
     width:150px;

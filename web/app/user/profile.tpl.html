@@ -1,4 +1,4 @@
-<p>
+<div class="profile-head">
     <h2>Profiel</h2>
     <strong>Naam:</strong> {{user.user_name}}<br />
     <strong>E-mail:</strong> {{user.email}}<br />
@@ -6,7 +6,7 @@
     <strong>Interesses:</strong> {{interests()}}<br />
     <strong>Over mij:</strong> {{profile.about}}<br />
     <button class="btn btn-success" ng-click="edit()">Profiel bewerken</button> <button class="btn btn-danger" ng-click="disable()">Account verwijderen</button><br />
-</p>
+</div>
 <div id="news" when-scrolled="nextPage()">
 <div ng-repeat="group in groups" class="profile-group">
     <a href="/groups/{{group.id}}"><strong>{{group.name}}</strong></a>
