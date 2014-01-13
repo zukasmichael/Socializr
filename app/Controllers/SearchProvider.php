@@ -75,10 +75,8 @@ class SearchProvider extends AbstractProvider
     protected function findUsers($query, $limit, $offset)
     {
         $qb = $this->app['doctrine.odm.mongodb.dm']->createQueryBuilder('Models\\User');
-        $qb->addOr($qb->expr()->field('title')->equals(new \MongoRegex("/.*$query.*/i")));
-        $qb->addOr($qb->expr()->field('description')->equals(new \MongoRegex("/.*$query.*/i")));
-
-        $users = $qb->limit($limit)
+        $users = $qb->field('userName')->equals(new \MongoRegex("/.*$query.*/i"))
+            ->limit($limit)
             ->skip($offset)
             ->getQuery()
             ->execute();

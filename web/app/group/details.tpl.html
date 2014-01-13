@@ -1,18 +1,32 @@
+<ul class="breadcrumb">
+    <li><a href="/groups">Groepen</a></li>
+    <li><a href="/groups/{{group.id}}">{{group.name}}</a></li>
+</ul>
+
 <div class="group-title">
-    <strong>Groep: {{group.name}}</strong><br />
+    <h4><span class="fa fa-bars">&nbsp;&nbsp;</span>Groep: {{group.name}}</h4>
     <div>{{group.description}}</div>
 </div>
 <ul class="group-index">
     <li ng-repeat="note in group.notes" class="group-note">
-        <h3>{{note.title}}</h3><br />
+        <h3>{{note.title}}</h3>
         <div class="content">
             <markdown ng-model="note.contents"></markdown>
         </div>
     </li>
-    <li ng-repeat="board in boards" class="group-topic"><a href="/boards/{{board.id}}">{{board.title}}</a></li>
+    <li class="group-boards-header">
+        <h4>Onderwerpen binnen deze groep:</h4>
+    </li>
+    <li ng-repeat="board in boards" class="group-topic">
+        <a href="/boards/{{board.id}}"><span class="fa fa-comment">&nbsp;&nbsp;</span>{{board.title}}</a>
+    </li>
 </ul>
-<button ng-click="addBoard()" ng-show="isLoggedIn().isLoggedIn" class="btn btn-default">Voeg prikbord toe</button> <button ng-click="admin()" ng-show="isLoggedIn().isGroupAdmin" class="btn btn-default">Groepsbeheer</button><br />
-<p>
+
+<div class="group-buttons">
+    <button ng-click="addBoard()" ng-show="isLoggedIn().isLoggedIn" class="btn btn-default">Voeg prikbord toe</button>
+    <button ng-click="admin()" ng-show="isLoggedIn().isGroupAdmin" class="btn btn-default">Groepsbeheer</button>
+</div>
+
 <div ng-show="isLoggedIn().isGroupAdmin">
     <div class="well">
     <form ng-controller="GroupDetailCtrl">
@@ -29,4 +43,3 @@
     </div>
     </div>
 </div>
-</p>

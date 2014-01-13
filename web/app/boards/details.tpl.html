@@ -1,5 +1,11 @@
+<ul class="breadcrumb">
+    <li ng-repeat="breadcrumb in breadcrumbs">
+        <a href="/#{{breadcrumb.path}}">{{breadcrumb.name}}</a>
+    </li>
+</ul>
+
 <div class="board-title">
-    <strong>{{board.title}}</strong>
+    <h4><span class="fa fa-comment">&nbsp;&nbsp;</span>Onderwerp: {{board.title}}</h4>
 </div>
 <div class="board-index">
     <div ng-repeat="message in messages" class="board-message">

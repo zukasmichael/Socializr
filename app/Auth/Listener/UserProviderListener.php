@@ -55,9 +55,8 @@ class UserProviderListener extends \Gigablah\Silex\OAuth\EventListener\UserProvi
 
         if ($oauthUser = $userProvider->loadUserByOAuthCredentials($token)) {
             $user = $this->loadUser($oauthUser, $token);
-            if (!$_SERVER['is_installation'] && $user && $user->isEnabled() !== true) {
-                header("Location: https://socializr.io/#/home?apimsguri=/accountDisabled");
-                exit;
+            if ((!isset($_SERVER['is_installation']) || !isset($_SERVER['is_installation'])) && $user && $user->isEnabled() !== true) {
+                return;
             }
             $token->setUser($user);
         }
