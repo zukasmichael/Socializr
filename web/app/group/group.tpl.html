@@ -1,32 +1,15 @@
-<div class="well">
-    <label>Search for: <input type="text" ng-model="criteria"></label>
+<p>
+<label>Search for: </label>
+<input type="text" ng-model="criteria" data-ng-change="search()">
+</p>
+<div id="group" when-scrolled="nextPage()">
+<div ng-repeat="group in groups" class="panel panel-primary group">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{group.name}}</h3>
+    </div>
+    <div class="panel-body">
+        <strong>{{group.description}}</strong><br />
+        <a href="/groups/{{group.id}}">Bekijken</a>
+    </div>
 </div>
-<table class="table table-bordered table-striped">
-    <thead>
-    <th ng-click="sort('name')">Name
-        <i ng-class="{'icon-chevron-up': isSortUp('name'), 'icon-chevron-down': isSortDown('name')}"></i>
-    </th>
-    <th ng-click="sort('description')">Omschrijving
-        <i ng-class="{'icon-chevron-up': isSortUp('description'), 'icon-chevron-down': isSortDown('description')}"></i>
-    </th>
-    <th></th>
-    </thead>
-    <tbody>
-    <tr ng-repeat="group in filteredGroups = (groups | filter:criteria | orderBy:sortField:reverse) | pagination:pageNo:pageSize">
-        <td>{{group.name}}</td><td>{{group.description}}</td>
-        <td><button class="btn btn-default" ng-click="view(group)">Bekijken</button></td>
-    </tr>
-    </tbody>
-    <tfoot>
-    <tr>
-        <td colspan="5">Total: {{filteredGroups.length}}</td>
-    </tr>
-    </tfoot>
-</table>
-<div class="pagination">
-    <ul>
-        <li><a ng-click="activePage(page-1)">Prev</a></li>
-        <li ng-repeat="page in pages"><a ng-click="setActivePage(page)">{{page+1}}</a></li>
-        <li><a ng-click="activePage(page+1)">Next</a></li>
-    </ul>
 </div>

@@ -1,18 +1,33 @@
-<div class="navbar navbar-fixed-top ng-scope" ng-controller="HeaderCtrl">
-    <div class="navbar-inner">
-        <div class="container">
-            <ul class="nav">
-                <li ng-class="{ active: isActive('/')}" data-access-level="accessLevels.public" active-nav><a href="/">Socializr</a></li>
+<div class="navbar navbar-default navbar-fixed-top ng-scope" ng-controller="HeaderCtrl">
+    <div class="container">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#"><img src="assets/img/logo_16x16.png" /> Socializr</a>
+    </div>
+    <div class="navbar-collapse collapse">
+
+            <ul class="nav navbar-nav">
                 <li class="dropdown"><a class="dropdown-toggle" href="/groups">Groepen</a>
                     <ul class="dropdown-menu">
-                        <li data-access-level="accessLevels.public" active-nav><a tabindex="-1" href="/groups">Zoeken</a></li>
+                        <li ng-class="{ active: isActive('/user/groups/')}" data-access-level='accessLevels.user' active-nav><a href="/users/groups/">Mijn groepen</a></li>
                         <li data-access-level='accessLevels.user' active-nav><a tabindex="-1" href="/groups/new">Nieuwe Groep</a></li>
                     </ul>
                 </li>
-                <li class="dropdown"><a class="dropdown-toggle" href="/groups">{{user.user_name}}</a>
+                <li ng-class="{ active: isActive('/user/profile/')}" data-access-level='accessLevels.user' active-nav><a href="/users/profile/">Profiel</a></li>
+                <li class="dropdown"><a class="dropdown-toggle" href="/search">Zoeken</a>
                     <ul class="dropdown-menu">
-                        <li ng-class="{ active: isActive('/user/profile/')}" data-access-level='accessLevels.user' active-nav><a href="/users/profile/">Profiel</a></li>
-                        <li ng-class="{ active: isActive('/user/groups/')}" data-access-level='accessLevels.user' active-nav><a href="/users/groups/">Mijn groepen</a></li>
+                        <li data-access-level="accessLevels.public" active-nav><a tabindex="-1" href="/groups">Groepen</a></li>
+                        <li data-access-level='accessLevels.user' active-nav><a tabindex="-1" href="/users/search">Gebruikers</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown"><a class="dropdown-toggle" href="/markdown">Help</a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{ active: isActive('/markdown/help')}" data-access-level='accessLevels.public' active-nav><a href="/markdown/help">Markdown</a></li>
                     </ul>
                 </li>
                 <li ng-class="{ active: isActive('/user/login/')}" data-access-level="accessLevels.anon" active-nav><a href="/users/login/">Inloggen</a></li>

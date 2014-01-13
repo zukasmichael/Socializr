@@ -12,7 +12,7 @@
     <a href="/groups/{{group.id}}"><strong>{{group.name}}</strong></a>
     <div ng-repeat="board in group.boards"><a href="/boards/{{board.id}}">{{board.title}}</a>
         <ul>
-            <li ng-repeat="message in board.messages">{{message.title}}</li>
+            <li ng-repeat="message in board.messages" class="profile-message">{{message.title}}</li>
         </ul>
     </div>
 </div>

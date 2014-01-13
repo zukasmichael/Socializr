@@ -1,10 +1,53 @@
-angular.module('socializrApp', ['ngRoute', 'auth', 'home', 'groups', 'users', 'boards', 'profiles', 'ui.bootstrap']);
+angular.module('socializrApp', ['ngRoute', 'auth', 'home', 'groups', 'users', 'boards', 'profiles', 'markdown', 'ui.bootstrap']);
 
 angular.module('socializrApp').constant('API_CONFIG', {
     baseUrl: 'https://api.socializr.io'
 });
 
 angular.module('socializrApp')
+    .factory('searchService', function($http) {
+        var results = [];
+        var profileService = function(){
+            results = [];
+        };
+        profileService.prototype.getResults = function(type, offset, limit, query) {
+            $http.get('https://api.socializr.io/search/' + query + '?limit='+limit + '&offset=' + offset + '&type=' + type)
+                .success(function(data){
+                    var items;
+                    if(type==='groups'){
+                        items = data.groups;
+                    }
+                    if(type==='users'){
+                        items = data.users;
+                    }
+                    for(var i =0; i < items.length; i++){
+                        results.push(items[i]);
+                    }
+                });
+            return results;
+        };
+        profileService.prototype.search = function(type, offset, limit, query) {
+            results = [];
+            $http.get('https://api.socializr.io/search/' + query + '?limit='+limit + '&offset=' + offset + '&type=' + type)
+                .success(function(data){
+                    var items;
+                    if(type==='groups'){
+                        items = data.groups;
+                    }
+                    if(type==='users'){
+                        items = data.users;
+                    }
+                    for(var i =0; i < items.length; i++){
+                        results.push(items[i]);
+                    }
+                });
+            return results;
+        };
+        profileService.prototype.count = function() {
+            return results.length;
+        };
+        return profileService;
+    })
     .config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
         var access = routingConfig.accessLevels;
 
@@ -78,7 +121,7 @@ angular.module('home').config(['$routeProvider', function ($routeProvider) {
         });
 }]);
 angular.module('socializrApp').controller('HomeCtrl', ['$rootScope', '$scope', 'Auth', function ($rootScope, $scope, Auth) {
-
+    $scope.hashtag = 'dwdd';
 }]);
 
 angular.module('groups', ['resources.groups'])
@@ -87,11 +130,6 @@ angular.module('groups', ['resources.groups'])
         $routeProvider.when('/groups', {
             templateUrl: '/app/group/group.tpl.html',
             controller: 'GroupListCtrl',
-            resolve: {
-                groups: ['Groups', function (Groups) {
-                    return Groups.all();
-                }]
-            },
             access: access.public
         });
         $routeProvider.when('/groups/new', {
@@ -110,59 +148,40 @@ angular.module('groups', ['resources.groups'])
             access: access.public
         });
     }])
-    .controller('GroupListCtrl', ['$rootScope', '$scope', '$location', 'groups',
-        function ($rootScope, $scope, $location, groups) {
-            $scope.groups = groups;
-            $scope.filteredGroups = $scope.groups;
-            $scope.sortField = undefined;
-            $scope.reverse = false;
+    .controller('GroupListCtrl', ['$rootScope', '$scope', '$location', 'searchService',
+        function ($rootScope, $scope, $location, searchService) {
+            $scope.searchService = new searchService();
+            $scope.criteria = ' ';
+            $scope.numPerPage = 16;
+            $scope.currentPage = 1;
 
-            $scope.sort = function (fieldName) {
-                if ($scope.sortField === fieldName) {
-                    $scope.reverse = !$scope.reverse;
-                } else {
-                    $scope.sortField = fieldName;
-                    $scope.reverse = false;
-                }
-            };
-            $scope.isSortUp = function (fieldName) {
-                return $scope.sortField === fieldName && !$scope.reverse;
-            };
-            $scope.isSortDown = function (fieldName) {
-                return $scope.sortField === fieldName && $scope.reverse;
+            $scope.nextPage = function(){
+                $scope.currentPage++;
             };
 
-            //pagination
-            $scope.pageSize = 3;
-            $scope.pages = [];
-            $scope.$watch('filteredGroups.length', function (filteredSize) {
-                $scope.pages.length = 0;
-                var noOfPages = Math.ceil(filteredSize / $scope.pageSize);
-                for (var i = 0; i < noOfPages; i++) {
-                    $scope.pages.push(i);
-                }
-            });
-
-            $scope.setActivePage = function (pageNo) {
-                if (pageNo >= 0 && pageNo < $scope.pages.length) {
-                    $scope.pageNo = pageNo;
-                }
+            $scope.setPage = function () {
+                $scope.groups = $scope.searchService.getResults('groups', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
             };
+
+            $scope.$watch( 'currentPage', $scope.setPage );
 
             $scope.view = function(group){
                 $location.path('/groups/' + group.id);
             };
+
+            $scope.search = function(){
+                $scope.numPerPage = 16;
+                $scope.currentPage = 1;
+                $scope.groups = $scope.searchService.search('groups', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
+            };
         }]
-    ).filter('pagination', function () {
-        return function (inputArray, selectedPage, pageSize) {
-            var start = selectedPage * pageSize;
-            return inputArray.slice(start, start + pageSize);
-        };
-    });
+    );
 angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', '$routeParams', '$http', 'Auth', '$location', '$route',
     function ($rootScope, $scope, $routeParams, $http, Auth, $location, $route) {
         $scope.user = Auth.user;
-        $scope.note = {};
+        $scope.note;
+
+
         $scope.isLoggedIn = function(){
             var isAdmin = false;
             var isLoggedIn = false;
@@ -199,6 +218,22 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId + "/board").success(function (data) {
             $scope.boards = data;
         });
+
+        $scope.md2Html = function() {
+            return $scope.html = $window.marked($scope.markdown);
+        };
+
+        $scope.initFromUrl = function(url) {
+            return $http.get(url).success(function(data) {
+                $scope.markdown = data;
+                return $scope.md2Html();
+            });
+        };
+
+        return $scope.initFromText = function(text) {
+            $scope.markdown = text;
+            return $scope.md2Html();
+        };
     }]
 );
 
@@ -302,7 +337,11 @@ angular.module('users')
             controller: 'UserLoginCtrl',
             access: access.public
         });
-
+        $routeProvider.when('/users/search', {
+            templateUrl: '/app/user/list.tpl.html',
+            controller: 'UserListCtrl',
+            access: access.public
+        });
     }])
     .factory('profileService', function($http) {
         groups = [];
@@ -374,17 +413,11 @@ angular.module('users')
                 $scope.currentPage++;
             };
 
-            (function tick() {
-                console.log("tick");
-                $scope.groups = $scope.profileService.getAllGroups( (($scope.currentPage - 1) * $scope.numPerPage) + $scope.numPerPage );
-                $timeout(tick, 5000);
-            })();
-
             $scope.setPage = function () {
                 $scope.groups = $scope.profileService.getGroups( ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage );
             };
 
-            //$scope.$watch( 'currentPage', $scope.setPage );
+            $scope.$watch( 'currentPage', $scope.setPage );
         }])
     .controller('UserGroupsCtrl', ['$scope', '$http', function ($scope, $http) {
         $http.get("https://api.socializr.io/user/current/groups")
@@ -421,7 +454,35 @@ angular.module('users')
                 }
             });
         };
-    });
+    })
+    .controller('UserListCtrl', ['$rootScope', '$scope', '$location', 'searchService',
+        function ($rootScope, $scope, $location, searchService) {
+            $scope.searchService = new searchService();
+            $scope.criteria = ' ';
+            $scope.numPerPage = 16;
+            $scope.currentPage = 1;
+
+            $scope.nextPage = function(){
+                $scope.currentPage++;
+            };
+
+            $scope.setPage = function () {
+                $scope.users = $scope.searchService.getResults('users', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
+            };
+
+            $scope.$watch( 'currentPage', $scope.setPage );
+
+            $scope.view = function(user){
+                $location.path('/users/' + user.id);
+            };
+
+            $scope.search = function(){
+                $scope.numPerPage = 16;
+                $scope.currentPage = 1;
+                $scope.users = $scope.searchService.search('users', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
+            };
+        }]
+    );
 angular.module('profiles', []);
 angular.module('profiles')
 .config(['$routeProvider', function ($routeProvider) {
@@ -590,6 +651,11 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
         });
     };
 
+    return $scope.initFromText = function(text) {
+        $scope.markdown = text;
+        return $scope.md2Html();
+    };
+
     $scope.permissions = {
         loggedin: ($scope.user.role === Auth.userRoles.user) || $scope.user.role === Auth.userRoles.admin
     };
@@ -604,8 +670,18 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
             });
     };
 
-    return $scope.initFromText = function(text) {
-        $scope.markdown = text;
-        return $scope.md2Html();
-    };
+
+}]);
+
+angular.module('markdown', [])
+    .config(['$routeProvider', function ($routeProvider) {
+        var access = routingConfig.accessLevels;
+        $routeProvider.when('/markdown/help', {
+            templateUrl: '/app/markdown/help.tpl.html',
+            controller: 'MarkdownHelpCtrl',
+            access: access.user
+        });
+    }]);
+angular.module('markdown').controller(['$scope', function($scope){
+
 }]);

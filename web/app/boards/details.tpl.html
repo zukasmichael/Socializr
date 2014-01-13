@@ -1,8 +1,8 @@
 <div class="board-title">
     <strong>{{board.title}}</strong>
 </div>
-<ul class="board-index">
-    <li ng-repeat="message in messages" class="board-message">
+<div class="board-index">
+    <div ng-repeat="message in messages" class="board-message">
         <p>
             <strong>{{message.title}}</strong><br />
             <div class="content">
@@ -10,8 +10,8 @@
             </div>
             <div class="board-message-user">{{message.post_user.user_name}} - {{message.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</div>
         </p>
-    </li>
-</ul>
+    </div>
+</div>
 <br />
 <div ng-show="permissions.loggedin">
     <form ng-submit="addMessage()">
@@ -22,6 +22,7 @@
         <button class="btn btn-default">Reageer</button>
     </form>
 
+    <a ng-href="/markdown/help">Markdown help</a><br />
     <strong>Voorbeeld</strong>
     <div class="content">
         <markdown ng-model="message.contents"></markdown>

@@ -71,6 +71,8 @@ Application set-up
 * Add the following to your hosts file: ```192.168.56.110 socializr.io api.socializr.io mongo.socializr.io webgrind.socializr.io test.socializr.io testapi.socializr.io```
 * At [mongo.socializr.io](http://mongo.socializr.io) you can manage your mongodb data via an php admin interface
 * For better performance,
+* Make sure puppet version 3.3.* is installed, not 3.4.*, run ```puppet help``` in linux to check the version.
+    For installation of a specific puppet version, run ```gem install puppet -v 3.3.2```
 
 Features which need to be included
 ----------------------------------
