@@ -663,6 +663,11 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
 
     $http.get("https://api.socializr.io/board/" + $routeParams.boardId).success(function (data) {
         $scope.board = data;
+        $scope.breadcrumbs = [
+            {"path" : '/groups', "name": 'Groepen'},
+            {"path" : '/groups/'+data.group_id, "name": data.group_name},
+            {"path" : '/boards/'+data.id, "name": data.title}
+        ];
     });
 
     $http.get("https://api.socializr.io/board/" + $routeParams.boardId + '/message').success(function (data) {

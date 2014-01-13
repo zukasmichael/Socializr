@@ -5,6 +5,9 @@ body{
     height: 100%;
     padding-top: 60px;
 }
+.btn {
+    padding: 10px 24px;
+}
 .container{
     height: 100%;
 }
@@ -15,45 +18,66 @@ label{
     width:120px;
     float: left;
 }
-.group-title{
+.breadcrumb {
+    white-space: nowrap;
+}
+.breadcrumb li,
+.breadcrumb li a {
+    box-sizing: inherit;
+    -webkit-box-sizing: inherit;
+}
+.group-title {
+    height:60px;
+    background: #008cba;
+    color:#FFF;
+    padding:10px 0 10px 10px;
+    margin-bottom: 15px;
+}
+.group-index {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 60px;
+    border-bottom:1px solid #dddddd;
+}
+.group-topic {
+    list-style: none;
+    background: #fff;
+    padding:10px 0 10px 10px;
+    border-top:1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+}
+.group-note {
+    list-style: none;
+    background: #eeeeee;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding:10px 0 10px 10px;
+}
+.group-boards-header {
+    list-style: none;
+    background: #fff;
+    margin-top: 15px;
+    padding:10px 10 10px 0;
+}
+.group-buttons {
+    text-align: right;
+    margin: 20px 0;
+}
+
+.board-index{
+    padding: 0;
+    margin: 0;
+}
+.board-title {
     height:60px;
     background: #008cba;
     color:#FFF;
     padding:10px 0 10px 10px;
 }
-.group-index{
-    padding: 0;
-    margin: 0;
-}
-.group-topic{
-    list-style: none;
-    background: #FFF;
-    padding:10px 0 10px 10px;
-    border-bottom:1px solid #dddddd;
-    border-left: 1px solid #dddddd;
-    border-right: 1px solid #dddddd;
-}
-.group-note{
-    list-style: none;
-    background: #eeeeee;
-    padding:10px 0 10px 10px;
-    border-bottom: 1px solid #004165;
-    border-left: 1px solid #004165;
-    border-right: 1px solid #004165;
-}
-.board-title{
-    height:30px;
-    background: #004165;
-    color:#FFF;
-    padding:10px 0 10px 10px;
-}
-.board-index{
-    padding: 0;
-    margin: 0;
-}
 .board-message{
     list-style: none;
-    background: #bbbbbb;
+    background: #eeeeee;
     padding:10px 0 10px 10px;
     border-bottom: 1px solid #004165;
     border-left: 1px solid #004165;

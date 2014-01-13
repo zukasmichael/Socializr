@@ -1,3 +1,9 @@
+<ul class="breadcrumb">
+    <li ng-repeat="breadcrumb in breadcrumbs">
+        <a href="/#{{breadcrumb.path}}">{{breadcrumb.name}}</a>
+    </li>
+</ul>
+
 <div class="board-title">
     <strong>{{board.title}}</strong>
 </div>
