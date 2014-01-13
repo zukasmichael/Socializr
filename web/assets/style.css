@@ -1,5 +1,12 @@
+html{
+    height: 100%;
+}
 body{
+    height: 100%;
     padding-top: 60px;
+}
+.container{
+    height: 100%;
 }
 .nav li{
     display: inline;
@@ -73,10 +80,11 @@ label{
     margin-bottom: 10px;
 }
 #group{
-    height: 500px;
+    height: inherit;
     width:800px;
     display: block;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 #news{
     height: 500px;

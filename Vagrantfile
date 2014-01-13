@@ -16,8 +16,9 @@ Vagrant.configure("2") do |config|
     virtualbox.customize ["setextradata", :id, "--VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
   end
 
+  config.puppet_install.version = "3.3.2"
+
   config.vm.provision :shell, :path => "shell/initial-setup.sh"
-  config.vm.provision :shell, :path => "shell/update-puppet.sh"
   config.vm.provision :shell, :path => "shell/librarian-puppet-vagrant.sh"
   config.vm.provision :puppet do |puppet|
     puppet.facter = {

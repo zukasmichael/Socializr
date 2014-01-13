@@ -152,7 +152,7 @@ angular.module('groups', ['resources.groups'])
         function ($rootScope, $scope, $location, searchService) {
             $scope.searchService = new searchService();
             $scope.criteria = ' ';
-            $scope.numPerPage = 16;
+            $scope.numPerPage = 4;
             $scope.currentPage = 1;
 
             $scope.nextPage = function(){
@@ -170,7 +170,7 @@ angular.module('groups', ['resources.groups'])
             };
 
             $scope.search = function(){
-                $scope.numPerPage = 16;
+                $scope.numPerPage = 4;
                 $scope.currentPage = 1;
                 $scope.groups = $scope.searchService.search('groups', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
             };
@@ -447,9 +447,38 @@ angular.module('users')
     ).directive('whenScrolled', function() {
         return function(scope, elm, attr) {
             var raw = elm[0];
+            var currHeight = 0;
+            var newScrollData = false;
+            var watchVar = null;
 
-            elm.bind('scroll', function() {
-                if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+            //Sderooij: new data scroll for whole page
+            if (scope.groups) {
+                watchVar = 'groups';
+            } else if (scope.users) {
+                watchVar = 'users';
+            }
+
+            if (watchVar) {
+                scope.$watch(watchVar, function(newValue, oldValue) {
+                    if (newValue) {
+                        newScrollData = true;
+                        if (currHeight >= 0) {
+                            var elHeight = jQuery(elm).height();
+                            if (currHeight < elHeight && elHeight < jQuery('body').height()) {
+                                currHeight = elHeight;
+                                setTimeout(function(){
+                                    scope.$apply(attr.whenScrolled);
+                                }, 0);
+                            }
+                        }
+                    }
+                }, true);
+            }
+
+            jQuery(window).scroll(function() {
+                currHeight = -1;
+                if (newScrollData && (raw.scrollTop + raw.offsetHeight) >= raw.scrollHeight) {
+                    newScrollData = false;
                     scope.$apply(attr.whenScrolled);
                 }
             });

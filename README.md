@@ -14,7 +14,8 @@ Getting dev-box up and running
 Open a (git) bash terminal and go to the local socializr git folder and run:
 
 ```bash
-#Start the devbox from repo root
+#Install puppet plugin and start the devbox from repo root
+$ vagrant plugin install vagrant-puppet-install
 $ vagrant up
 #Wait for the image to be downloaded...
 ```
@@ -78,30 +79,30 @@ Features which need to be included
 ----------------------------------
 
 #### Registration and personal information ####
-- [ ] Registration with e-mail verification
+- [x] Registration with e-mail verification
 - [x] Editing and updating your personal data
-- [ ] Account disabling
+- [x] Account disabling
 
 #### Login ####
 - [x] Login to your account
 - [ ] Remember login for computer
 
 #### Groups and group management ####
-- [ ] Every member can start a group
-- [ ] Every group has one or more administrators
-- [ ] Admins can send invites for a group
-- [ ] Admins kan remove users from a group
+- [x] Every member can start a group
+- [x] Every group has one or more administrators
+- [x] Admins can send invites for a group
+- [x] Admins kan remove users from a group
 
 #### Group types ####
 - There can be 3 types of groups:
-    - [ ] Open, accessible to any user
-    - [ ] Closed, accessible on invite
-    - [ ] Secret, accessible on invite
-- [ ] Once a group is create the type can't be changed
+    - [x] Open, accessible to any user
+    - [x] Closed, accessible on invite
+    - [x] Secret, accessible on invite
+- [x] Once a group is create the type can't be changed
 
 #### Personal dashboard ####
-- [ ] Groups you are part of
-- [ ] News messages
+- [x] Groups you are part of
+- [x] News messages
 - [ ] Update from posts
 - [ ] Seach the network
 
