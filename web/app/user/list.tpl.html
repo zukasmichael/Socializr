@@ -1,6 +1,6 @@
 <label>Search for: </label><input type="text" size="60" ng-model="criteria" data-ng-change="search()">
 <div id="group" when-scrolled="nextPage()">
     <div ng-repeat="user in users" class="user">
-        <a href="/users/{{user.id}}"><strong>{{user.user_name}}</strong></a><br />
+        <a href="/profiles/{{user.id}}"><strong>{{user.user_name}}</strong></a><br />
     </div>
 </div>

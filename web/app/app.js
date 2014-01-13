@@ -512,7 +512,7 @@ angular.module('profiles', []);
 angular.module('profiles')
 .config(['$routeProvider', function ($routeProvider) {
     var access = routingConfig.accessLevels;
-    $routeProvider.when('/profiles/:profileId', {
+    $routeProvider.when('/profiles/:userId', {
         templateUrl: '/app/profile/view.tpl.html',
         controller: 'ProfileViewCtrl',
         access: access.user
@@ -524,24 +524,22 @@ angular.module('profiles')
     });
 }])
     .controller('ProfileViewCtrl', ['$scope', '$http', '$routeParams', 'Auth', '$location', function($scope, $http, $routeParams, Auth, $location){
-        $http.get("https://api.socializr.io/profiles/" + $routeParams.profileId)
-            .success(
+        $http.get("https://api.socializr.io/user/" +  $routeParams.userId).success(
             function(data){
-                $scope.profile = data;
+                $scope.user = data;
             }
         );
-        $scope.interests = function(){
-            var interests = '';
-            var cnt = 0;
-            $scope.profile.interests.forEach(function(entry) {
-                interests = interests + entry.interest;
-                if(cnt < $scope.profile.interests.length -1){
-                    interests = interests + ",";
-                }
-                cnt++;
-            });
-            return interests;
-        };
+
+        $http.get("https://api.socializr.io/user/" +  $routeParams.userId + '/profile').success(
+            function(data){
+                $scope.profile = data;
+                var interests = '';
+                $scope.profile.interests.forEach(function(entry) {
+                        interests = interests + entry.interest + ",";
+                });
+                $scope.interests= interests;
+            }
+        );
     }])
     .controller('ProfileEditCtrl', ['$scope', '$http', '$routeParams', 'Auth', '$location', '$timeout', function($scope, $http, $routeParams, Auth, $location, $timeout){
 

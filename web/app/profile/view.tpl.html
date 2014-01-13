@@ -1,2 +1,7 @@
 <h3>Profiel</h3>
-<div><strong>Interesses:</strong> {{interests()}}</div>
+<p>
+    Over: <strong>{{user.user_name}}</strong><br />
+    {{profile.about}}
+</p>
+Leeftijd: <iso-age ng-model="profile.birthday"></iso-age>
+<div>Interesses: {{interests}}</div>

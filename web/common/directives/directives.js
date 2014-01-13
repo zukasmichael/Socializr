@@ -128,3 +128,15 @@ angular.module('socializrApp').directive('tweet', function() {
         }
     };
 });
+angular.module('socializrApp').directive('isoAge', function() {
+    return {
+        restrict: 'E',
+        link: function(scope, element, attrs) {
+            scope.$watch(attrs.ngModel, function(value, oldValue) {
+                var birthday = +new Date(value.replace('+', 'z'));
+                var html = ~~((Date.now() - birthday) / (31557600000));
+                element.html(html);
+            });
+        }
+    };
+});
