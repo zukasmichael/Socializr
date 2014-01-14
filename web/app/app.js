@@ -124,7 +124,7 @@ angular.module('socializrApp').controller('HomeCtrl', ['$rootScope', '$scope', '
     $scope.hashtag = 'dwdd';
 }]);
 
-angular.module('groups', ['resources.groups'])
+angular.module('groups', [])
     .config(['$routeProvider', function ($routeProvider) {
         var access = routingConfig.accessLevels;
         $routeProvider.when('/groups', {
@@ -181,7 +181,6 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         $scope.user = Auth.user;
         $scope.note;
 
-
         $scope.isLoggedIn = function(){
             var isAdmin = false;
             var isLoggedIn = false;
@@ -214,7 +213,20 @@ angular.module('groups').controller('GroupDetailCtrl', ['$rootScope', '$scope', 
         };
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId).success(function (data) {
             $scope.group = data;
+            if($scope.group.hashtag != null){
+                $scope.hashtag = $scope.group.hashtag;
+            }
         });
+
+        $scope.$watch('hashtag', function() {
+            if($scope.hashtag != undefined){
+                $http.get("https://api.socializr.io/twitter/" + $scope.hashtag +'?limit=6')
+                    .success(function (data) {
+                        $scope.twitterfeed = data;
+                });
+            }
+        });
+
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId + "/board").success(function (data) {
             $scope.boards = data;
         });
@@ -260,36 +272,20 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
 );
 angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 'Auth', '$route',
     function ($rootScope, $scope, $location, $routeParams, $http, Auth, $route) {
-        $scope.admins = [];
         $scope.groupId = $routeParams.groupId;
-        $scope.users = [];
-        $scope.members = [];
         $scope.user = Auth.user;
 
-        $http.get('https://api.socializr.io/user/')
-            .success(function(data){
-                data.forEach(function(user) {
-                    user.permissions.forEach(function(entry){
-                        if(entry.group_id === $scope.groupId){
-                            if(entry.access_level == 5){
-                                $scope.admins.push(user);
-                            }
-                            if (entry.access_level == 1){
-                                $scope.members.push(user);
-                                if(user.id === $scope.user.id){
-                                    $location.path('/groups/' + $scope.groupId);
-                                }
-                            }
-                            if(entry.access_level < 1){
-                                $scope.users.push(user);
-                                if(user.id === $scope.user.id){
-                                    $location.path('/groups/' + $scope.groupId);
-                                }
-                            }
-                        }
-                    });
-                }
-            );
+        $http.get("https://api.socializr.io/group/" + $routeParams.groupId + '/permissions/5')
+        .success(function(data){
+            $scope.admins = data;
+        }).error(function(){
+            $location.path('/groups/' + $scope.groupId);
+        });
+        $http.get("https://api.socializr.io/group/" + $routeParams.groupId + '/permissions/1').success(function(data){
+            $scope.members = data;
+        });
+        $http.get("http://api.socializr.io/user/").success(function(data){
+            $scope.users = data;
         });
 
         $scope.invite = function(user){
@@ -516,7 +512,7 @@ angular.module('profiles', []);
 angular.module('profiles')
 .config(['$routeProvider', function ($routeProvider) {
     var access = routingConfig.accessLevels;
-    $routeProvider.when('/profiles/:profileId', {
+    $routeProvider.when('/profiles/:userId', {
         templateUrl: '/app/profile/view.tpl.html',
         controller: 'ProfileViewCtrl',
         access: access.user
@@ -528,24 +524,22 @@ angular.module('profiles')
     });
 }])
     .controller('ProfileViewCtrl', ['$scope', '$http', '$routeParams', 'Auth', '$location', function($scope, $http, $routeParams, Auth, $location){
-        $http.get("https://api.socializr.io/profiles/" + $routeParams.profileId)
-            .success(
+        $http.get("https://api.socializr.io/user/" +  $routeParams.userId).success(
             function(data){
-                $scope.profile = data;
+                $scope.user = data;
             }
         );
-        $scope.interests = function(){
-            var interests = '';
-            var cnt = 0;
-            $scope.profile.interests.forEach(function(entry) {
-                interests = interests + entry.interest;
-                if(cnt < $scope.profile.interests.length -1){
-                    interests = interests + ",";
-                }
-                cnt++;
-            });
-            return interests;
-        };
+
+        $http.get("https://api.socializr.io/user/" +  $routeParams.userId + '/profile').success(
+            function(data){
+                $scope.profile = data;
+                var interests = '';
+                $scope.profile.interests.forEach(function(entry) {
+                        interests = interests + entry.interest + ",";
+                });
+                $scope.interests= interests;
+            }
+        );
     }])
     .controller('ProfileEditCtrl', ['$scope', '$http', '$routeParams', 'Auth', '$location', '$timeout', function($scope, $http, $routeParams, Auth, $location, $timeout){
 
@@ -569,6 +563,7 @@ angular.module('profiles')
             $http.post("https://api.socializr.io/profiles/" + $routeParams.profileId, profile)
                 .success(function (data, status, headers, config) {
                     $scope.profile = data;
+                    $location.path('/users/profile/');
                 }
             ).error(function (data, status, headers, config) {
                     console.log(status);
@@ -625,7 +620,8 @@ angular.module('profiles')
         $scope.formats = ['dd-MM-yyyy'];
         $scope.format = $scope.formats[0];
     }]);
-angular.module('boards', []).config(['$routeProvider', function ($routeProvider) {
+
+angular.module('boards', ['resources.messages']).config(['$routeProvider', function ($routeProvider) {
     var access = routingConfig.accessLevels;
     $routeProvider.when('/boards/new/:groupId', {
         templateUrl: '/app/boards/edit.tpl.html',
@@ -654,10 +650,14 @@ angular.module('boards').controller('BoardNewController', ['$scope', '$http', '$
     };
 }]);
 
-angular.module('boards').controller('BoardDetailsController', ['$scope', '$http', '$routeParams', 'Auth', '$route', function($scope, $http, $routeParams, Auth, $route){
+angular.module('boards').controller('BoardDetailsController', ['$scope', '$http', '$routeParams', 'Auth', '$route', 'messageService', function($scope, $http, $routeParams, Auth, $route, messageService){
     $scope.boardId = $routeParams.boardId;
     $scope.message;
     $scope.user = Auth.user;
+    $scope.numPerPage = 6;
+    $scope.currentPage = 1;
+
+    $scope.messageService = new messageService();
 
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
 
@@ -670,9 +670,15 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
         ];
     });
 
-    $http.get("https://api.socializr.io/board/" + $routeParams.boardId + '/message').success(function (data) {
-        $scope.messages = data;
-    });
+    $scope.nextPage = function(){
+        $scope.currentPage++;
+    };
+
+    $scope.setPage = function () {
+        $scope.messages = $scope.messageService.getMessages(($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.boardId);
+    };
+
+    $scope.$watch( 'currentPage', $scope.setPage );
 
     $scope.md2Html = function() {
         return $scope.html = $window.marked($scope.markdown);
@@ -685,7 +691,7 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
         });
     };
 
-    return $scope.initFromText = function(text) {
+    $scope.initFromText = function(text) {
         $scope.markdown = text;
         return $scope.md2Html();
     };
@@ -703,8 +709,6 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
                 console.log(status);
             });
     };
-
-
 }]);
 
 angular.module('markdown', [])

@@ -7,13 +7,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#"><img src="assets/img/logo_16x16.png" /> Socializr</a>
+        <a class="navbar-brand" href="#"><img src="/assets/img/logo_16x16.png" /> Socializr</a>
     </div>
     <div class="navbar-collapse collapse">
 
             <ul class="nav navbar-nav">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" href="/groups"><span class="fa fa-bars">&nbsp;&nbsp;</span>Groepen</a>
+                    <a class="dropdown-toggle" data-access-level='accessLevels.user' href="/groups"><span class="fa fa-bars">&nbsp;&nbsp;</span>Groepen</a>
                     <ul class="dropdown-menu">
                         <li ng-class="{ active: isActive('/user/groups/')}" data-access-level='accessLevels.user' active-nav>
                             <a href="/users/groups/"><span class="fa fa-sort-amount-desc">&nbsp;&nbsp;</span>Mijn groepen</a>

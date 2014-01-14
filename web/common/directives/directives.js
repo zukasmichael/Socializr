@@ -71,13 +71,70 @@ var md = function () {
         toHtml:toHtml
     };
 }();
-angular.module('boards').directive('markdown', function() {
+
+angular.module('socializrApp').directive('markdown', function() {
     return {
         restrict: 'E',
         link: function(scope, element, attrs) {
             scope.$watch(attrs.ngModel, function(value, oldValue) {
                 var markdown = value;
                 var html = md.toHtml(markdown);
+                element.html(html);
+            });
+        }
+    };
+});
+angular.module('socializrApp').directive('whenScrolled', function() {
+    return function(scope, elm, attr) {
+        var raw = elm[0];
+
+        elm.bind('scroll', function() {
+            if (raw.scrollTop + raw.offsetHeight >= raw.scrollHeight) {
+                scope.$apply(attr.whenScrolled);
+            }
+        });
+    };
+});
+
+String.prototype.parseURL = function() {
+    return this.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
+        return url.link(url);
+    });
+};
+
+String.prototype.parseUsername = function() {
+    return this.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
+        var username = u.replace("@","")
+        return u.link("http://twitter.com/"+username);
+    });
+};
+
+String.prototype.parseHashtag = function() {
+    return this.replace(/[#]+[A-Za-z0-9-_]+/g, function(t) {
+        var tag = t.replace("#","%23")
+        return t.link("http://search.twitter.com/search?q="+tag);
+    });
+};
+
+angular.module('socializrApp').directive('tweet', function() {
+    return {
+        restrict: 'E',
+        link: function(scope, element, attrs) {
+            scope.$watch(attrs.ngModel, function(value, oldValue) {
+                var tweet = value.parseURL().parseHashtag().parseUsername();
+                var html = tweet;
+                element.html(html);
+            });
+        }
+    };
+});
+angular.module('socializrApp').directive('isoAge', function() {
+    return {
+        restrict: 'E',
+        link: function(scope, element, attrs) {
+            scope.$watch(attrs.ngModel, function(value, oldValue) {
+                var birthday = +new Date(value.replace('+', 'z'));
+                var html = ~~((Date.now() - birthday) / (31557600000));
                 element.html(html);
             });
         }

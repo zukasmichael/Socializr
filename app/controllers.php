@@ -68,6 +68,7 @@ $app->mount('/message', new \Controllers\MessageProvider());
 $app->mount('/user', new \Controllers\UserProvider());
 $app->mount('/search', new \Controllers\SearchProvider());
 $app->mount('/profiles', new \Controllers\ProfileProvider());
+$app->mount('/twitter', new \Controllers\TwitterProvider());
 /**
  * Register error handlers
  */

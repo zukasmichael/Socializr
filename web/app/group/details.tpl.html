@@ -14,6 +14,9 @@
             <markdown ng-model="note.contents"></markdown>
         </div>
     </li>
+    <li ng-repeat="status in twitterfeed.statuses" class="group-tweet">
+        Tweet: <tweet ng-model="status.text"></tweet>
+    </li>
     <li class="group-boards-header">
         <h4>Onderwerpen binnen deze groep:</h4>
     </li>
@@ -29,17 +32,17 @@
 
 <div ng-show="isLoggedIn().isGroupAdmin">
     <div class="well">
-    <form ng-controller="GroupDetailCtrl">
-        <p>
-            <label>Titel</label><input ng-model="note.title"><br />
-            <label>Bericht</label><textarea ng-model="note.contents" rows="4" cols="80"></textarea><br />
-        </p>
-        <button class="btn btn-default" ng-click="addNote(note)">Aankondiging toevoegen</button>
-    </form>
-    <a ng-href="/markdown/help">Markdown help</a><br />
-    <strong>Voorbeeld</strong>
-        <div class="content">
-        <markdown ng-model="note.contents"></markdown>
-    </div>
+        <form ng-controller="GroupDetailCtrl">
+            <p>
+                <label>Titel</label><input type="text" size="60" ng-model="note.title"><br />
+                <label>Bericht</label><textarea ng-model="note.contents" rows="4" cols="80"></textarea><br />
+            </p>
+            <button class="btn btn-default" ng-click="addNote(note)">Aankondiging toevoegen</button><br />
+            <a ng-href="/markdown/help">Markdown help</a><br />
+            <strong>Voorbeeld</strong>
+            <div class="content">
+                <markdown ng-model="note.contents"></markdown>
+            </div>
+        </form>
     </div>
 </div>

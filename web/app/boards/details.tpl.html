@@ -7,25 +7,30 @@
 <div class="board-title">
     <h4><span class="fa fa-comment">&nbsp;&nbsp;</span>Onderwerp: {{board.title}}</h4>
 </div>
-<div class="board-index">
+<div class="board-index" when-scrolled="nextPage()">
     <div ng-repeat="message in messages" class="board-message">
         <p>
             <strong>{{message.title}}</strong><br />
-            <div class="content">
-                <markdown ng-model="message.contents"></markdown>
-            </div>
-            <div class="board-message-user">{{message.post_user.user_name}} - {{message.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</div>
+        <div class="content">
+            <markdown ng-model="message.contents"></markdown>
+        </div>
+        <div class="board-message-user">{{message.post_user.user_name}} - {{message.created_at | date:'yyyy-MM-dd HH:mm:ss'}}</div>
         </p>
     </div>
 </div>
 <br />
-<div ng-show="permissions.loggedin">
-    <form ng-submit="addMessage()">
+<div ng-show="permissions.loggedin" class="well">
+    <form ng-controller="BoardDetailsController">
         <p>
-        <label>Titel</label><input ng-model="message.title">
+        <label>Titel</label><input type="text" size="60" ng-model="message.title">
         </p>
         <label>Bericht</label><textarea ng-model="message.contents" rows="4" cols="80"></textarea><br />
-        <button class="btn btn-default">Reageer</button>
+        <button class="btn btn-default" ng-click="addMessage">Reageer</button><br />
+        <a ng-href="/markdown/help">Markdown help</a><br />
+        <strong>Voorbeeld</strong>
+        <div class="content">
+            <markdown ng-model="message.contents"></markdown>
+        </div>
     </form>
 
     <a ng-href="/markdown/help">Markdown help</a><br />

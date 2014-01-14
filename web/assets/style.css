@@ -64,6 +64,13 @@ label{
     margin-bottom: 15px;
     padding:10px 0 10px 10px;
 }
+.group-tweet {
+    list-style: none;
+    background: #eeeeee;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding:10px 0 10px 10px;
+}
 .group-boards-header {
     list-style: none;
     background: #fff;
@@ -74,10 +81,11 @@ label{
     text-align: right;
     margin: 20px 0;
 }
-
 .board-index{
+    height: 520px;
     padding: 0;
     margin: 0;
+    overflow: auto;
 }
 .board-title {
     height:60px;
@@ -89,9 +97,9 @@ label{
     list-style: none;
     background: #eeeeee;
     padding:10px 0 10px 10px;
-    border-bottom: 1px solid #004165;
-    border-left: 1px solid #004165;
-    border-right: 1px solid #004165;
+    border-bottom: 1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
 }
 .profile-group{
     width:280px;
@@ -118,7 +126,7 @@ label{
 }
 #group{
     height: inherit;
-    width:800px;
+    width:700px;
     display: block;
     overflow-y: auto;
     overflow-x: hidden;
