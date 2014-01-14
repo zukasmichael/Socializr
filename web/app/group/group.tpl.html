@@ -1,15 +1,26 @@
-<p>
-<label>Search for: </label>
-<input type="text" size="60" ng-model="criteria" data-ng-change="search()">
-</p>
+<h2>Alle groepen</h2>
+<div class="search">
+    <label>Zoek een groep: </label>
+    <input type="text" size="60" ng-model="criteria" data-ng-change="search()">
+</div>
 <div id="group" when-scrolled="nextPage()">
     <div ng-repeat="group in groups" class="panel panel-primary group">
-        <div class="panel-heading">
-            <h3 class="panel-title">{{group.name}}</h3>
+        <div class="panel-heading" ng-class="{true:'member', false:''}[isMember(group)]">
+            <span ng-show="isMember(group)" class="fa fa-star-o member-mark"></span>
+            <h3 class="panel-title"><span class="fa fa-bars">&nbsp;&nbsp;</span>{{group.name}}</h3>
         </div>
         <div class="panel-body">
-            <strong>{{group.description}}</strong><br />
-            <a href="/groups/{{group.id}}">Bekijken</a>
+            <span>{{group.description}}</span>
+            <ul class="group-index">
+                <li class="group-topic active">
+                    <a ng-show="group.boards.length < 1" href="/groups/{{group.id}}"><span class="fa fa-comments">&nbsp;&nbsp;</span>Nog geen onderwerpen.</a>
+                    <a ng-show="group.boards.length == 1" href="/groups/{{group.id}}"><span class="fa fa-comments">&nbsp;&nbsp;</span>{{group.boards.length}} onderwerp.</a>
+                    <a ng-show="group.boards.length > 1" href="/groups/{{group.id}}"><span class="fa fa-comments">&nbsp;&nbsp;</span>{{group.boards.length}} onderwerpen.</a>
+                </li>
+            </ul>
+            <div class="goto">
+                <a href="/groups/{{group.id}}">Bekijk groep</a>
+            </div>
         </div>
     </div>
 </div>

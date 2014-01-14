@@ -8,6 +8,16 @@ body{
 h4 {
     font-size: 18px;
 }
+label {
+    float: left;
+    font-size: 16px;
+    margin: 15px 10px 0 0;
+    min-width: 150px;
+}
+input,
+textarea {
+    margin: 10px 0;
+}
 .btn {
     padding: 10px 24px;
 }
@@ -23,10 +33,6 @@ h4 {
 }
 .nav li{
     display: inline;
-}
-label{
-    width:120px;
-    float: left;
 }
 .breadcrumb {
     white-space: nowrap;
@@ -45,17 +51,35 @@ label{
 }
 .group-index {
     padding: 0;
-    margin: 0;
-    margin-bottom: 60px;
-    border-bottom:1px solid #dddddd;
+    margin: 0 0 60px 0;
+}
+#group .group-index {
+    margin: 10px 0 0 0;
+}
+#group .panel-heading.member {
+    border-color: #fff;
+    border-style: dotted;
+    border-width: 1px;
+}
+#group .panel-heading.member span.member-mark {
+    float: right;
+}
+#group .panel-heading.member h3 {
+    margin-right: 15px;
 }
 .group-topic {
     list-style: none;
     background: #fff;
     padding:10px 0 10px 10px;
-    border-top:1px solid #dddddd;
     border-left: 1px solid #dddddd;
     border-right: 1px solid #dddddd;
+    border-bottom:1px solid #dddddd;
+}
+.group-topic.active {
+    list-style: none;
+    background: #fff;
+    padding:10px 0 10px 10px;
+    border-top:1px solid #dddddd;
 }
 .group-note {
     list-style: none;
@@ -82,7 +106,7 @@ label{
     margin: 20px 0;
 }
 .board-index{
-    height: 520px;
+    height: inherit;
     padding: 0;
     margin: 0;
     overflow: auto;
@@ -101,32 +125,79 @@ label{
     border-left: 1px solid #dddddd;
     border-right: 1px solid #dddddd;
 }
-.profile-group{
-    width:280px;
-    height:180px;
-    float:left;
+
+
+.profile-group {
+    width:700px;
     padding-left: 5px;
     padding-top: 5px;
-    margin-left: 10px;
+    margin-left: 5px;
     margin-bottom: 10px;
-    background: #cccccc;
 }
 .profile-head {
     margin-bottom: 10px;
 }
-.profile-message{
-    list-style: none;
+.profile-group .board-container {
+    width: 100%;
+    overflow: hidden;
+    padding: 5px 0;
+    border-bottom: 1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
 }
+.profile-group .board-container.active{
+    width: 100%;
+    overflow: hidden;
+    padding: 5px 0;
+    border: 1px solid #dddddd;
+}
+.profile-group .board-container a {
+    float: right;
+    width: 150px;
+}
+.profile-group .board-container ul {
+    float: left;
+    width: 534px;
+    padding: 0;
+    margin: 0;
+}
+.profile-message {
+    list-style: none;
+    background: #fff;
+    padding:10px 0 10px 10px;
+    border-top: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+}
+.profile-message.active {
+    list-style: none;
+    background: #fff;
+    padding:10px 0 10px 10px;
+    border-top: 0;
+}
+.profile-message span.user,
+.profile-message span.date {
+    font-size: 12px;
+    margin-right: 10px;
+}
+#news .panel-title > a {
+    color: #008cba;
+}
+
+
 .group{
-    width:200px;
-    height:200px;
+    width:300px;
+    height:220px;
     float:left;
     margin-left: 10px;
     margin-bottom: 10px;
 }
+.group .goto {
+    text-align: right;
+    padding-top: 10px;
+}
 #group{
     height: inherit;
-    width:700px;
+    width:960px;
     display: block;
     overflow-y: auto;
     overflow-x: hidden;
@@ -134,7 +205,7 @@ label{
 }
 #news{
     height: inherit;
-    width:1100px;
+    width:960px;
     display: block;
     overflow-y: auto;
     overflow-x: hidden;

@@ -1,4 +1,8 @@
-<label>Search for: </label><input type="text" size="60" ng-model="criteria" data-ng-change="search()">
+<h2>Gebruikers</h2>
+<div class="search">
+    <label>Zoek een gebruiker: </label>
+    <input type="text" size="60" ng-model="criteria" data-ng-change="search()">
+</div>
 <div id="group" when-scrolled="nextPage()">
     <div ng-repeat="user in users" class="user">
         <a href="/profiles/{{user.id}}"><strong>{{user.user_name}}</strong></a><br />
