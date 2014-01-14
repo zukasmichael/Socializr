@@ -1,4 +1,11 @@
 <h1>Groep beheren</h1>
+<form ng-controller="GroupAdminCtrl">
+    <fieldset class="well">
+        <legend>Hashtag instellen</legend>
+        <input type="text" ng-model="group.hashtag" /><br />
+        <button class="btn btn-default" ng-click="saveHashtag(group)">Opslaan</button>
+    </fieldset>
+</form>
 <strong>Admins</strong><br />
 <p ng-repeat="admin in admins">
     {{admin.user_name}}

@@ -275,6 +275,13 @@ angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '
         $scope.groupId = $routeParams.groupId;
         $scope.user = Auth.user;
 
+        $http.get("https://api.socializr.io/group/" + $routeParams.groupId)
+            .success(function(data){
+                $scope.group = data;
+            }).error(function(){
+                $location.path('/groups/' + $scope.groupId);
+            });
+
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId + '/permissions/5')
         .success(function(data){
             $scope.admins = data;
@@ -310,6 +317,17 @@ angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '
                     $route.reload();
                 }
             );
+        };
+
+        $scope.saveHashtag = function(group){
+            $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+            $http.post("https://api.socializr.io/group/" + $routeParams.groupId, group)
+                .success(function (data, status, headers, config) {
+                    $scope.group = data;
+                }
+            ).error(function (data, status, headers, config) {
+                    console.log(status);
+            });
         };
     }
 ]);

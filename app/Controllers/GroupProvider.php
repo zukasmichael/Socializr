@@ -149,6 +149,43 @@ class GroupProvider extends AbstractProvider
         });
 
         /**
+         * Add group
+         */
+        $controllers->post('/{groupId}', function (Request $request, $groupId) use ($app) {
+
+            $user = $this->checkLoggedin();
+
+            $groupObj = $app['serializer']->deserialize($request->getContent(), 'Models\\Group', 'json');
+            $group = $app['doctrine.odm.mongodb.dm']
+                ->createQueryBuilder('Models\\Group')
+                ->field('_id')->equals($groupId)
+                ->getQuery()
+                ->getSingleResult();
+
+            $group->setHashtag($groupObj->getHashtag());
+
+            $app['doctrine.odm.mongodb.dm']->persist($group);
+            $app['doctrine.odm.mongodb.dm']->flush();
+
+            try {
+                //The user object is serialized from the session and needs do be merged with the documentManager for saving
+                $user = $app['doctrine.odm.mongodb.dm']->merge($user);
+
+                $user->setPermissionForGroup($group->getId(), \Models\Permission::ADMIN);
+                $app['service.updateSessionUser']($user);
+
+                $app['doctrine.odm.mongodb.dm']->persist($user);
+                $app['doctrine.odm.mongodb.dm']->flush();
+            } catch (\Exception $e) {
+                $app['doctrine.odm.mongodb.dm']->remove($group);
+                $app['doctrine.odm.mongodb.dm']->flush();
+                throw $e;
+            }
+
+            return $this->getJsonResponseAndSerialize($group, 201, 'group-details');
+        });
+
+        /**
          * Add a board to a group
          */
         $controllers->post('/{groupId}/board', function (Request $request, $groupId) use ($app) {
