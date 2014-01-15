@@ -20,8 +20,8 @@
     <li class="group-boards-header">
         <h4>Onderwerpen binnen deze groep:</h4>
     </li>
-    <li ng-repeat="board in boards" class="group-topic">
-        <a href="/boards/{{board.id}}"><span class="fa fa-comment">&nbsp;&nbsp;</span>{{board.title}}</a>
+    <li ng-repeat="board in boards" ng-class="{active : $first}" class="group-topic">
+        <a href="/boards/{{board.id}}"><span class="fa fa-comments">&nbsp;&nbsp;</span>{{board.title}}</a>
     </li>
 </ul>
 

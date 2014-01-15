@@ -152,8 +152,19 @@ angular.module('groups', [])
         function ($rootScope, $scope, $location, searchService) {
             $scope.searchService = new searchService();
             $scope.criteria = ' ';
-            $scope.numPerPage = 15;
+            $scope.numPerPage = 9;
             $scope.currentPage = 1;
+
+            $scope.isMember = function(group){
+                var result = false;
+                angular.forEach($scope.user.permissions, function(entry) {
+                    if(entry.group_id === group.id && entry.access_level > 0){
+                        result = true;
+                        return false;
+                    }
+                });
+                return result;
+            };
 
             $scope.nextPage = function(){
                 $scope.currentPage++;
@@ -170,10 +181,7 @@ angular.module('groups', [])
             };
 
             $scope.search = function(){
-                if($scope.criteria == ''){
-                    $scope.criteria = ' ';
-                }
-                $scope.numPerPage = 15;
+                $scope.numPerPage = 9;
                 $scope.currentPage = 1;
                 $scope.groups = $scope.searchService.search('groups', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
             };
@@ -273,14 +281,10 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
         };
     }]
 );
-angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 'Auth', '$route', 'searchService',
-    function ($rootScope, $scope, $location, $routeParams, $http, Auth, $route, searchService) {
+angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 'Auth', '$route',
+    function ($rootScope, $scope, $location, $routeParams, $http, Auth, $route) {
         $scope.groupId = $routeParams.groupId;
         $scope.user = Auth.user;
-        $scope.searchService = new searchService();
-        $scope.criteria = ' ';
-        $scope.numPerPage = 16;
-        $scope.currentPage = 1;
 
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId)
             .success(function(data){
@@ -288,25 +292,6 @@ angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '
             }).error(function(){
                 $location.path('/groups/' + $scope.groupId);
             });
-
-        $scope.nextPage = function(){
-            $scope.currentPage++;
-        };
-
-        $scope.setPage = function () {
-            $scope.users = $scope.searchService.getResults('users', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
-        };
-
-        $scope.search = function(){
-            $scope.numPerPage = 16;
-            $scope.currentPage = 1;
-            if($scope.criteria == ''){
-                $scope.criteria = ' ';
-            }
-            $scope.users = $scope.searchService.search('users', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
-        };
-
-        $scope.$watch( 'currentPage', $scope.setPage );
 
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId + '/permissions/5')
         .success(function(data){
@@ -488,22 +473,24 @@ angular.module('users')
         return function(scope, elm, attr) {
             var raw = elm[0];
             var currHeight = 0;
-            var newScrollData = false;
             var watchVar = null;
+            var maxScrollHeight = 0;
 
             //Sderooij: new data scroll for whole page
-            if (scope.groups) {
+            if (raw.id == 'group') {
                 watchVar = 'groups';
-            } else if (scope.users) {
+            } else if (raw.id == 'board') {
+                watchVar = 'messages';
+            }/* else {
                 watchVar = 'users';
-            }
+            }*/
 
             if (watchVar) {
                 scope.$watch(watchVar, function(newValue, oldValue) {
                     if (newValue) {
-                        newScrollData = true;
                         if (currHeight >= 0) {
                             var elHeight = jQuery(elm).height();
+                            maxScrollHeight = jQuery(elm).height();
                             if (currHeight < elHeight && elHeight < jQuery('body').height()) {
                                 currHeight = elHeight;
                                 setTimeout(function(){
@@ -517,8 +504,14 @@ angular.module('users')
 
             jQuery(window).scroll(function() {
                 currHeight = -1;
-                if (newScrollData && (raw.scrollTop + raw.offsetHeight) >= raw.scrollHeight) {
-                    newScrollData = false;
+
+                var currScrollHeight = jQuery(window).height() + jQuery(window).scrollTop();
+                if (jQuery(elm).height() > maxScrollHeight) {
+                    maxScrollHeight = jQuery(elm).height();
+                }
+
+                if (currScrollHeight > maxScrollHeight) {
+                    maxScrollHeight += 600;
                     scope.$apply(attr.whenScrolled);
                 }
             });
@@ -546,9 +539,6 @@ angular.module('users')
             };
 
             $scope.search = function(){
-                if($scope.criteria == ''){
-                    $scope.criteria = ' ';
-                }
                 $scope.numPerPage = 16;
                 $scope.currentPage = 1;
                 $scope.users = $scope.searchService.search('users', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);

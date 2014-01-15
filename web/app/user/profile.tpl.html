@@ -9,10 +9,21 @@
 </div>
 <div id="news" when-scrolled="nextPage()">
 <div ng-repeat="group in groups" class="profile-group">
-    <a href="/groups/{{group.id}}"><strong>{{group.name}}</strong></a>
-    <div ng-repeat="board in group.boards"><a href="/boards/{{board.id}}">{{board.title}}</a>
+    <div class="panel-heading">
+        <h3 class="panel-title ng-binding">
+            <a href="/groups/{{group.id}}"><span class="fa fa-bars">&nbsp;&nbsp;</span>{{group.name}}</a>
+        </h3>
+    </div>
+    <div ng-class="{active : $first}" class="board-container" ng-repeat="board in group.boards">
+        <a href="/boards/{{board.id}}">{{board.title}}</a>
         <ul>
-            <li ng-repeat="message in board.messages" class="profile-message">{{message.title}}</li>
+            <li ng-repeat="message in board.messages" ng-class="{active : $first}" class="profile-message">
+                <span class="title"><strong>{{message.title}}</strong></span></br>
+                <div class="content">
+                    <markdown ng-model="message.contents"></markdown>
+                </div>
+                <span class="user">{{ message.post_user.user_name }}</span> - <span class="date">{{ message.created_at | date:'HH:mm:ss dd-MM-yyyy'}}</span>
+            </li>
         </ul>
     </div>
 </div>
