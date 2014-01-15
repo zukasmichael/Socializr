@@ -170,6 +170,9 @@ angular.module('groups', [])
             };
 
             $scope.search = function(){
+                if($scope.criteria == ''){
+                    $scope.criteria = ' ';
+                }
                 $scope.numPerPage = 15;
                 $scope.currentPage = 1;
                 $scope.groups = $scope.searchService.search('groups', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
@@ -270,10 +273,14 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
         };
     }]
 );
-angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 'Auth', '$route',
-    function ($rootScope, $scope, $location, $routeParams, $http, Auth, $route) {
+angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 'Auth', '$route', 'searchService',
+    function ($rootScope, $scope, $location, $routeParams, $http, Auth, $route, searchService) {
         $scope.groupId = $routeParams.groupId;
         $scope.user = Auth.user;
+        $scope.searchService = new searchService();
+        $scope.criteria = ' ';
+        $scope.numPerPage = 16;
+        $scope.currentPage = 1;
 
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId)
             .success(function(data){
@@ -281,6 +288,25 @@ angular.module('groups').controller('GroupAdminCtrl', ['$rootScope', '$scope', '
             }).error(function(){
                 $location.path('/groups/' + $scope.groupId);
             });
+
+        $scope.nextPage = function(){
+            $scope.currentPage++;
+        };
+
+        $scope.setPage = function () {
+            $scope.users = $scope.searchService.getResults('users', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
+        };
+
+        $scope.search = function(){
+            $scope.numPerPage = 16;
+            $scope.currentPage = 1;
+            if($scope.criteria == ''){
+                $scope.criteria = ' ';
+            }
+            $scope.users = $scope.searchService.search('users', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
+        };
+
+        $scope.$watch( 'currentPage', $scope.setPage );
 
         $http.get("https://api.socializr.io/group/" + $routeParams.groupId + '/permissions/5')
         .success(function(data){
@@ -520,6 +546,9 @@ angular.module('users')
             };
 
             $scope.search = function(){
+                if($scope.criteria == ''){
+                    $scope.criteria = ' ';
+                }
                 $scope.numPerPage = 16;
                 $scope.currentPage = 1;
                 $scope.users = $scope.searchService.search('users', ($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.criteria);
