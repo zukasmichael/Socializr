@@ -404,10 +404,16 @@ angular.module('users')
     })
     .controller('UserProfileCtrl', ['$scope', '$http', 'Auth', 'profileService', '$location', '$timeout',
         function ($scope, $http, Auth, profileService, $location, $timeout) {
+
+            $scope.interests = '';
+
             $http.get("https://api.socializr.io/user/" + $scope.user.id + '/profile')
                 .success(
                 function(data){
                     $scope.profile = data;
+                    data.interests.forEach(function(entry) {
+                        $scope.interests = $scope.interests + entry.interest + ", ";
+                    });
                 }
             ).error(
                   // $location.
@@ -420,18 +426,6 @@ angular.module('users')
             };
             $scope.edit = function(){
                 $location.path('/profiles/edit/' + $scope.user.profile_id);
-            };
-            $scope.interests = function(){
-                var interests = '';
-                var cnt = 0;
-                $scope.profile.interests.forEach(function(entry) {
-                    interests = interests + entry.interest;
-                    if(cnt < $scope.profile.interests.length -1){
-                        interests = interests + ",";
-                    }
-                    cnt++;
-                });
-                return interests;
             };
 
             $scope.profileService = new profileService();

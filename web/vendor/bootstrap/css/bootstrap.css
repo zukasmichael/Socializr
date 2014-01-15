@@ -7573,15 +7573,23 @@ td.visible-print {
 }
 
 .btn-lg {
-    padding: 16px 32px;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.33;
+    border-radius: 6px;
 }
 
 .btn-sm {
-    padding: 8px 16px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
 }
 
 .btn-xs {
-    padding: 4px 8px;
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
 }
 
 .btn-group .btn ~ .dropdown-toggle {
