@@ -712,10 +712,11 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
     };
 
     $scope.setPage = function () {
+        console.log($scope.currentPage);
         $scope.messages = $scope.messageService.getMessages(($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.boardId);
     };
 
-    $scope.$watch( 'currentPage', $scope.setPage );
+    $scope.$watch('currentPage', $scope.setPage );
 
     $scope.md2Html = function() {
         return $scope.html = $window.marked($scope.markdown);
@@ -738,7 +739,6 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
     };
 
     $scope.addMessage = function(){
-        console.log('addMesage');
         $http.post("https://api.socializr.io/board/" + $scope.boardId +'/message', $scope.message)
             .success(function (data, status, headers, config) {
                 $route.reload();
@@ -747,7 +747,6 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
             });
     };
 }]);
-
 angular.module('markdown', [])
     .config(['$routeProvider', function ($routeProvider) {
         var access = routingConfig.accessLevels;

@@ -5,7 +5,7 @@
 
 <div class="group-title">
     <h4><span class="fa fa-bars">&nbsp;&nbsp;</span>Groep: {{group.name}}</h4>
-    <div>{{group.description}}</div>
+    <div>{{group.description}}</div> <img src="{{group.image}}"  height="60" class="group-image"/>
 </div>
 <ul class="group-index">
     <li ng-repeat="note in group.notes" class="group-note">

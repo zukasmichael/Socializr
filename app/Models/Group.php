@@ -93,6 +93,15 @@ class Group extends BaseModel
      * @JMS\Groups({"group-details"})
      */
     private $hashtag;
+
+    /**
+     * @ODM\String
+     * @JMS\Accessor(getter="getImage",setter="setImage")
+     * @JMS\Type("string")
+     * @JMS\Groups({"group-details"})
+     */
+    private $image;
+
     /**
      * @param mixed $id
      * @return \Models\Group
@@ -238,7 +247,23 @@ class Group extends BaseModel
     {
         return $this->hashtag;
     }
+    /**
+     * @param mixed $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
 
+    /**
+     * @param string $image
+     * @return \Models\Group
+     */
+    public function getImage()
+    {
+        return $this->image;
+        return $this;
+    }
     /**
      * @ODM\PrePersist
      * @ODM\PreUpdate

@@ -67,6 +67,9 @@ textarea {
 #group .panel-heading.member h3 {
     margin-right: 15px;
 }
+.group-img-preview{
+    margin-left: 10px;
+}
 .group-topic {
     list-style: none;
     background: #fff;

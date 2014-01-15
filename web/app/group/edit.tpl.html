@@ -4,6 +4,7 @@
         <legend>Nieuwe Groep</legend>
         <p>
         <label>Groepnaam</label><input ng-model="group.name"><br />
+        <label>Groepsafbeelding</label><input ng-model="group.image"> <img src="{{group.image}}" class="group-img-preview" width="100" height="100"/><br />
         <label>Zichtbaarheid</label>
         <select ng-model="group.visibility" class="select">
                 <option ng-repeat="option in options" value="{{option.value}}" ng-selected="option.value == myChoice">{{option.name}}</option>
