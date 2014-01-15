@@ -1,10 +1,21 @@
-<p><strong>Mijn groepen</strong></p>
-<div ng-repeat="group in groups" class="panel panel-primary group">
-    <div class="panel-heading">
-        <h3 class="panel-title">{{group.name}}</h3>
-    </div>
-    <div class="panel-body">
-        <strong>{{group.description}}</strong><br/>
-        <a href="/groups/{{group.id}}">Bekijken</a>
+<h2>Mijn groepen</h2>
+<div id="group">
+    <div ng-repeat="group in groups" class="panel panel-primary group">
+        <div class="panel-heading member">
+            <h3 class="panel-title"><span class="fa fa-bars">&nbsp;&nbsp;</span>{{group.name}}</h3>
+        </div>
+        <div class="panel-body">
+            <span>{{group.description}}</span>
+            <ul class="group-index">
+                <li class="group-topic active">
+                    <a ng-show="group.boards.length < 1" href="/groups/{{group.id}}"><span class="fa fa-comments">&nbsp;&nbsp;</span>Nog geen onderwerpen.</a>
+                    <a ng-show="group.boards.length == 1" href="/groups/{{group.id}}"><span class="fa fa-comments">&nbsp;&nbsp;</span>{{group.boards.length}} onderwerp.</a>
+                    <a ng-show="group.boards.length > 1" href="/groups/{{group.id}}"><span class="fa fa-comments">&nbsp;&nbsp;</span>{{group.boards.length}} onderwerpen.</a>
+                </li>
+            </ul>
+            <div class="goto">
+                <a href="/groups/{{group.id}}">Bekijken</a>
+            </div>
+        </div>
     </div>
 </div>
