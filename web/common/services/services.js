@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('auth')
-    .factory('Auth', function($http){
+angular.module('auth', ['ngCookies'])
+    .factory('Auth', function($http, $cookieStore,$cookies){
 
         var accessLevels = routingConfig.accessLevels
             , userRoles = routingConfig.userRoles
@@ -25,15 +25,27 @@ angular.module('auth')
                 return user.role.title == userRoles.user.title || user.role.title == userRoles.admin.title;
             },
             login: function(success, error) {
+                var usr = $cookieStore.get('user');
+                if(usr != undefined){
+                    changeUser(usr);
+                    success(usr);
+                    return;
+                }
                 $http.get('https://api.socializr.io/user/current').success(function (user) {
                     if(user.user_name !== ''){
                         user.role = userRoles.user;
+                        $cookieStore.put('user', user);
                     }
                     changeUser(user);
                     success(user);
-                }).error(error);
+                }).error(
+                        function(){
+
+                        }
+                    );
             },
-            logout: function(success, error) {
+            logout: function() {
+                $cookieStore.remove('user');
                 window.location = "https://api.socializr.io" + currentUser.logout_url;
             },
             accessLevels: accessLevels,

@@ -84,6 +84,7 @@ angular.module('socializrApp').run(['$rootScope', '$location', '$http', 'Auth', 
 
 }]);
 angular.module('socializrApp').controller('AppCtrl', ['$scope', 'Auth', function ($scope, Auth) {
+
     Auth.login(
         function(user) {
             $scope.user = user;
@@ -91,17 +92,19 @@ angular.module('socializrApp').controller('AppCtrl', ['$scope', 'Auth', function
         function(err) {
             //$rootScope.error = "Failed to login";
         });
+
 }]);
 angular.module('socializrApp')
-.controller('HeaderCtrl', ['$rootScope', '$scope', '$location', '$route', 'Auth', function ($rootScope, $scope, $location, $route, Auth) {
+.controller('HeaderCtrl', ['$rootScope', '$scope', '$location', '$route', 'Auth', '$cookieStore', function ($rootScope, $scope, $location, $route, Auth) {
     $scope.location = $location;
     $scope.user = Auth.user;
     $scope.userRoles = Auth.userRoles;
     $scope.accessLevels = Auth.accessLevels;
 
     $scope.logout = function() {
-        Auth.logout(function() {});
+        Auth.logout();
     };
+
     $scope.isActive = function (viewLocation) {
         return viewLocation === $location.path();
     };
@@ -276,7 +279,7 @@ angular.module('groups').controller('GroupNewCtrl', ['$rootScope', '$scope', '$l
                 .success(function (data, status, headers, config) {
                     $location.path('/groups');
                 }).error(function (data, status, headers, config) {
-                    console.log(status);
+
                 });
         };
     }]
@@ -406,7 +409,9 @@ angular.module('users')
                 function(data){
                     $scope.profile = data;
                 }
-            );
+            ).error(
+                  // $location.
+                );
             $scope.disable = function(){
                 var deleteUser = confirm('Weet je zeker dat je je account wilt verwijderen?');
                 if (deleteUser) {
@@ -693,7 +698,6 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
     $scope.user = Auth.user;
     $scope.numPerPage = 6;
     $scope.currentPage = 1;
-
     $scope.messageService = new messageService();
 
     $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
@@ -712,7 +716,6 @@ angular.module('boards').controller('BoardDetailsController', ['$scope', '$http'
     };
 
     $scope.setPage = function () {
-        console.log($scope.currentPage);
         $scope.messages = $scope.messageService.getMessages(($scope.currentPage - 1) * $scope.numPerPage, $scope.numPerPage, $scope.boardId);
     };
 

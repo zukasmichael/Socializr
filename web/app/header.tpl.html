@@ -47,7 +47,7 @@
                     <a href="/users/login/"><span class="fa fa-sign-in">&nbsp;&nbsp;</span>Inloggen</a>
                 </li>
                 <li ng-class="{ active: isActive('/user/logout/')}" data-access-level="accessLevels.user" active-nav>
-                    <a href="https://api.socializr.io{{user.logout_url}}"><span class="fa fa-sign-out">&nbsp;</span>Uitloggen</a>
+                    <a ng-click="logout()"><span class="fa fa-sign-out">&nbsp;</span>Uitloggen</a>
                 </li>
             </ul>
         </div>
